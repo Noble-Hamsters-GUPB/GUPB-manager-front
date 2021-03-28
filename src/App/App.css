@@ -1,0 +1,26 @@
+.Main {
+  text-align: center;
+}
+
+.Main-logo {
+  height: 90vmin;
+  pointer-events: none;
+}
+
+.Main-header {
+  background-image: url(http://localhost:3000/background.png);
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+#createTournament{
+  margin-bottom: 30vh;
+  height: 12vh;
+  width: 20vw;
+  font-size: 3vh;
+}

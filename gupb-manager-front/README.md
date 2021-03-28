@@ -1,3 +1,6 @@
+# GUPB Manager (frontend)
+Manager appication for GUPB (https://github.com/Prpht/GUPB) - frontend.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

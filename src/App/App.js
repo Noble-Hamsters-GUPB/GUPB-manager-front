@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {Route} from 'react-router-dom';
 import {Switch} from 'react-router-dom';
+import CreateTournamentComponent from '../Components/CreateTournamentComponent';
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
       </header>
     </div>
           <Switch>
-              <Route path="/create_tournament">
+              <Route path="/create_tournament" component = {CreateTournamentComponent}>
               </Route>
           </Switch>
       </Router>

@@ -1,4 +1,6 @@
 # GUPB Manager (frontend)
+[![Build Status](https://travis-ci.com/Noble-Hamsters-GUPB/GUPB-manager-front.svg?branch=main)](https://travis-ci.com/Noble-Hamsters-GUPB/GUPB-manager-front)
+
 Manager appication for GUPB (https://github.com/Prpht/GUPB) - frontend.
 
 # Getting Started with Create React App

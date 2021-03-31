@@ -5,6 +5,7 @@ import App from './App/App';
 // @ts-ignore
 import reportWebVitals from './reportWebVitals';
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core/styles";
+import 'bootstrap/dist/css/bootstrap.css';
 
 const theme = createMuiTheme({
     palette: {

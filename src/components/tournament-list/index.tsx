@@ -1,15 +1,18 @@
 import {FC} from "react";
 import styles from "./styles.module.css"
+// @ts-ignore
+import {Route, useRouteMatch} from 'react-router-dom';
+import {TournamentForm} from "../tournament-form"
 
-export const TournamentForm: FC = (props) => {
 
-
+export const TournamentList: FC = (props) => {
+    const {path} = useRouteMatch();
     return (
         <div>
-            <p> FORM TBD </p>
-            <form>
-                <input></input>
-            </form>
+            <Route path={`${path}/create_tournament`}>
+                <TournamentForm/>
+            </Route>
+            <p>This is tournament list</p>
         </div>
     )
 }

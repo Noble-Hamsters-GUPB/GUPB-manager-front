@@ -3,9 +3,10 @@ import {Button} from "@material-ui/core";
 import Add from '@material-ui/icons/Add';
 // @ts-ignore
 import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
+import {TournamentList} from "../components/tournament-list";
 
 function App() {
-    let router = <><Router>
+    let router = <Router>
         <div className="Main">
             <header className="Main-header">
                 <img src="/logo_transparent.png" className="Main-logo" alt="logo"/>
@@ -15,10 +16,9 @@ function App() {
             </header>
         </div>
         <Switch>
-            <Route path="/create_tournament">
-            </Route>
+            <Route path="/tournaments" component={TournamentList}/>
         </Switch>
-    </Router></>;
+    </Router>;
     return router;
 }
 

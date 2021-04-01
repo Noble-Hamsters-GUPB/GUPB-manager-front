@@ -12,14 +12,14 @@ import {
     Button, IconButton, Dialog, DialogContent, DialogTitle, DialogActions
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
+// @ts-ignore
+import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
 
 export const TournamentForm: FC = (props) => {
 
-    const [open, setOpen] = useState(true);
-
     return (
-        <Dialog open={open} className={styles.formDialog}>
-            <IconButton className={styles.closeButton}><CloseIcon/></IconButton>
+        <Dialog open={true} className={styles.formDialog}>
+            <IconButton component={Link} to={'/tournaments'} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>Create Tournament</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
                 <TextField fullWidth label={"Tournament name"}/>
@@ -32,7 +32,8 @@ export const TournamentForm: FC = (props) => {
                         <FormControlLabel value="Invite only" control={<Radio/>} label="Invite only"/>
                     </RadioGroup>
                 </FormControl>
-                <DialogActions className={styles.submitAction} ><Button variant="contained" color="secondary">CREATE</Button></DialogActions>
+                <DialogActions className={styles.submitAction}><Button variant="contained"
+                                                                       color="secondary">CREATE</Button></DialogActions>
             </DialogContent>
         </Dialog>
     )

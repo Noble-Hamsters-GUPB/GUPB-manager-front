@@ -11,7 +11,7 @@ function App() {
             <header className="Main-header">
                 <img src="/logo_transparent.png" className="Main-logo" alt="logo"/>
                 <Button variant="contained" color="secondary" id="createTournament" startIcon={<Add/>}
-                        component={Link} to={'/create_tournament'}>
+                        component={Link} to={'/tournaments/create_tournament'}>
                     Create Tournament</Button>
             </header>
         </div>

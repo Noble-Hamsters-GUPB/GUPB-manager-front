@@ -1,4 +1,4 @@
-import {FC, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import styles from "./styles.module.css"
 import TextField from '@material-ui/core/TextField'
 import {
@@ -14,26 +14,75 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 // @ts-ignore
 import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
+// @ts-ignore
+import TournamentService from '../../services/TournamentService';
 
 export const TournamentForm: FC = (props) => {
+
+    const [date, setDate] = useState("2021-01-01T12:00")
+    const [name, setName] = useState("")
+    const [accessMode, setAccessMode] = useState("Open")
+
+    const [dateError, setDateError] = useState(false);
+    const [nameError, setNameError] = useState(false)
+
+    useEffect(() => {
+        setDateError(false)
+    },[date])
+
+    useEffect(() => {
+        setNameError(false)
+    },[name])
+
+    const submitTournament = (e) => {
+        let errorFlag = false;
+
+        if(name === ""){
+            setNameError(true);
+            errorFlag = true;
+        }
+
+        if(new Date(date) < new Date()){
+            setDateError(true);
+            errorFlag = true;
+        }
+
+        if(errorFlag){
+            e.preventDefault();
+            return;
+        }
+
+
+        TournamentService.createTournament({"date": date, "name": name, "accessMode": accessMode})
+    }
 
     return (
         <Dialog open={true} className={styles.formDialog}>
             <IconButton component={Link} to={'/tournaments'} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>Create Tournament</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
-                <TextField fullWidth label={"Tournament name"}/>
-                <TextField fullWidth defaultValue={"2021-01-01T12:00"} label={"Start time"} type="datetime-local"/>
+                <TextField error={nameError} fullWidth label={nameError?"Tournament name cannot be empty":"Tournament name"} onChange={(e) => setName(e.target.value)}/>
+                <TextField error={dateError} fullWidth defaultValue={date} label={dateError?"Provide a future date":"Start time"} type="datetime-local"
+                           onChange={(e) => setDate(e.target.value)}/>
                 <FormControl className={styles.form} component={"fieldset"}>
                     <FormLabel component="legend">Access mode</FormLabel>
-                    <RadioGroup className={styles.formRadios} row aria-label="Access" defaultValue="Open">
+                    <RadioGroup className={styles.formRadios} row aria-label="Access" value={accessMode}
+                                onChange={(e) => setAccessMode(e.target.value)}>
                         <FormControlLabel value="Open" control={<Radio/>} label="Open"/>
                         <FormControlLabel value="Restricted" control={<Radio/>} label="Restricted"/>
                         <FormControlLabel value="Invite only" control={<Radio/>} label="Invite only"/>
                     </RadioGroup>
                 </FormControl>
-                <DialogActions className={styles.submitAction}><Button variant="contained"
-                                                                       color="secondary">CREATE</Button></DialogActions>
+                <DialogActions className={styles.submitAction}>
+                    <Link to={(dateError || nameError)?"#":"/tournaments"}  style={{ textDecoration: 'none' }}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={(e) => submitTournament(e)}
+                            disabled={dateError || nameError}
+                        >CREATE</Button>
+                    </Link>
+                </DialogActions>
             </DialogContent>
         </Dialog>
     )

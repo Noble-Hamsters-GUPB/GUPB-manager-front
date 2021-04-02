@@ -1,4 +1,5 @@
-import axios from "axios";
+// @ts-ignore
+const axios = require("axios").default;
 
 const TOURNAMENT_API_BASE_URL = "http://localhost:8080/api/v1/tournaments"
 

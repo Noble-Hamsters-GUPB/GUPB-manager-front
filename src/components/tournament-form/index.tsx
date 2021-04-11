@@ -19,7 +19,7 @@ import TournamentService from '../../services/TournamentService';
 
 export const TournamentForm: FC = (props) => {
 
-    const [date, setDate] = useState("2021-01-01T12:00")
+    const [date, setDate] = useState(getCurrentDate())
     const [name, setName] = useState("")
     const [accessMode, setAccessMode] = useState("Open")
 
@@ -86,5 +86,18 @@ export const TournamentForm: FC = (props) => {
             </DialogContent>
         </Dialog>
     )
+
+    function getCurrentDate(separator='-'){
+
+        let newDate = new Date()
+        let date = newDate.getDate();
+        let month = newDate.getMonth() + 1;
+        let year = newDate.getFullYear();
+        let time = newDate.getHours()+":"+newDate.getMinutes();
+
+        console.log(`${year}${separator}${month<10?`0${month}`:`${month}`}${separator}${date}T${time}`)
+
+        return `${year}${separator}${month<10?`0${month}`:`${month}`}${separator}${date}T${time}`
+    }
 
 }

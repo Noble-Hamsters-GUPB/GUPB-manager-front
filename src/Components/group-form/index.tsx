@@ -67,7 +67,7 @@ export const GroupForm: FC = (props) => {
         }
 
 
-        GroupService.createGroup({"name": name, "repo": repo, "team": team})
+        GroupService.createGroup({"name": name, "githubLink": repo, "members": team})
     }
 
     function handleMemberChange(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, i: number) {

@@ -3,7 +3,7 @@ import {Button} from "@material-ui/core";
 import Add from '@material-ui/icons/Add';
 // @ts-ignore
 import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
-import {TournamentList} from "../components/tournament-list";
+import {TournamentList} from "../Components/tournament-list";
 
 function App() {
     let router = <Router>

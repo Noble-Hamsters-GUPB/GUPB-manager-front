@@ -1,25 +1,32 @@
 import './App.css';
-import {Button} from "@material-ui/core";
-import Add from '@material-ui/icons/Add';
+import {Box, Button} from "@material-ui/core";
+import PostAdd from '@material-ui/icons/PostAdd';
+import GroupAdd from '@material-ui/icons/GroupAdd';
 // @ts-ignore
-import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
-import {TournamentList} from "../components/tournament-list";
+import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
+import {TournamentList} from "../Components/tournament-list";
+import {GroupList} from "../Components/group-list";
 
 function App() {
-    let router = <Router>
-        <div className="Main">
+    return <Router>
+        <Box className="Main" >
             <header className="Main-header">
                 <img src="/logo_transparent.png" className="Main-logo" alt="logo"/>
-                <Button variant="contained" color="secondary" id="createTournament" startIcon={<Add/>}
+                <Box id="buttonContainer">
+                <Button variant="contained" color="secondary" className="addButton" startIcon={<PostAdd className="icon"/>}
                         component={Link} to={'/tournaments/create_tournament'}>
                     Create Tournament</Button>
+                <Button variant="contained" color="secondary" className="addButton" startIcon={<GroupAdd className="icon"/>}
+                        component={Link} to={'/groups/create_group'}>
+                    Create Group</Button>
+                </Box>
             </header>
-        </div>
+        </Box>
         <Switch>
             <Route path="/tournaments" component={TournamentList}/>
+            <Route path="/groups" component={GroupList}/>
         </Switch>
     </Router>;
-    return router;
 }
 
 export default App;

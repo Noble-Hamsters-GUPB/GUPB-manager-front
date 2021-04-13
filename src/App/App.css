@@ -18,9 +18,20 @@
   color: white;
 }
 
-#createTournament{
+.addButton{
+  height: 8vh;
+  width: 18vw;
+  font-size: 2vh;
+  margin-left: 3vw;
+  margin-right: 3vw;
+}
+
+.icon{
+  transform: scale(1.8);
+  margin-right: 2vw;
+}
+
+#buttonContainer{
   margin-bottom: 30vh;
-  height: 12vh;
-  width: 20vw;
-  font-size: 3vh;
+  display: inline;
 }

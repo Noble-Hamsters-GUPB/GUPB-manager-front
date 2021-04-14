@@ -10,7 +10,7 @@ class GroupService {
     }
 
     createGroup(group) {
-        return axios.post(GROUP_API_BASE_URL);
+        return axios.post(GROUP_API_BASE_URL, group);
     }
 
 }

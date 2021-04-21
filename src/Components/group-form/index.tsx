@@ -107,7 +107,7 @@ export const GroupForm: FC = (props) => {
                         }
 
                         handleAddMember() }}>
-                    Add team member</Button>}
+                    Add new member</Button>}
                     {team.length !== 1 && <Button color="primary" startIcon={<DeleteOutline/>} onClick={() => {
                         function handleRemoveMember(i: number) {
                             const list = [...team];

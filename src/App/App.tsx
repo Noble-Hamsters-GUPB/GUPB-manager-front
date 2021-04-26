@@ -5,7 +5,7 @@ import GroupAdd from '@material-ui/icons/GroupAdd';
 // @ts-ignore
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
 import {TournamentList} from "../Components/tournament-list";
-import {GroupList} from "../Components/group-list";
+import {TeamList} from "../Components/team-list";
 
 function App() {
     return <Router>
@@ -17,14 +17,14 @@ function App() {
                         component={Link} to={'/tournaments/create_tournament'}>
                     Create Tournament</Button>
                 <Button variant="contained" color="secondary" className="addButton" startIcon={<GroupAdd className="icon"/>}
-                        component={Link} to={'/groups/create_group'}>
-                    Create Group</Button>
+                        component={Link} to={'/teams/create_team'}>
+                    Create Team</Button>
                 </Box>
             </header>
         </Box>
         <Switch>
             <Route path="/tournaments" component={TournamentList}/>
-            <Route path="/groups" component={GroupList}/>
+            <Route path="/teams" component={TeamList}/>
         </Switch>
     </Router>;
 }

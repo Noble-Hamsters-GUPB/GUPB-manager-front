@@ -1,0 +1,37 @@
+.Main {
+    text-align: center;
+}
+
+.MainLogo {
+    height: 90vmin;
+    pointer-events: none;
+}
+
+.MainHeader {
+    background-image: url(http://localhost:3000/background.png);
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.addButton{
+    height: 8vh;
+    width: 18vw;
+    font-size: 2vh;
+    margin-left: 3vw;
+    margin-right: 3vw;
+}
+
+.icon{
+    transform: scale(1.8);
+    margin-right: 2vw;
+}
+
+#buttonContainer{
+    margin-bottom: 30vh;
+    display: inline;
+}

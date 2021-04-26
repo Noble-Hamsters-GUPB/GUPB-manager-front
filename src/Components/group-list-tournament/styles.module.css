@@ -1,0 +1,8 @@
+.root{
+    flex-grow: 1;
+}
+
+.typography{
+    display: inline-block;
+    padding-right: 20vw;
+}

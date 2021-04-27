@@ -1,6 +1,4 @@
 import {FC} from "react";
-import styles from "./styles.module.css"
-// @ts-ignore
 import {Route, useRouteMatch} from 'react-router-dom';
 import {TeamForm} from "../team-form";
 

@@ -1,0 +1,46 @@
+.root{
+    flex-grow: 1;
+    width: 50%;
+}
+
+.typography{
+    font-family: "Century Gothic", sans-serif;
+    font-weight: bolder;
+    text-transform: uppercase;
+    color: #111173;
+    display: inline-flex;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.logo{
+    width: 2.5vw;
+}
+
+.noLogo{
+    display: none;
+}
+
+.card{
+    background-color: white;
+}
+
+.cardItem{
+    align-items: center;
+}
+
+.updated{
+    color: #31b45f;
+}
+
+.notUpdated{
+    color: darkred;
+}
+
+.noBot{
+    color: darkred;
+}
+
+.header{
+    background-color: #aecdfc;
+}

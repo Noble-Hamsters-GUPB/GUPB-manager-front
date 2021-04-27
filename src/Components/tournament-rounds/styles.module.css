@@ -1,0 +1,45 @@
+.root{
+    flex-grow: 1;
+    width: 50%;
+}
+
+.listItem{
+    box-shadow: 0 0 0.3em black;
+    margin: 1em;
+}
+
+.addIcon{
+    transform: scale(5);
+    margin: 0.5em;
+    color: white;
+}
+
+.card{
+    background-color: #adbdcc;
+    text-align: center;
+}
+
+.roundText{
+    text-align: center;
+    color: darkred;
+    font-family: "Century Gothic", sans-serif;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.biggerNum{
+    font-size: 3em;
+}
+
+.alignItems{
+    display: grid;
+    align-self: center;
+    text-align: center;
+}
+
+.date{
+    font-family: "Century Gothic", sans-serif;
+    font-weight: bold;
+    font-size: 1.2em;
+    color: white;
+}

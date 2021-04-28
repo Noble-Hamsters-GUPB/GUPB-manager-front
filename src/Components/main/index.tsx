@@ -15,8 +15,8 @@ export const Main: FC = (props) => {
                             component={Link} to={'/tournaments/create_tournament'}>
                         Create Tournament</Button>
                     <Button variant="contained" color="secondary" className={styles.addButton} startIcon={<GroupAdd className="icon"/>}
-                            component={Link} to={'/groups/create_group'}>
-                        Create Group</Button>
+                            component={Link} to={'/teams/create_team'}>
+                        Create Team</Button>
                 </Box>
             </header>
         </Box>

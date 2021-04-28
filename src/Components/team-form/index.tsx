@@ -108,7 +108,7 @@ export const TeamForm: FC = (props) => {
 
                         handleAddMember() }}>
                     Add new member</Button>}
-                    {team.length !== 1 && <Button color="primary" startIcon={<DeleteOutline/>} onClick={() => {
+                    {members.length !== 1 && <Button color="primary" startIcon={<DeleteOutline/>} onClick={() => {
                         function handleRemoveMember(i: number) {
                             const list = [...members];
                             list.splice(i, 1);

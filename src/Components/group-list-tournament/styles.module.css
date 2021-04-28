@@ -3,6 +3,12 @@
     width: 50%;
 }
 
+.alignItems{
+    display: grid;
+    align-self: center;
+    text-align: center;
+}
+
 .typography{
     font-family: "Century Gothic", sans-serif;
     font-weight: bolder;
@@ -23,6 +29,7 @@
 
 .card{
     background-color: white;
+    text-align: center;
 }
 
 .cardItem{
@@ -43,4 +50,5 @@
 
 .header{
     background-color: #aecdfc;
+    font-size: 1.3em;
 }

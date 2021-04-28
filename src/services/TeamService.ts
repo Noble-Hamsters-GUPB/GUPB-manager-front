@@ -10,7 +10,7 @@ class TeamService {
     }
 
     createTeam(team) {
-        return axios.post(TEAM_API_BASE_URL, team);
+        return axios.post(TEAM_API_BASE_URL, team)
     }
 
 }

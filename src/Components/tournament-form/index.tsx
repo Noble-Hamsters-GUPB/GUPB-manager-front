@@ -21,7 +21,7 @@ export const TournamentForm: FC = (props) => {
 
     const [date, setDate] = useState(getCurrentDate())
     const [name, setName] = useState("")
-    const [accessMode, setAccessMode] = useState("Open")
+    const [accessMode, setAccessMode] = useState("OPEN")
 
     const [dateError, setDateError] = useState(false);
     const [nameError, setNameError] = useState(false)
@@ -68,9 +68,9 @@ export const TournamentForm: FC = (props) => {
                     <FormLabel component="legend">Access mode</FormLabel>
                     <RadioGroup className={styles.formRadios} row aria-label="Access" value={accessMode}
                                 onChange={(e) => setAccessMode(e.target.value)}>
-                        <FormControlLabel value="Open" control={<Radio/>} label="Open"/>
-                        <FormControlLabel value="Restricted" control={<Radio/>} label="Restricted"/>
-                        <FormControlLabel value="Invite only" control={<Radio/>} label="Invite only"/>
+                        <FormControlLabel value="OPEN" control={<Radio/>} label="Open"/>
+                        <FormControlLabel value="RESTRICTED" control={<Radio/>} label="Restricted"/>
+                        <FormControlLabel value="INVITE_ONLY" control={<Radio/>} label="Invite only"/>
                     </RadioGroup>
                 </FormControl>
                 <DialogActions className={styles.submitAction}>

@@ -8,15 +8,15 @@ import CloseIcon from '@material-ui/icons/Close';
 // @ts-ignore
 import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
 // @ts-ignore
-import GroupService from "../../services/GroupService";
+import TeamService from "../../services/TeamService";
 import validator from 'validator'
 import {DeleteOutline, PersonAdd} from "@material-ui/icons";
 
 
-export const GroupForm: FC = (props) => {
+export const TeamForm: FC = (props) => {
     const [name, setName] = useState("")
-    const [repo, setRepoName] = useState("")
-    const [team, setTeam] = useState([{firstName: "", lastName: "", indexNumber: ""}])
+    const [githubLink, setRepoName] = useState("")
+    const [members, setTeam] = useState([{firstName: "", lastName: "", indexNumber: ""}])
 
     const [nameError, setNameError] = useState(false)
     const [repoError, setRepoError] = useState(false)
@@ -26,14 +26,14 @@ export const GroupForm: FC = (props) => {
 
     useEffect(() => {
         setRepoError(false)
-    },[repo])
+    },[githubLink])
 
     useEffect(() => {
         setNameError(false)
     },[name])
 
 
-    const submitGroup= (e) => {
+    const submitTeam= (e) => {
         let errorFlag = false;
 
         if(name === ""){
@@ -41,12 +41,12 @@ export const GroupForm: FC = (props) => {
             errorFlag = true;
         }
 
-        if(repo === "" || !validator.isURL(repo)){
+        if(githubLink === "" || !validator.isURL(githubLink)){
             setRepoError(true);
             errorFlag = true;
         }
 
-        for(let teamMem of team){
+        for(let teamMem of members){
             if(teamMem['indexNumber'] === "" || !/^(\d{6})$/.test(teamMem['indexNumber'])){
                 setMemberIndexError(true);
                 errorFlag = true;
@@ -67,12 +67,12 @@ export const GroupForm: FC = (props) => {
         }
 
 
-        GroupService.createGroup({"name": name, "githubLink": repo, "members": team})
+        TeamService.createTeam({"name": name, "githubLink": githubLink, "members": members})
     }
 
     function handleMemberChange(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, i: number) {
         const { name, value } = e.target;
-        const list = [...team];
+        const list = [...members];
         list[i][name] = value;
         setMemberNameError(false);
         setMemberIndexError(false);
@@ -82,14 +82,14 @@ export const GroupForm: FC = (props) => {
 
     return (
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={'/groups'} className={styles.closeButton}><CloseIcon/></IconButton>
-            <DialogTitle className={styles.formTitle}>Create Group</DialogTitle>
+            <IconButton component={Link} to={'/teams'} className={styles.closeButton}><CloseIcon/></IconButton>
+            <DialogTitle className={styles.formTitle}>Create Team</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
-                <TextField error={nameError} fullWidth label={nameError?"Group name cannot be empty":"Group name"}
+                <TextField error={nameError} fullWidth label={nameError?"Team name cannot be empty":"Team name"}
                            onChange={(e) => setName(e.target.value)}/>
                 <TextField error={repoError} fullWidth label={repoError?"Link to repository must be a URL":"Link to repository"}
                            onChange={(e) => setRepoName(e.target.value)}/>
-                {team.map((x, i) => {
+                {members.map((x, i) => {
                     return(
                         <Box>
                         <TextField error={memberNameError} name="firstName"
@@ -98,19 +98,19 @@ export const GroupForm: FC = (props) => {
                         <TextField error={memberLastNameError} name="lastName"
                                label={memberLastNameError ? "Last name cannot be empty" : "Member last name"}
                                onChange={(e) => handleMemberChange(e, i)}/>
-                               <TextField error={memberIndexError} name="indexNumber"
-                                       label={memberIndexError ? "Enter correct index number" : "Index number"}
-                                       onChange={(e) => handleMemberChange(e, i)}/>
-                    {team.length-1 === i && <Button color="primary" startIcon={<PersonAdd/>} onClick={() => {
+                        <TextField error={memberIndexError} name="indexNumber"
+                                label={memberIndexError ? "Enter correct index number" : "Index number"}
+                                onChange={(e) => handleMemberChange(e, i)}/>
+                    {members.length-1 === i && <Button color="primary" startIcon={<PersonAdd/>} onClick={() => {
                         function handleAddMember() {
-                            setTeam([...team, { firstName: "", lastName: "", indexNumber: "" }]);
+                            setTeam([...members, { firstName: "", lastName: "", indexNumber: "" }]);
                         }
 
                         handleAddMember() }}>
                     Add new member</Button>}
-                    {team.length !== 1 && <Button color="primary" startIcon={<DeleteOutline/>} onClick={() => {
+                    {members.length !== 1 && <Button color="primary" startIcon={<DeleteOutline/>} onClick={() => {
                         function handleRemoveMember(i: number) {
-                            const list = [...team];
+                            const list = [...members];
                             list.splice(i, 1);
                             setTeam(list);
                         }
@@ -120,11 +120,11 @@ export const GroupForm: FC = (props) => {
                         </Box>)
                 })}
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(repoError || nameError)?"#":"/groups"}  style={{ textDecoration: 'none' }}>
+                    <Link to={(repoError || nameError)?"#":"/teams"}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={(e) => submitGroup(e)}
+                            onClick={(e) => submitTeam(e)}
                             disabled={repoError || nameError}
                         >CREATE</Button>
                     </Link>

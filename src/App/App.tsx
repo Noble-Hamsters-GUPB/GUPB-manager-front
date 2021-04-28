@@ -6,6 +6,7 @@ import {GroupList} from "../Components/group-list";
 import {GroupListTournament} from "../Components/group-list-tournament";
 import {Main} from "../Components/main";
 import {TournamentRoundList} from "../Components/tournament-rounds";
+import {TournamentRoundForm} from "../Components/tournament-rounds-form";
 
 function App() {
     return <Router>
@@ -15,6 +16,7 @@ function App() {
             <Route path="/groups" component={GroupList}/>
             <Route path="/tournament-groups" component={GroupListTournament}/>
             <Route path="/tournament-rounds" component={TournamentRoundList}/>
+            <Route path='/tournament-rounds/add' component={TournamentRoundForm}/>
         </div>
     </Router>
 }

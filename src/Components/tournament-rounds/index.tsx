@@ -2,6 +2,7 @@ import {FC} from "react";
 import styles from "./styles.module.css";
 import {Button, Card, CardContent, Grid} from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
+import {Link} from "react-router-dom";
 
 const data = [
     {startDate: "2021-04-05", endDate: "2021-04-18"},
@@ -16,7 +17,7 @@ export const TournamentRoundList: FC = () =>{
     return(
         <div className={styles.root}>
             <Grid container spacing={2} direction={"row"} justify={"center"} alignItems={"center"}>
-                <Button style={{width: '100%'}}>
+                <Button style={{width: '100%'}} component={Link} to={'/tournament-rounds/add'}>
                 <Grid item xs={12}>
                     <Card>
                             <CardContent className={styles.card}>

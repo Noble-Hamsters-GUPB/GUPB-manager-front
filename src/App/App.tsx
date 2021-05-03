@@ -6,6 +6,7 @@ import {TeamList} from "../Components/team-list";
 import {GroupListTournament} from "../Components/group-list-tournament";
 import {Main} from "../Components/main";
 import {TournamentRoundList} from "../Components/tournament-rounds";
+import {BotStatus} from "../Components/bot-status";
 
 function App() {
     return <Router>
@@ -15,6 +16,7 @@ function App() {
             <Route path="/teams" component={TeamList}/>
             <Route path="/tournament-groups" component={GroupListTournament}/>
             <Route path="/tournament-rounds" component={TournamentRoundList}/>
+            <Route path="/bot-status" component={BotStatus}/>
         </div>
     </Router>;
 }

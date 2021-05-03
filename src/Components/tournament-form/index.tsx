@@ -95,8 +95,6 @@ export const TournamentForm: FC = (props) => {
         let year = newDate.getFullYear();
         let time = newDate.getHours()+":"+newDate.getMinutes();
 
-        console.log(`${year}${separator}${month<10?`0${month}`:`${month}`}${separator}${date}T${time}`)
-
         return `${year}${separator}${month<10?`0${month}`:`${month}`}${separator}${date}T${time}`
     }
 }

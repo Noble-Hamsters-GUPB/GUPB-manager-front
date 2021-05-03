@@ -86,6 +86,6 @@ export const TournamentRoundForm = (props: {id, startDate, endDate}) => {
             time = time+":"+minutes;
         }
 
-        return `${year}${separator}${month<10?`0${month}`:`${month}`}${separator}${date}T${time}`
+        return `${year}${separator}${month<10?`0${month}`:`${month}`}${separator}${date<10?`0${date}` : `${date}`}T${time}`
     }
 }

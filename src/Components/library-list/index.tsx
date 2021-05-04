@@ -49,8 +49,6 @@ export const LibraryList: FC = (props) =>{
 
     const [libList, setLibList] = useState([
         {name: "bibisayhdfgvbhaiksjdfgblashjfgbladsfgbsdljkfgbdslgjbsdflkghsdjklgbsdlgjhdsbgjkhdslio1", status: "valid"},
-        {name: "biblio2", status: "validating"},
-        {name: "biblio3", status: "invalid"},
         {name: "biblio4", status: "pending"},
         {name: "biblio5", status: "declined"},
     ])
@@ -80,7 +78,7 @@ export const LibraryList: FC = (props) =>{
             case "valid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => removeLibrary(library)} className={classes.actionButton}>Remove</Button></ButtonGroup>
             case "validating": return <ButtonGroup className={classes.actionButtonGroup}>/<Button  onClick={() => updateStatus(library, "invalid")} className={classes.actionButton}>Stop</Button></ButtonGroup>
             case "invalid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => validateLibrary(library)} className={classes.actionButton}>Retry</Button><Button onClick={() => updateStatus(library, "declined")} className={classes.actionButton}>Decline</Button></ButtonGroup>
-            case "pending": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => validateLibrary(library)} className={classes.actionButton}>Validate</Button><Button onClick={() => updateStatus(library, "declined")} className={classes.actionButton}>Decline</Button></ButtonGroup>
+            case "pending": return <ButtonGroup className={classes.actionButtonGroup}><Button  onClick={() => updateStatus(library, "valid")} className={classes.actionButton}>Validate</Button><Button onClick={() => updateStatus(library, "declined")} className={classes.actionButton}>Decline</Button></ButtonGroup>
             case "declined": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => removeLibrary(library)} className={classes.actionButton}>Remove</Button></ButtonGroup>
             default: return
         }

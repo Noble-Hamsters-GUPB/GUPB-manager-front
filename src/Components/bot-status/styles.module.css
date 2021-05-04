@@ -1,0 +1,39 @@
+.root{
+    flex-grow: 1;
+    width: 50%;
+    background-color: #fff59d;
+    border-radius: 1em;
+}
+
+.repositoryName{
+    text-align: center;
+    color: #3f51b5;
+    font-family: "Century Gothic", sans-serif;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.icon{
+    transform: scale(1.4);
+    color: #111173;
+}
+
+.status{
+    text-align: center;
+    font-family: "Century Gothic", sans-serif;
+    font-weight: bold;
+    font-size: 1.4em;
+    color: #3f51b5;
+}
+
+.footer{
+    font-size: 1.2em;
+}
+
+.updated{
+    color: #31b45f;
+}
+
+.notUpdated{
+    color: darkred;
+}

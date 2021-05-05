@@ -5,12 +5,8 @@ import {
     ButtonGroup, CircularProgress, createStyles,
     List,
     ListItem,
-    ListItemSecondaryAction,
     ListItemText, makeStyles,
-    Switch,
-    Typography
 } from "@material-ui/core";
-import {yellow, red, blue, green, orange} from "@material-ui/core/colors";
 import styles from "./styles.module.css"
 
 const useStyles = makeStyles((theme) =>
@@ -27,7 +23,8 @@ const useStyles = makeStyles((theme) =>
             width: "100%"
         },
         actionButtonGroup:{
-            width: "10em"
+            width: "10em",
+            color: "white"
         },
         buttonGroupContainer:{
             textAlign: "right"
@@ -44,42 +41,29 @@ const updateStatus = ()=>{
 
 }
 
-export const LibraryList: FC = (props) =>{
+export const LibraryListParticipant: FC = (props) =>{
     const classes = useStyles()
 
     const [libList, setLibList] = useState([
-        {name: "bibisayhdfgvbhaiksjdfgblashjfgbladsfgbsdljkfgbdslgjbsdflkghsdjklgbsdlgjhdsbgjkhdslio1", status: "valid"},
-        {name: "biblio4", status: "pending"},
-        {name: "biblio5", status: "declined"},
+        {name: "dataclasses-json v0.5.2", status: "valid"},
+        {name: "pygame v1.0", status: "pending"},
+        {name: "sortedcontainers v5.0", status: "declined"},
     ])
 
-    const updateStatus = (library, status)=>{
-        setLibList(libList.map((lib) => {
-            if(lib == library){
-                lib.status = status
-            }
-            return lib;
-        }))
+    const requestRemoval = (library) => {
+        setLibList(libList.filter(lib => lib!==library))
         //    TODO: backend communication
     }
 
-    const removeLibrary = (library) => {
-        setLibList(libList.filter(lib => lib!==library))
-    //    TODO: backend communication
-    }
-
-    const validateLibrary = (library) => {
-    //    TODO: implement this
+    const requestAdd = (library) => {
+        //    TODO: implement this
 
     }
 
     const getButtons = (status, library) => {
         switch (status) {
-            case "valid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => removeLibrary(library)} className={classes.actionButton}>Remove</Button></ButtonGroup>
-            case "validating": return <ButtonGroup className={classes.actionButtonGroup}>/<Button  onClick={() => updateStatus(library, "invalid")} className={classes.actionButton}>Stop</Button></ButtonGroup>
-            case "invalid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => validateLibrary(library)} className={classes.actionButton}>Retry</Button><Button onClick={() => updateStatus(library, "declined")} className={classes.actionButton}>Decline</Button></ButtonGroup>
-            case "pending": return <ButtonGroup className={classes.actionButtonGroup}><Button  onClick={() => updateStatus(library, "valid")} className={classes.actionButton}>Validate</Button><Button onClick={() => updateStatus(library, "declined")} className={classes.actionButton}>Decline</Button></ButtonGroup>
-            case "declined": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => removeLibrary(library)} className={classes.actionButton}>Remove</Button></ButtonGroup>
+            case "valid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => requestRemoval(library)} className={classes.actionButton} variant="contained">Request removal</Button></ButtonGroup>
+            case "declined": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => requestAdd(library)} className={classes.actionButton} variant="contained">Request again</Button></ButtonGroup>
             default: return
         }
     }
@@ -95,7 +79,13 @@ export const LibraryList: FC = (props) =>{
         }
     })
 
-    return <div>
+    return <div className={styles.root}>
+        <div>
+        <div className={styles.header} style={{float: "left"}}>Libraries</div>
+            <div>
+            <Button style={{marginLeft: "21em", marginTop: "1.5em"}} variant={"contained"} color={"secondary"}>Request new library</Button>
+            </div>
+        </div>
         <List>
             {libList.map(lib => {
                 return <ListItem className={classes.listItem}>

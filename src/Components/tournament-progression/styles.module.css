@@ -1,6 +1,10 @@
 .wrapper{
     width: 3em;
 }
+.root{
+    background-color: rgba(1,1,1,0);
+    margin: 2em;
+}
 .roundProgress{
 
 }

@@ -10,7 +10,6 @@ const groupId = 1
 const repository = "https://github.com/Noble-Hamsters-GUPB/GUPB-manager-front"
 const lastUpdate = "2021-04-29T00:00:00.00"
 const currentRoundStart = "2021-05-02T00:00:00.00"
-const currentRoundEnd = "2021-05-16T00:00:00.00"
 
 export const BotStatus: FC = () =>{
     let is_updated = (lastUpdate === null) ? styles.noBot : (Date.parse(lastUpdate) >= Date.parse(currentRoundStart))
@@ -19,6 +18,9 @@ export const BotStatus: FC = () =>{
         <Router>
         <div className={styles.root}>
             <Grid container spacing={2} direction={"row"} justify={"center"} alignItems={"center"}>
+                <Grid item xs={12}>
+                    <div className={styles.header}>BOT STATUS</div>
+                </Grid>
                 <Grid item xs={8}>
                     <div className={styles.repositoryName}>{getRepositoryName(repository)}</div>
                 </Grid>
@@ -29,9 +31,9 @@ export const BotStatus: FC = () =>{
                 <Grid item xs={12} className={styles.status+" "+is_updated}><div>
                     LAST UPDATED ON {moment(lastUpdate).format("DD.MM.YYYY")}
                 </div></Grid>
-                <Grid item xs={12} className={styles.status+" "+styles.footer}><div>
+                {/*<Grid item xs={12} className={styles.status+" "+styles.footer}><div>
                     {daysLeft(currentRoundEnd)} LEFT TO THE END OF ROUND
-                </div></Grid>
+                </div></Grid>*/}
             </Grid>
         </div>
             <Route path='/bot-status/edit-repository'><EditRepository id={groupId}/></Route>

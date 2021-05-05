@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 
 // @ts-ignore
-export const TournamentRoundForm = (props: {id, startDate, endDate}) => {
+export const TournamentRoundForm = (props: {id, startDate, endDate, data}) => {
     let initialStartDate = (props.startDate === "") ? getCurrentDate() : props.startDate;
     let initialEndDate = (props.endDate === "") ? getCurrentDate() : props.endDate;
     const [startDate, setStartDate] = useState(initialStartDate)
@@ -41,6 +41,12 @@ export const TournamentRoundForm = (props: {id, startDate, endDate}) => {
             return;
         }
 
+        if(props.id === -1){
+            props.data.push({id: props.id, startDate: startDate, endDate: endDate})
+        }
+        else {
+            props.data.push({id: props.id+1, startDate: startDate, endDate: endDate})
+        }
         //TODO: create or update round (backend)
     }
 
@@ -48,7 +54,7 @@ export const TournamentRoundForm = (props: {id, startDate, endDate}) => {
     let button = (props.startDate==="" && props.endDate==="") ? "CREATE": "UPDATE";
     return(
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={'/tournament-rounds'} className={styles.closeButton}><CloseIcon/></IconButton>
+            <IconButton component={Link} to={'/tournament-organizer'} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>{title}</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
             <TextField error={startDateError} fullWidth defaultValue={startDate} label={startDateError?"Provide a valid start date":"Start date"} type="datetime-local"
@@ -56,7 +62,7 @@ export const TournamentRoundForm = (props: {id, startDate, endDate}) => {
             <TextField error={endDateError} fullWidth defaultValue={endDate} label={endDateError?"Provide a valid end date":"End date"} type="datetime-local"
                        onChange={(e) => setEndDate(e.target.value)}/>
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(startDateError || endDateError)?"#":"/tournament-rounds"}  style={{ textDecoration: 'none' }}>
+                    <Link to={(startDateError || endDateError)?"#":"/tournament-organizer"}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"

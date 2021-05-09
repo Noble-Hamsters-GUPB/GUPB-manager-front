@@ -1,4 +1,4 @@
-import {FC} from "react";
+import {FC, useEffect, useState} from "react";
 import styles from './styles.module.css';
 import {Grid} from "@material-ui/core";
 import {TournamentProgression} from "../tournament-progression";
@@ -7,13 +7,14 @@ import {LibraryListOrganizer} from "../library-list-organizer";
 import {GroupListTournamentOrganizer} from "../tournament-group-list-organizer";
 import {TournamentHeader} from "../tournament-header";
 import {TournamentRoundList} from "../tournament-rounds";
+import TeamService from "../../services/TeamService";
 
-const groupData = [
-    {groupName: "Supergrupa", botStatus: "2021-04-11", points: 456},
-    {groupName: "Fajnagrupa", botStatus: "2021-04-18", points: 459},
-    {groupName: "Leniuchy", botStatus: null, points: 0},
-    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
-]
+// const groupData = [
+//     {groupName: "Supergrupa", botStatus: "2021-04-11", points: 456},
+//     {groupName: "Fajnagrupa", botStatus: "2021-04-18", points: 459},
+//     {groupName: "Leniuchy", botStatus: null, points: 0},
+//     {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+// ]
 
 const roundsData = [
     {id: 1, startDate: "2021-04-05T00:00:00.00", endDate: "2021-04-18T00:00:00.00"},
@@ -26,6 +27,14 @@ const roundEnd = "2021-05-16T00:00:00.00";
 const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
 
 export const TournamentOrganizerView: FC = () => {
+    const [teams, setTeams] = useState([])
+
+    useEffect(() => {
+        TeamService.getTeams().then((res) => {
+           setTeams(res.data)
+        })
+    })
+    
     return(
         <div className={styles.root}>
             <Grid container spacing={5} className={styles.grid}>
@@ -41,7 +50,7 @@ export const TournamentOrganizerView: FC = () => {
                     <LibraryListOrganizer/>
                 </Grid>
                 <Grid item xs={6} className={styles.libraries+" "+styles.secRow}>
-                    <GroupListTournamentOrganizer data={groupData} roundEnd={roundEnd}/>
+                    <GroupListTournamentOrganizer data={teams} roundEnd={roundEnd}/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow}>
                     <TournamentRoundList data={roundsData}/>

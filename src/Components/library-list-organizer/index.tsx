@@ -1,4 +1,4 @@
-import {FC, useState} from "react"
+import {FC, useEffect, useState} from "react"
 import {
     Box,
     Button,
@@ -12,6 +12,8 @@ import {
 } from "@material-ui/core";
 import {yellow, red, blue, green, orange} from "@material-ui/core/colors";
 import styles from "./styles.module.css"
+import TeamService from "../../services/TeamService";
+import RequirementService from "../../services/RequirementService";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -49,12 +51,16 @@ export const LibraryListOrganizer: FC = (props) =>{
     const classes = useStyles()
 
     const [libList, setLibList] = useState([
-        {name: "dataclasses-json v0.5.2", status: "valid"},
-        {name: "pygame v1.0", status: "pending"},
-        {name: "sortedcontainers v5.0", status: "declined"},
+        {packageInfo: "", status: ""}
     ])
 
-    const updateStatus = (library, status)=>{
+    useEffect(() => {
+        RequirementService.getRequirements().then((res) => {
+            setLibList(res.data)
+        })
+    })
+
+    const updateStatus = (library, status) => {
         setLibList(libList.map((lib) => {
             if(lib == library){
                 lib.status = status
@@ -75,7 +81,7 @@ export const LibraryListOrganizer: FC = (props) =>{
     }
 
     const getButtons = (status, library) => {
-        switch (status) {
+        switch (status.toLowerCase()) {
             case "valid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => removeLibrary(library)} className={classes.actionButton} variant="contained">Remove</Button></ButtonGroup>
             case "validating": return <ButtonGroup className={classes.actionButtonGroup}>/<Button  onClick={() => updateStatus(library, "invalid")} className={classes.actionButton} variant="contained">Stop</Button></ButtonGroup>
             case "invalid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => validateLibrary(library)} className={classes.actionButton} variant="contained">Retry</Button><Button onClick={() => updateStatus(library, "declined")} className={classes.actionButton} variant="contained">Decline</Button></ButtonGroup>
@@ -86,7 +92,7 @@ export const LibraryListOrganizer: FC = (props) =>{
     }
 
     const getColor = (status => {
-        switch (status) {
+        switch (status.toLowerCase()) {
             case "valid": return "#caffbf"
             case "validating": return "#fdffb6"
             case "invalid": return "#ffd6a5"
@@ -101,7 +107,7 @@ export const LibraryListOrganizer: FC = (props) =>{
         <List>
             {libList.map(lib => {
                 return <ListItem className={classes.listItem}>
-                    <ListItemText className={classes.libraryName}>{lib.name}</ListItemText>
+                    <ListItemText className={classes.libraryName}>{lib.packageInfo}</ListItemText>
                     <ListItemText><Box className={styles.statusBadge} style={{backgroundColor: getColor(lib.status)}}>{lib.status.toUpperCase()}{lib.status=="validating"?<CircularProgress thickness={8} size={"0.9em"} className={classes.validatingProgress}/>:""}</Box></ListItemText>
                     <ListItemText className={classes.buttonGroupContainer}>{getButtons(lib.status, lib)}</ListItemText>
 

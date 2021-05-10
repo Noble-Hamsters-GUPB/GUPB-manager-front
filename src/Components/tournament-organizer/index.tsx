@@ -34,7 +34,7 @@ export const TournamentOrganizerView: FC = () => {
            setTeams(res.data)
         })
     })
-    
+
     return(
         <div className={styles.root}>
             <Grid container spacing={5} className={styles.grid}>

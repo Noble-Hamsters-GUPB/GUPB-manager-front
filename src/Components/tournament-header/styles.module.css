@@ -16,3 +16,8 @@
     float:left;
     margin-right: 1em;
 }
+
+.logo {
+    height: 7vh;
+    pointer-events: none;
+}

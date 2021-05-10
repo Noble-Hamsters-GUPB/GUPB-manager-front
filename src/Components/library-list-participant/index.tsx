@@ -1,4 +1,4 @@
-import {FC, useState} from "react"
+import {FC, useEffect, useState} from "react"
 import {
     Box,
     Button,
@@ -8,6 +8,7 @@ import {
     ListItemText, makeStyles,
 } from "@material-ui/core";
 import styles from "./styles.module.css"
+import RequirementService from "../../services/RequirementService";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -44,15 +45,39 @@ const updateStatus = ()=>{
 export const LibraryListParticipant: FC = (props) =>{
     const classes = useStyles()
 
+    // const [libList, setLibList] = useState([
+    //     {name: "dataclasses-json v0.5.2", status: "valid"},
+    //     {name: "pygame v1.0", status: "pending"},
+    //     {name: "sortedcontainers v5.0", status: "declined"},
+    // ])
+
     const [libList, setLibList] = useState([
-        {name: "dataclasses-json v0.5.2", status: "valid"},
-        {name: "pygame v1.0", status: "pending"},
-        {name: "sortedcontainers v5.0", status: "declined"},
+        {id: "", packageInfo: "", status: ""}
     ])
+
+    useEffect(() => {
+        RequirementService.getRequirements().then((res) => {
+            setLibList(res.data)
+        })
+    })
 
     const requestRemoval = (library) => {
         setLibList(libList.filter(lib => lib!==library))
         //    TODO: backend communication
+    }
+
+    const requestAgain = (library) => {
+        let libraryCopy = {...library}
+        libraryCopy.status = "PENDING"
+
+        RequirementService.updateRequirement(libraryCopy, libraryCopy.id).then(res => {
+            setLibList(libList.map((lib) => {
+                if (lib.id == library.id) {
+                    lib.status = "PENDING"
+                }
+                return lib;
+            }))
+        })
     }
 
     const requestAdd = (library) => {
@@ -61,15 +86,15 @@ export const LibraryListParticipant: FC = (props) =>{
     }
 
     const getButtons = (status, library) => {
-        switch (status) {
+        switch (status.toLowerCase()) {
             case "valid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => requestRemoval(library)} className={classes.actionButton} variant="contained">Request removal</Button></ButtonGroup>
-            case "declined": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => requestAdd(library)} className={classes.actionButton} variant="contained">Request again</Button></ButtonGroup>
+            case "declined": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => requestAgain(library)} className={classes.actionButton} variant="contained">Request again</Button></ButtonGroup>
             default: return
         }
     }
 
     const getColor = (status => {
-        switch (status) {
+        switch (status.toLowerCase()) {
             case "valid": return "#caffbf"
             case "validating": return "#fdffb6"
             case "invalid": return "#ffd6a5"
@@ -89,7 +114,7 @@ export const LibraryListParticipant: FC = (props) =>{
         <List>
             {libList.map(lib => {
                 return <ListItem className={classes.listItem}>
-                    <ListItemText className={classes.libraryName}>{lib.name}</ListItemText>
+                    <ListItemText className={classes.libraryName}>{lib.packageInfo}</ListItemText>
                     <ListItemText><Box className={styles.statusBadge} style={{backgroundColor: getColor(lib.status)}}>{lib.status.toUpperCase()}{lib.status=="validating"?<CircularProgress thickness={8} size={"0.9em"} className={classes.validatingProgress}/>:""}</Box></ListItemText>
                     <ListItemText className={classes.buttonGroupContainer}>{getButtons(lib.status, lib)}</ListItemText>
 

@@ -25,9 +25,9 @@ export const BotStatus: FC = () =>{
                     <div className={styles.repositoryName}>{getRepositoryName(repository)}</div>
                 </Grid>
                 <Grid item xs={2}><IconButton><Sync className={styles.icon}/></IconButton></Grid>
-                <Grid item xs={2}><IconButton component={Link} to={'/bot-status/edit-repository'}>
-                    <Edit className={styles.icon}/>
-                </IconButton></Grid>
+                {/*<Grid item xs={2}><IconButton component={Link} to={'/bot-status/edit-repository'}>*/}
+                {/*    <Edit className={styles.icon}/>*/}
+                {/*</IconButton></Grid>*/}
                 <Grid item xs={12} className={styles.status+" "+is_updated}><div>
                     LAST UPDATED ON {moment(lastUpdate).format("DD.MM.YYYY")}
                 </div></Grid>

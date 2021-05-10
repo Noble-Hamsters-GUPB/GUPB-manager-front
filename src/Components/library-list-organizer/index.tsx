@@ -58,13 +58,18 @@ export const LibraryListOrganizer: FC = (props) =>{
         RequirementService.getRequirements().then((res) => {
             setLibList(res.data)
         })
-    }, [])
+    }) //todo: better communication with another component
 
     const updateStatus = (library, status) => {
         let libraryCopy = {...library}
         libraryCopy.status = status.toUpperCase()
         RequirementService.updateRequirement(libraryCopy, libraryCopy.id).then(res => {
-            library.status = status
+            setLibList(libList.map((lib) => {
+                    if(lib.id == library.id) {
+                        lib.status = status.toUpperCase()
+                    }
+                    return lib;
+                }))
         }) //todo: handle error
         // setLibList(libList.map((lib) => {
         //     if(lib == library) {

@@ -3,7 +3,7 @@ import {Grid} from "@material-ui/core";
 
 
 export const GroupListTournamentParticipant =  (props: {data, groupId}) => {
-    props.data.sort(((a, b) => (a.points>b.points)? -1 : ((b.points > a.points)? 1 : 0)))
+    props.data.sort(((a, b) => (a.totalPoints>b.totalPoints)? -1 : ((b.totalPoints > a.totalPoints)? 1 : 0)))
     return(
         <div className={styles.root}>
             <Grid container spacing={2} direction={"row"} justify={"flex-start"} alignItems={"flex-start"}>
@@ -32,10 +32,10 @@ export const GroupListTournamentParticipant =  (props: {data, groupId}) => {
                                         <img src="/gold_crown.png" className={img_class} alt={"Crown"}/>
                                     </Grid>
                                     <Grid item xs={6} className = {styles.name}>
-                                        <div className={styles.typography}>{elem.groupName}</div>
+                                        <div className={styles.typography}>{elem.name}</div>
                                     </Grid>
                                     <Grid item xs={5}>
-                                        <div className={styles.typography}>{elem.points}</div>
+                                        <div className={styles.typography}>{elem.totalPoints}</div>
                                     </Grid>
                                 </Grid>
                             </div>

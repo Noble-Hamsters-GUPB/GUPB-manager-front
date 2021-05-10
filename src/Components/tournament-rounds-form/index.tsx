@@ -70,11 +70,11 @@ export const TournamentRoundForm = (props: {id, startDate, endDate, numberOfIter
             <IconButton component={Link} to={'/tournament-organizer'} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>{title}</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
-            <TextField error={startDateError} fullWidth defaultValue={startDate} label={startDateError?"Provide a valid start date":"Start date"} type="datetime-local"
+            <TextField error={startDateError} fullWidth defaultValue={startDate} label={startDateError?"Start date should be after current date":"Start date"} type="datetime-local"
                        onChange={(e) => setStartDate(e.target.value)}/>
-            <TextField error={endDateError} fullWidth defaultValue={endDate} label={endDateError?"Provide a valid end date":"End date"} type="datetime-local"
+            <TextField error={endDateError} fullWidth defaultValue={endDate} label={endDateError?"End date should be after start date":"End date"} type="datetime-local"
                        onChange={(e) => setEndDate(e.target.value)}/>
-                       <TextField error={numberOfIterations} fullWidth defaultValue={numberOfIterations} label={numberOfIterationsError?"Number should be higher than 0"
+                       <TextField error={numberOfIterationsError} fullWidth defaultValue={numberOfIterations} label={numberOfIterationsError?"Number should be higher than 0"
                            :"Number of iterations"} type={"number"} onChange={(e) => setNumberOfIterations(e.target.value)}/>
                 <DialogActions className={styles.submitAction}>
                     <Link to={(startDateError || endDateError)?"#":"/tournament-organizer"}  style={{ textDecoration: 'none' }}>

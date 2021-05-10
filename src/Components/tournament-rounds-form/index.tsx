@@ -6,14 +6,18 @@ import {Link} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 
 // @ts-ignore
-export const TournamentRoundForm = (props: {id, startDate, endDate, data}) => {
+export const TournamentRoundForm = (props: {id, startDate, endDate, numberOfIterations,  data}) => {
     let initialStartDate = (props.startDate === "") ? getCurrentDate() : props.startDate;
     let initialEndDate = (props.endDate === "") ? getCurrentDate() : props.endDate;
+    let initialNumberOfIterations = props.numberOfIterations;
+
     const [startDate, setStartDate] = useState(initialStartDate)
     const [endDate, setEndDate] = useState(initialEndDate)
+    const [numberOfIterations, setNumberOfIterations] = useState(initialNumberOfIterations)
 
     const [startDateError, setStartDateError] = useState(false);
     const [endDateError, setEndDateError] = useState(false);
+    const [numberOfIterationsError, setNumberOfIterationsError] = useState(false);
 
     useEffect(() => {
         setStartDateError(false)
@@ -22,6 +26,10 @@ export const TournamentRoundForm = (props: {id, startDate, endDate, data}) => {
     useEffect(() => {
         setEndDateError(false)
     },[endDate])
+
+    useEffect(() => {
+        setNumberOfIterationsError(false)
+    },[numberOfIterations])
 
     const submitRound = (e) => {
         let errorFlag = false;
@@ -36,16 +44,21 @@ export const TournamentRoundForm = (props: {id, startDate, endDate, data}) => {
             errorFlag = true;
         }
 
+        if(numberOfIterations<=0){
+            setNumberOfIterationsError(true);
+            errorFlag = true;
+        }
+
         if(errorFlag){
             e.preventDefault();
             return;
         }
 
         if(props.id === -1){
-            props.data.push({id: props.id, startDate: startDate, endDate: endDate})
+            props.data.push({id: props.id, startDate: startDate, endDate: endDate, numberOfIterations: numberOfIterations})
         }
         else {
-            props.data.push({id: props.id+1, startDate: startDate, endDate: endDate})
+            props.data.push({id: props.id+1, startDate: startDate, endDate: endDate, numberOfIterations: numberOfIterations})
         }
         //TODO: create or update round (backend)
     }
@@ -61,6 +74,8 @@ export const TournamentRoundForm = (props: {id, startDate, endDate, data}) => {
                        onChange={(e) => setStartDate(e.target.value)}/>
             <TextField error={endDateError} fullWidth defaultValue={endDate} label={endDateError?"Provide a valid end date":"End date"} type="datetime-local"
                        onChange={(e) => setEndDate(e.target.value)}/>
+                       <TextField error={numberOfIterations} fullWidth defaultValue={numberOfIterations} label={numberOfIterationsError?"Number should be higher than 0"
+                           :"Number of iterations"} type={"number"} onChange={(e) => setNumberOfIterations(e.target.value)}/>
                 <DialogActions className={styles.submitAction}>
                     <Link to={(startDateError || endDateError)?"#":"/tournament-organizer"}  style={{ textDecoration: 'none' }}>
                         <Button

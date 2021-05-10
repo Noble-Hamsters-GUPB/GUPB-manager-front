@@ -8,6 +8,14 @@ class RequirementService {
         return axios.get(REQUIREMENT_API_BASE_URL);
     }
 
+    updateRequirement(requirement, requirementId) {
+        return axios.put(REQUIREMENT_API_BASE_URL + '/' + requirementId, requirement);
+    }
+
+    deleteRequirement(requirementId) {
+        return axios.delete(REQUIREMENT_API_BASE_URL + '/' + requirementId);
+    }
+
 }
 
 export default new RequirementService();

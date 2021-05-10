@@ -51,40 +51,48 @@ export const LibraryListOrganizer: FC = (props) =>{
     const classes = useStyles()
 
     const [libList, setLibList] = useState([
-        {packageInfo: "", status: ""}
+        {id: "", packageInfo: "", status: ""}
     ])
 
     useEffect(() => {
         RequirementService.getRequirements().then((res) => {
             setLibList(res.data)
         })
-    })
+    }, [])
 
     const updateStatus = (library, status) => {
-        setLibList(libList.map((lib) => {
-            if(lib == library){
-                lib.status = status
-            }
-            return lib;
-        }))
-        //    TODO: backend communication
+        let libraryCopy = {...library}
+        libraryCopy.status = status.toUpperCase()
+        RequirementService.updateRequirement(libraryCopy, libraryCopy.id).then(res => {
+            library.status = status
+        }) //todo: handle error
+        // setLibList(libList.map((lib) => {
+        //     if(lib == library) {
+        //         lib.status = status.toUpperCase()
+        //         RequirementService.updateRequirement(lib, lib.id)
+        //     }
+        //     return lib;
+        // }))
+        //    DONE: backend communication
     }
 
     const removeLibrary = (library) => {
-        setLibList(libList.filter(lib => lib!==library))
-    //    TODO: backend communication
+        RequirementService.deleteRequirement(library.id).then(res => {
+            setLibList(libList.filter(lib => lib!==library))
+        })
+    //    DONE: backend communication
     }
 
-    const validateLibrary = (library) => {
-    //    TODO: implement this
-
-    }
+    // const validateLibrary = (library) => {
+    // //    TODO: implement this
+    //
+    // }
 
     const getButtons = (status, library) => {
         switch (status.toLowerCase()) {
             case "valid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => removeLibrary(library)} className={classes.actionButton} variant="contained">Remove</Button></ButtonGroup>
             case "validating": return <ButtonGroup className={classes.actionButtonGroup}>/<Button  onClick={() => updateStatus(library, "invalid")} className={classes.actionButton} variant="contained">Stop</Button></ButtonGroup>
-            case "invalid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => validateLibrary(library)} className={classes.actionButton} variant="contained">Retry</Button><Button onClick={() => updateStatus(library, "declined")} className={classes.actionButton} variant="contained">Decline</Button></ButtonGroup>
+            case "invalid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => updateStatus(library, "pending")} className={classes.actionButton} variant="contained">Retry</Button><Button onClick={() => updateStatus(library, "declined")} className={classes.actionButton} variant="contained">Decline</Button></ButtonGroup>
             case "pending": return <ButtonGroup className={classes.actionButtonGroup}><Button  onClick={() => updateStatus(library, "valid")} className={classes.actionButton} variant="contained">Validate</Button><Button onClick={() => updateStatus(library, "declined")} className={classes.actionButton} variant="contained">Decline</Button></ButtonGroup>
             case "declined": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => removeLibrary(library)} className={classes.actionButton} variant="contained">Remove</Button></ButtonGroup>
             default: return

@@ -36,14 +36,14 @@ export const TournamentOrganizerView: FC = () => {
                 <Grid item xs={2} className={styles.progression+" "+styles.firstRow}>
                     <TournamentProgression time={timeToRoundEnd} currentRound={3} maxRounds={4}/>
                 </Grid>
-                <Grid item xs={2} className={styles.firstRow}/>
+                <Grid item xs={2} className={styles.firstRow+" "+styles.bar}/>
                 <Grid item xs={6} className={styles.botStatus+" "+styles.firstRow}>
                     <LibraryListOrganizer/>
                 </Grid>
-                <Grid item xs={6} className={styles.libraries+" "+styles.secRow}>
+                <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
                     <GroupListTournamentOrganizer data={groupData} roundEnd={roundEnd}/>
                 </Grid>
-                <Grid item xs={6} className={styles.roundList+" "+styles.secRow}>
+                <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
                     <TournamentRoundList data={roundsData}/>
                 </Grid>
             </Grid>

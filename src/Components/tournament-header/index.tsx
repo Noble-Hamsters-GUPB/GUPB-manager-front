@@ -14,11 +14,13 @@ export const TournamentHeader: FC = () => {
                     </Badge>
                     </div>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={5}>
+                    <div>
                     <div className={styles.name}>Superturniej</div>
-                </Grid>
-                <Grid item xs={2}>
-                    <Button style={{marginTop: "1.5em"}} color={"secondary"} variant={"contained"}>Get logs</Button>
+                        <div>
+                        <Button style={{marginTop: "1.5em"}} color={"secondary"} variant={"contained"}>Get logs</Button>
+                        </div>
+                    </div>
                 </Grid>
             </Grid>
         </div>

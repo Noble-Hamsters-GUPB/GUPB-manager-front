@@ -41,7 +41,7 @@ export const TournamentParticipantView: FC = () => {
                 <Grid item xs={6} className={styles.botStatus}>
                     <BotStatus/>
                 </Grid>
-                <Grid item xs={6} className={styles.libraries+" "+styles.secRow}>
+                <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
                     <LibraryListParticipant/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow}>

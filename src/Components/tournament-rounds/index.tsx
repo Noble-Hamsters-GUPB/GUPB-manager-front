@@ -24,7 +24,7 @@ export const TournamentRoundList = (props:{data}) =>{
                     </div>
                 </Grid>
                 </Button>
-                    <Route path='/tournament-rounds/form'><TournamentRoundForm id={-1} startDate={""} endDate={""} data={props.data}/></Route>
+                    <Route path='/tournament-rounds/form'><TournamentRoundForm id={-1} startDate={""} endDate={""} data={props.data} numberOfIterations={0}/></Route>
                 </Router>
             {props.data.map(function (elem, index){
                 if(Date.now() >= Date.parse(elem.startDate)){
@@ -85,7 +85,7 @@ export const TournamentRoundList = (props:{data}) =>{
                                         </Grid>
                                     </Grid>
                             </div>
-                            <Route path='/tournament-rounds/form'><TournamentRoundForm id={elem.id} startDate={elem.startDate} endDate={elem.endDate} data={props.data}/></Route>
+                            <Route path='/tournament-rounds/form'><TournamentRoundForm id={elem.id} startDate={elem.startDate} endDate={elem.endDate} data={props.data} numberOfIterations={elem.numberOfIterations}/></Route>
                         </Router>
                     </Grid>)
                 }

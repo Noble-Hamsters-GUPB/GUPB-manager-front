@@ -17,10 +17,10 @@ import TeamService from "../../services/TeamService";
 // ]
 
 const roundsData = [
-    {id: 1, startDate: "2021-04-05T00:00:00.00", endDate: "2021-04-18T00:00:00.00"},
-    {id: 2, startDate: "2021-04-19T00:00:00.00", endDate: "2021-05-02T00:00:00.00"},
-    {id: 3, startDate: "2021-05-03T00:00:00.00", endDate: "2021-05-16T00:00:00.00"},
-    {id: 4, startDate: "2021-05-17T00:00:00.00", endDate: "2021-05-21T00:00:00.00"}
+    {id: 1, startDate: "2021-04-05T00:00:00.00", endDate: "2021-04-18T00:00:00.00", numberOfIterations: 200},
+    {id: 2, startDate: "2021-04-19T00:00:00.00", endDate: "2021-05-02T00:00:00.00", numberOfIterations: 200},
+    {id: 3, startDate: "2021-05-03T00:00:00.00", endDate: "2021-05-16T00:00:00.00", numberOfIterations: 200},
+    {id: 4, startDate: "2021-05-17T00:00:00.00", endDate: "2021-05-21T00:00:00.00", numberOfIterations: 200}
 ]
 
 const roundEnd = "2021-05-16T00:00:00.00";
@@ -45,14 +45,14 @@ export const TournamentOrganizerView: FC = () => {
                 <Grid item xs={2} className={styles.progression+" "+styles.firstRow}>
                     <TournamentProgression time={timeToRoundEnd} currentRound={3} maxRounds={4}/>
                 </Grid>
-                <Grid item xs={2} className={styles.firstRow}/>
+                <Grid item xs={2} className={styles.firstRow+" "+styles.bar}/>
                 <Grid item xs={6} className={styles.botStatus+" "+styles.firstRow}>
                     <LibraryListOrganizer/>
                 </Grid>
                 <Grid item xs={6} className={styles.libraries+" "+styles.secRow}>
                     <GroupListTournamentOrganizer data={teams} roundEnd={roundEnd}/>
                 </Grid>
-                <Grid item xs={6} className={styles.roundList+" "+styles.secRow}>
+                <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
                     <TournamentRoundList data={roundsData}/>
                 </Grid>
             </Grid>

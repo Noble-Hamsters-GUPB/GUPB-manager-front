@@ -52,7 +52,6 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns,  data}) 
         else {
             newRound = {date: date, number: props.number+1, numberOfRuns: numberOfRuns, teamId: 1}
         }
-        console.log(newRound)
         RoundService.createRound(newRound)
         //TODO: create or update round (backend)
     }

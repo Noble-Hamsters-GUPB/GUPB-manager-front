@@ -24,7 +24,7 @@ export const TournamentRoundList = (props:{data}) =>{
                     </div>
                 </Grid>
                 </Button>
-                    <Route path='/tournament-rounds/form'><TournamentRoundForm number={Math.max(...props.data.map(o => o.number), 1)} date={""} data={props.data} numberOfRuns={0}/></Route>
+                    <Route path='/tournament-rounds/form'><TournamentRoundForm number={Math.max(...props.data.map(o => o.number), 0)} date={""} data={props.data} numberOfRuns={0}/></Route>
                 </Router>
             {props.data.map(function (elem, index){
                 if(Date.now() >= Date.parse(elem.date)){

@@ -45,15 +45,15 @@ const updateStatus = ()=>{
 export const LibraryListParticipant: FC = (props) =>{
     const classes = useStyles()
 
+    const [libList, setLibList] = useState([
+        {id: "", packageInfo: "", status: ""}
+    ])
+
     // const [libList, setLibList] = useState([
     //     {name: "dataclasses-json v0.5.2", status: "valid"},
     //     {name: "pygame v1.0", status: "pending"},
     //     {name: "sortedcontainers v5.0", status: "declined"},
     // ])
-
-    const [libList, setLibList] = useState([
-        {id: "", packageInfo: "", status: ""}
-    ])
 
     useEffect(() => {
         RequirementService.getRequirements().then((res) => {

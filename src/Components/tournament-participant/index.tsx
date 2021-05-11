@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from "react";
+import {Dispatch, FC, useEffect, useState} from "react";
 import styles from './styles.module.css';
 import {Grid} from "@material-ui/core";
 import {TournamentProgression} from "../tournament-progression";
@@ -18,14 +18,14 @@ import TeamService from "../../services/TeamService";
 const roundEnd = "2021-05-16T00:00:00.00";
 const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
 
-export const TournamentParticipantView: FC = () => {
-    const [teams, setTeams] = useState([])
+export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
 
     useEffect(() => {
         TeamService.getTeams().then((res) => {
-            setTeams(res.data)
+            if(!(JSON.stringify(res.data) == JSON.stringify(props.teams)))
+                props.setTeams(res.data)
         })
-    })
+    }, [props.teams])
 
     return(
         <div className={styles.root}>
@@ -45,7 +45,7 @@ export const TournamentParticipantView: FC = () => {
                     <LibraryListParticipant/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow}>
-                    <GroupListTournamentParticipant data={teams} groupId={1}/>
+                    <GroupListTournamentParticipant data={[...props.teams]} groupId={1}/>
                 </Grid>
             </Grid>
         </div>

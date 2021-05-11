@@ -8,6 +8,7 @@ import {GroupListTournamentOrganizer} from "../tournament-group-list-organizer";
 import {TournamentHeader} from "../tournament-header";
 import {TournamentRoundList} from "../tournament-rounds";
 import TeamService from "../../services/TeamService";
+import RoundService from "../../services/RoundService";
 
 // const groupData = [
 //     {groupName: "Supergrupa", botStatus: "2021-04-11", points: 456},
@@ -16,24 +17,30 @@ import TeamService from "../../services/TeamService";
 //     {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
 // ]
 
-const roundsData = [
-    {id: 1, startDate: "2021-04-05T00:00:00.00", endDate: "2021-04-18T00:00:00.00", numberOfIterations: 200},
-    {id: 2, startDate: "2021-04-19T00:00:00.00", endDate: "2021-05-02T00:00:00.00", numberOfIterations: 200},
-    {id: 3, startDate: "2021-05-03T00:00:00.00", endDate: "2021-05-16T00:00:00.00", numberOfIterations: 200},
-    {id: 4, startDate: "2021-05-17T00:00:00.00", endDate: "2021-05-21T00:00:00.00", numberOfIterations: 200}
-]
+// const roundsData = [
+//     {id: 1, startDate: "2021-04-05T00:00:00.00", endDate: "2021-04-18T00:00:00.00", numberOfIterations: 200},
+//     {id: 2, startDate: "2021-04-19T00:00:00.00", endDate: "2021-05-02T00:00:00.00", numberOfIterations: 200},
+//     {id: 3, startDate: "2021-05-03T00:00:00.00", endDate: "2021-05-16T00:00:00.00", numberOfIterations: 200},
+//     {id: 4, startDate: "2021-05-17T00:00:00.00", endDate: "2021-05-21T00:00:00.00", numberOfIterations: 200}
+// ]
 
 const roundEnd = "2021-05-16T00:00:00.00";
 const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
 
-export const TournamentOrganizerView: FC = () => {
-    const [teams, setTeams] = useState([])
-
+export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
+    const [roundsData, setRoundsData] = useState( [{number: 0, date: "", numberOfRuns: ""}])
     useEffect(() => {
         TeamService.getTeams().then((res) => {
-           setTeams(res.data)
+            if(!(JSON.stringify(res.data) == JSON.stringify(props.teams)))
+                props.setTeams(res.data)
         })
-    })
+    }, [props.teams])
+
+    useEffect(() => {
+        RoundService.getRounds().then((res) => {
+            setRoundsData(res.data)
+        })
+    }) //todo: remove polling
 
     return(
         <div className={styles.root}>
@@ -50,7 +57,7 @@ export const TournamentOrganizerView: FC = () => {
                     <LibraryListOrganizer/>
                 </Grid>
                 <Grid item xs={6} className={styles.libraries+" "+styles.secRow}>
-                    <GroupListTournamentOrganizer data={teams} roundEnd={roundEnd}/>
+                    <GroupListTournamentOrganizer data={[...props.teams]} roundEnd={roundEnd}/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
                     <TournamentRoundList data={roundsData}/>

@@ -54,9 +54,10 @@ export const LibraryListOrganizer: FC = (props) =>{
         {id: "", packageInfo: "", status: ""}
     ])
 
+
     useEffect(() => {
         RequirementService.getRequirements().then((res) => {
-            setLibList(res.data)
+                setLibList(res.data)
         })
     }) //todo: better communication with another component
 

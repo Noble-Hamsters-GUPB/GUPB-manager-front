@@ -4,47 +4,37 @@ import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} f
 import CloseIcon from "@material-ui/icons/Close";
 import {Link} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
+import RoundService from "../../services/RoundService";
 
 // @ts-ignore
-export const TournamentRoundForm = (props: {id, startDate, endDate, numberOfIterations,  data}) => {
-    let initialStartDate = (props.startDate === "") ? getCurrentDate() : props.startDate;
-    let initialEndDate = (props.endDate === "") ? getCurrentDate() : props.endDate;
-    let initialNumberOfIterations = props.numberOfIterations;
+export const TournamentRoundForm = (props: {number, date, numberOfRuns,  data}) => {
+    let initialDate = (props.date === "") ? getCurrentDate() : props.date;
+    let initialNumberOfIterations = props.numberOfRuns;
 
-    const [startDate, setStartDate] = useState(initialStartDate)
-    const [endDate, setEndDate] = useState(initialEndDate)
-    const [numberOfIterations, setNumberOfIterations] = useState(initialNumberOfIterations)
+    const [date, setDate] = useState(initialDate)
+    const [numberOfRuns, setNumberOfIterations] = useState(initialNumberOfIterations)
 
-    const [startDateError, setStartDateError] = useState(false);
-    const [endDateError, setEndDateError] = useState(false);
+    const [dateError, setDateError] = useState(false);
     const [numberOfIterationsError, setNumberOfIterationsError] = useState(false);
 
     useEffect(() => {
-        setStartDateError(false)
-    },[startDate])
-
-    useEffect(() => {
-        setEndDateError(false)
-    },[endDate])
+        setDateError(false)
+    },[date])
 
     useEffect(() => {
         setNumberOfIterationsError(false)
-    },[numberOfIterations])
+    },[numberOfRuns])
 
     const submitRound = (e) => {
         let errorFlag = false;
 
-        if(Date.parse(startDate) < Date.now() || Date.parse(startDate) >= Date.parse(endDate)){
-            setStartDateError(true);
+        if(Date.parse(date) < Date.now()){
+            setDateError(true);
             errorFlag = true;
         }
+        
 
-        if(Date.parse(endDate) < Date.now() || Date.parse(startDate) >= Date.parse(endDate)){
-            setEndDateError(true);
-            errorFlag = true;
-        }
-
-        if(numberOfIterations<=0){
+        if(numberOfRuns<=0){
             setNumberOfIterationsError(true);
             errorFlag = true;
         }
@@ -54,35 +44,38 @@ export const TournamentRoundForm = (props: {id, startDate, endDate, numberOfIter
             return;
         }
 
-        if(props.id === -1){
-            props.data.push({id: props.id, startDate: startDate, endDate: endDate, numberOfIterations: numberOfIterations})
+        let newRound
+
+        if(props.number === -1){
+            newRound = {date: date, number: props.number, numberOfRuns: numberOfRuns, teamId: 1}
         }
         else {
-            props.data.push({id: props.id+1, startDate: startDate, endDate: endDate, numberOfIterations: numberOfIterations})
+            newRound = {date: date, number: props.number+1, numberOfRuns: numberOfRuns, teamId: 1}
         }
+        console.log(newRound)
+        RoundService.createRound(newRound)
         //TODO: create or update round (backend)
     }
 
-    let title = (props.startDate==="" && props.endDate==="") ? "New round": "Edit round";
-    let button = (props.startDate==="" && props.endDate==="") ? "CREATE": "UPDATE";
+    let title = (props.date==="") ? "New round": "Edit round";
+    let button = (props.date==="") ? "CREATE": "UPDATE";
     return(
         <Dialog open={true} className={styles.formDialog}>
             <IconButton component={Link} to={'/tournament-organizer'} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>{title}</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
-            <TextField error={startDateError} fullWidth defaultValue={startDate} label={startDateError?"Start date should be after current date":"Start date"} type="datetime-local"
-                       onChange={(e) => setStartDate(e.target.value)}/>
-            <TextField error={endDateError} fullWidth defaultValue={endDate} label={endDateError?"End date should be after start date":"End date"} type="datetime-local"
-                       onChange={(e) => setEndDate(e.target.value)}/>
-                       <TextField error={numberOfIterationsError} fullWidth defaultValue={numberOfIterations} label={numberOfIterationsError?"Number should be higher than 0"
-                           :"Number of iterations"} type={"number"} onChange={(e) => setNumberOfIterations(e.target.value)}/>
+            <TextField error={dateError} fullWidth defaultValue={date} label={dateError?"Start date should be after current date":"Start date"} type="datetime-local"
+                       onChange={(e) => setDate(e.target.value)}/>
+
+                       <TextField error={numberOfIterationsError} fullWidth defaultValue={numberOfRuns} label={numberOfIterationsError?"Number should be higher than 0"
+                           :"Number of runs"} type={"number"} onChange={(e) => setNumberOfIterations(e.target.value)}/>
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(startDateError || endDateError)?"#":"/tournament-organizer"}  style={{ textDecoration: 'none' }}>
+                    <Link to={(dateError)?"#":"/tournament-organizer"}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"
                             onClick={(e) => submitRound(e)}
-                            disabled={startDateError || endDateError}
+                            disabled={dateError}
                         >{button}</Button>
                     </Link>
                 </DialogActions>

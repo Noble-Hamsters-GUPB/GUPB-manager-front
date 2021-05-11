@@ -10,9 +10,6 @@ export const TournamentHeader: FC = () => {
                 <Grid item xs={5}>
                     <div>
                     <div className={styles.name}>Superturniej</div>
-                        <div>
-                        <Button style={{marginTop: "1.5em"}} color={"secondary"} variant={"contained"}>Get logs</Button>
-                        </div>
                     </div>
                 </Grid>
             </Grid>

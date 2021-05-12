@@ -14,6 +14,7 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import TextField from "@material-ui/core/TextField";
 import {Link} from "react-router-dom";
+import RequirementService from "../../services/RequirementService";
 
 export const LibraryRequestForm = (props:{libraries, addLibrary}) => {
     const [name, setName] = useState("")
@@ -50,10 +51,11 @@ export const LibraryRequestForm = (props:{libraries, addLibrary}) => {
             return;
         }
 
-        let newLibrary = {id: -1, packageInfo: name+"=="+version, status: "pending"}
+        let newLibrary = {packageInfo: name+"=="+version, status: "PENDING", teamId: 1, tournamentId: 1}
 
-        props.addLibrary([...props.libraries, newLibrary])
+        //props.addLibrary([...props.libraries, newLibrary])
         //TODO: create or update round (backend)
+        RequirementService.createRequirement(newLibrary)
     }
 
     return(

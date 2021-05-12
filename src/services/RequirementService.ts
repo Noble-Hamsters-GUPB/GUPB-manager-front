@@ -8,6 +8,10 @@ class RequirementService {
         return axios.get(REQUIREMENT_API_BASE_URL);
     }
 
+    createRequirement(requirement) {
+        return axios.post(REQUIREMENT_API_BASE_URL, requirement)
+    }
+
     updateRequirement(requirement, requirementId) {
         return axios.put(REQUIREMENT_API_BASE_URL + '/' + requirementId, requirement);
     }

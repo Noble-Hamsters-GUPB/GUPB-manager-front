@@ -34,11 +34,11 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
                     <TournamentHeader/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
-                <Grid item xs={2} className={styles.progression+" "+styles.firstRow}>
+                <Grid item xs={2} className={styles.progression+" "+styles.firstRow+" "+styles.bar}>
                     <TournamentProgression time={timeToRoundEnd} currentRound={3} maxRounds={4}/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
-                <Grid item xs={6} className={styles.botStatus}>
+                <Grid item xs={6} className={styles.botStatus+" "+styles.bar}>
                     <BotStatus/>
                 </Grid>
                 <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>

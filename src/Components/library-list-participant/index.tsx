@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from "react"
+import React, {FC, useEffect, useState} from "react"
 import {
     Box,
     Button,
@@ -9,6 +9,8 @@ import {
 } from "@material-ui/core";
 import styles from "./styles.module.css"
 import RequirementService from "../../services/RequirementService";
+import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
+import {LibraryRequestForm} from "../library-request-dialog";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -54,6 +56,11 @@ export const LibraryListParticipant: FC = (props) =>{
     //     {name: "pygame v1.0", status: "pending"},
     //     {name: "sortedcontainers v5.0", status: "declined"},
     // ])
+
+    function setLibraries(libraries){
+        setLibList(libraries)
+    }
+
 
     useEffect(() => {
         RequirementService.getRequirements().then((res) => {
@@ -107,9 +114,12 @@ export const LibraryListParticipant: FC = (props) =>{
     return <div className={styles.root}>
         <div>
         <div className={styles.header} style={{float: "left"}}>Libraries</div>
+            <Router>
             <div>
-            <Button style={{marginLeft: "21em", marginTop: "1.5em"}} variant={"contained"} color={"secondary"}>Request new library</Button>
+            <Button style={{marginLeft: "21em", marginTop: "1.5em"}} component={Link} to={'/library-request'} variant={"contained"} color={"secondary"}>Request new library</Button>
             </div>
+                <Route path={'/library-request'}><LibraryRequestForm libraries={libList} addLibrary={setLibraries}/></Route>
+            </Router>
         </div>
         <List>
             {libList.map(lib => {

@@ -7,7 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import RoundService from "../../services/RoundService";
 
 // @ts-ignore
-export const TournamentRoundForm = (props: {number, date, numberOfRuns,  data}) => {
+export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, setData}) => {
     let initialDate = (props.date === "") ? getCurrentDate() : props.date;
     let initialNumberOfIterations = props.numberOfRuns;
 
@@ -32,7 +32,7 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns,  data}) 
             setDateError(true);
             errorFlag = true;
         }
-        
+
 
         if(numberOfRuns<=0){
             setNumberOfIterationsError(true);
@@ -52,6 +52,8 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns,  data}) 
         else {
             newRound = {date: date, number: props.number+1, numberOfRuns: numberOfRuns, teamId: 1}
         }
+
+        props.setData([...props.data, newRound])
         RoundService.createRound(newRound)
         //TODO: create or update round (backend)
     }

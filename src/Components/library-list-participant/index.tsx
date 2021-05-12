@@ -94,7 +94,7 @@ export const LibraryListParticipant: FC = (props) =>{
 
     const getButtons = (status, library) => {
         switch (status.toLowerCase()) {
-            case "valid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => requestRemoval(library)} className={classes.actionButton} variant="contained">Request removal</Button></ButtonGroup>
+            case "valid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => requestAgain(library)} className={classes.actionButton} variant="contained">Request removal</Button></ButtonGroup>
             case "declined": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => requestAgain(library)} className={classes.actionButton} variant="contained">Request again</Button></ButtonGroup>
             default: return
         }

@@ -28,19 +28,13 @@ const roundEnd = "2021-05-16T00:00:00.00";
 const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
 
 export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
-    const [roundsData, setRoundsData] = useState( [{number: 0, date: "", numberOfRuns: ""}])
+
     useEffect(() => {
         TeamService.getTeams().then((res) => {
             if(!(JSON.stringify(res.data) == JSON.stringify(props.teams)))
                 props.setTeams(res.data)
         })
     }, [props.teams])
-
-    useEffect(() => {
-        RoundService.getRounds().then((res) => {
-            setRoundsData(res.data)
-        })
-    }) //todo: remove polling
 
     return(
         <div className={styles.root}>
@@ -60,7 +54,7 @@ export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
                     <GroupListTournamentOrganizer data={[...props.teams]} roundEnd={roundEnd}/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
-                    <TournamentRoundList data={roundsData}/>
+                    <TournamentRoundList /*data={roundsData}*//>
                 </Grid>
             </Grid>
         </div>

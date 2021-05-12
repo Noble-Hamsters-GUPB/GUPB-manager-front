@@ -1,4 +1,4 @@
-import {FC, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import styles from "./styles.module.css";
 import {Button, Card, CardContent, Grid} from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
@@ -6,14 +6,22 @@ import moment from "moment/moment";
 import {TournamentRoundForm} from "../tournament-rounds-form";
 import React from "react";
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
+import RoundService from "../../services/RoundService";
 
-export const TournamentRoundList = (props:{data}) =>{
-    const [rounds, setRounds] = useState(props.data);
+export const TournamentRoundList = (/*props:{data}*/) =>{
+    const [rounds, setRounds] = useState( [{number: 0, date: "", numberOfRuns: ""}])
+    //const [rounds, setRounds] = useState(props.data);
+
+    useEffect(() => {
+        RoundService.getRounds().then((res) => {
+            setRounds(res.data)
+        })
+    }) //todo: remove polling
 
     function sortData(){
         if(rounds) {
             rounds.sort((a, b) =>
-                (Date.parse(a.startDate) > Date.parse(b.startDate)) ? -1 : (Date.parse(a.startDate) < Date.parse(b.startDate)) ? 1 : 0)
+                (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)
         }
     }
 
@@ -36,21 +44,21 @@ export const TournamentRoundList = (props:{data}) =>{
                     </div>
                 </Grid>
                 </Button>
-                    <Route path='/tournament-rounds/form'><TournamentRoundForm number={-1} date={""} data={rounds} setData={handleSetRounds} numberOfRuns={0}/></Route>
+                    <Route path='/tournament-rounds/form'><TournamentRoundForm number={Math.max(...rounds.map(o => o.number), 0)} date={""} data={rounds} setData={handleSetRounds} numberOfRuns={0}/></Route>
                 </Router>
             {rounds && rounds.map(function (elem, index){
-                if(Date.now() >= Date.parse(elem.startDate)){
-                    if(Date.now() >= Date.parse(elem.endDate)){
+                if(Date.now() >= Date.parse(elem.date)){
+                    if(Date.now() >= Date.parse(elem.date) + 10){ //todo: end date in  database
                         return(
                             <Grid item xs={12}>
                                 <div className={styles.card}>
                                         <Grid container direction={"row"} justify={"flex-start"} alignItems={"flex-start"} className={styles.grid}>
                                         <Grid item xs={3}  className={styles.alignItems}>
                                             <div className={styles.roundText}>ROUND</div>
-                                            <div className={styles.roundText+' '+styles.biggerNum}>{props.data.length-index}</div>
+                                            <div className={styles.roundText+' '+styles.biggerNum}>{rounds.length-index}</div>
                                         </Grid>
                                         <Grid item xs={6} className={styles.alignItems}>
-                                            <div className={styles.date}>Ended on {moment(elem.endDate).format("DD.MM.YYYY")}</div>
+                                            <div className={styles.date}>Ended on {moment(elem.date).format("DD.MM.YYYY")}</div> {/*todo: end date in  database*/}
                                         </Grid>
                                             <Grid item xs={3} className={styles.alignItems}>
                                                 <Button variant={"contained"} color={"primary"}>SEE DETAILS</Button>
@@ -97,7 +105,7 @@ export const TournamentRoundList = (props:{data}) =>{
                                         {/*</Grid>*/}
                                     </Grid>
                             </div>
-                            <Route path='/tournament-rounds/form'><TournamentRoundForm number={elem.id} date={elem.endDate} data={rounds} numberOfRuns={elem.numberOfIterations} setData={handleSetRounds}/></Route>
+                            <Route path='/tournament-rounds/form'><TournamentRoundForm number={elem.number} date={elem.date} data={rounds} numberOfRuns={elem.numberOfRuns} setData={handleSetRounds}/></Route> {/*todo: end date in  database*/}
                         </Router>
                     </Grid>)
                 }

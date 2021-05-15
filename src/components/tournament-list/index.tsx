@@ -13,12 +13,15 @@ import {
     Icon,
     IconButton,
     AccordionDetails,
-    Badge, withStyles, Theme
+    Badge, withStyles, Theme, Box, Grid
 } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import {Translate} from "@material-ui/icons";
+import {TournamentProgression} from "../tournament-progression";
+import {BotStatus} from "../bot-status";
+import {GroupListTournament} from "../group-list-tournament";
 
 const OffsetBadge = withStyles((theme: Theme) =>
     createStyles({
@@ -39,6 +42,9 @@ const useStyles = makeStyles({
         flexShrink: 0,
         display: "flex",
         alignItems: "center"
+    },
+    groupList: {
+        height: "20em",
     }
 });
 
@@ -71,8 +77,15 @@ export const TournamentList: FC = (props) => {
                             <MoreHorizIcon></MoreHorizIcon>
                         </IconButton>
                     </AccordionSummary>
-                    <AccordionDetails>
-                        
+                    <AccordionDetails >
+                            <Grid container>
+                                <Grid item xs>
+                                    <TournamentProgression></TournamentProgression>
+                                </Grid>
+                                <Grid item xs={9} className={styles.groupList}>
+                                    <GroupListTournament></GroupListTournament>
+                                </Grid>
+                            </Grid>
                     </AccordionDetails>
                 </Accordion>
             })}

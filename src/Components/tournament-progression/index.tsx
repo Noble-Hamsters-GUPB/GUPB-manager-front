@@ -48,8 +48,7 @@ export const TournamentProgression: FC = (props) => {
         }
     }
 
-    return <Paper>
-        <Box
+    return <Box
             padding={"1em"}
             width={"8em"}
         >
@@ -95,5 +94,4 @@ export const TournamentProgression: FC = (props) => {
             </Box>
 
         </Box>
-    </Paper>
 }

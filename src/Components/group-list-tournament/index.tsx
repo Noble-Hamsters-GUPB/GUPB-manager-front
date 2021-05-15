@@ -1,11 +1,28 @@
 import {FC} from "react";
 import styles from "./styles.module.css";
-import {Card, CardContent, Grid, Typography} from "@material-ui/core";
+import {Box, Card, CardContent, Grid, makeStyles, Typography} from "@material-ui/core";
 
 const data = [
     {groupName: "Supergrupa", botStatus: "2021-04-11", points: 456},
     {groupName: "Fajnagrupa", botStatus: "2021-04-18", points: 459},
     {groupName: "Leniuchy", botStatus: null, points: 0},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
+    {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
     {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
 ]
 
@@ -13,7 +30,7 @@ data.sort(((a, b) => (a.points>b.points)? -1 : ((b.points > a.points)? 1 : 0)))
 
 const currentRoundStart = "2021-04-17";
 
-export const GroupListTournament: FC = (props) => {
+export const GroupListTournament: FC<{}> = (props) => {
     return(
         <div className={styles.root}>
             <Grid container spacing={2} direction={"row"} justify={"flex-start"} alignItems={"flex-start"}>

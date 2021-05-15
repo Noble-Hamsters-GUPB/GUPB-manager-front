@@ -7,7 +7,7 @@ export const TournamentHeader: FC = () => {
     return(
         <div className={styles.root}>
             <Grid container spacing={5}>
-                <Grid item xs={5}>
+                <Grid item xs={12}>
                     <div>
                     <div className={styles.name}>Superturniej</div>
                     </div>

@@ -10,11 +10,11 @@
 }
 
 .name{
-    font-size: 3em;
-    color: #081c15;
+    font-size: 3.5em;
     font-weight: bold;
-    float:left;
     margin-right: 1em;
+    color: #111173;
+    text-align: center;
 }
 
 .logo {

@@ -51,11 +51,11 @@ export const LibraryListParticipant: FC = (props) =>{
         {id: "", packageInfo: "", status: ""}
     ])
 
-    // const [libList, setLibList] = useState([
-    //     {name: "dataclasses-json v0.5.2", status: "valid"},
-    //     {name: "pygame v1.0", status: "pending"},
-    //     {name: "sortedcontainers v5.0", status: "declined"},
-    // ])
+     /*const [libList, setLibList] = useState([
+         {id: 1, packageInfo: "dataclasses-json v0.5.2", status: "valid"},
+         {id: 2, packageInfo: "pygame v1.0", status: "pending"},
+         {id: 3, packageInfo: "sortedcontainers v5.0", status: "declined"},
+     ])*/
 
     function setLibraries(libraries){
         setLibList(libraries)

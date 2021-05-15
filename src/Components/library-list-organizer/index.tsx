@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from "react"
+import React, {FC, useEffect, useState} from "react"
 import {
     Box,
     Button,
@@ -14,6 +14,9 @@ import {yellow, red, blue, green, orange} from "@material-ui/core/colors";
 import styles from "./styles.module.css"
 import TeamService from "../../services/TeamService";
 import RequirementService from "../../services/RequirementService";
+import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
+import {TournamentRoundForm} from "../tournament-rounds-form";
+import {LibraryRemoveDialog} from "../library-list-remove-dialog";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -54,12 +57,21 @@ export const LibraryListOrganizer: FC = (props) =>{
         {id: "", packageInfo: "", status: ""}
     ])
 
+    /*const [libList, setLibList] = useState([
+         {id: 1, packageInfo: "dataclasses-json v0.5.2", status: "valid"},
+         {id: 2, packageInfo: "pygame v1.0", status: "pending"},
+         {id: 3, packageInfo: "sortedcontainers v5.0", status: "declined"},
+     ])*/
 
     useEffect(() => {
         RequirementService.getRequirements().then((res) => {
                 setLibList(res.data)
         })
     }) //todo: better communication with another component
+
+    function setLibrary (library){
+        setLibList(library)
+    }
 
     const updateStatus = (library, status) => {
         let libraryCopy = {...library}
@@ -82,13 +94,6 @@ export const LibraryListOrganizer: FC = (props) =>{
         //    DONE: backend communication
     }
 
-    const removeLibrary = (library) => {
-        RequirementService.deleteRequirement(library.id).then(res => {
-            setLibList(libList.filter(lib => lib!==library))
-        })
-    //    DONE: backend communication
-    }
-
     // const validateLibrary = (library) => {
     // //    TODO: implement this
     //
@@ -96,11 +101,11 @@ export const LibraryListOrganizer: FC = (props) =>{
 
     const getButtons = (status, library) => {
         switch (status.toLowerCase()) {
-            case "valid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => removeLibrary(library)} className={classes.actionButton} variant="contained">Remove</Button></ButtonGroup>
+            case "valid": return <ButtonGroup className={classes.actionButtonGroup}><Button component={Link} to={'/library-list/remove'} className={classes.actionButton} variant="contained">Remove</Button></ButtonGroup>
             case "validating": return <ButtonGroup className={classes.actionButtonGroup}>/<Button  onClick={() => updateStatus(library, "invalid")} className={classes.actionButton} variant="contained">Stop</Button></ButtonGroup>
             case "invalid": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => updateStatus(library, "pending")} className={classes.actionButton} variant="contained">Retry</Button><Button onClick={() => updateStatus(library, "declined")} className={classes.actionButton} variant="contained">Decline</Button></ButtonGroup>
             case "pending": return <ButtonGroup className={classes.actionButtonGroup}><Button  onClick={() => updateStatus(library, "valid")} className={classes.actionButton} variant="contained">Validate</Button><Button onClick={() => updateStatus(library, "declined")} className={classes.actionButton} variant="contained">Decline</Button></ButtonGroup>
-            case "declined": return <ButtonGroup className={classes.actionButtonGroup}><Button onClick={() => removeLibrary(library)} className={classes.actionButton} variant="contained">Remove</Button></ButtonGroup>
+            case "declined": return <ButtonGroup className={classes.actionButtonGroup}><Button component={Link} to={'/library-list/remove'} className={classes.actionButton} variant="contained">Remove</Button></ButtonGroup>
             default: return
         }
     }
@@ -120,12 +125,13 @@ export const LibraryListOrganizer: FC = (props) =>{
         <div className={styles.header}>Libraries</div>
         <List>
             {libList.map(lib => {
-                return <ListItem className={classes.listItem}>
+                return  <Router><ListItem className={classes.listItem}>
                     <ListItemText className={classes.libraryName}>{lib.packageInfo}</ListItemText>
                     <ListItemText><Box className={styles.statusBadge} style={{backgroundColor: getColor(lib.status)}}>{lib.status.toUpperCase()}{lib.status=="validating"?<CircularProgress thickness={8} size={"0.9em"} className={classes.validatingProgress}/>:""}</Box></ListItemText>
                     <ListItemText className={classes.buttonGroupContainer}>{getButtons(lib.status, lib)}</ListItemText>
-
                 </ListItem>
+                <Route path='/library-list/remove'><LibraryRemoveDialog libList={libList} setLibList={setLibrary} library={lib} url={window.location.pathname}/></Route>
+            </Router>
             })}
         </List>
     </div>

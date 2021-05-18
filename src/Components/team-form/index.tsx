@@ -16,13 +16,20 @@ import {DeleteOutline, PersonAdd} from "@material-ui/icons";
 export const TeamForm: FC = (props) => {
     const [name, setName] = useState("")
     const [githubLink, setRepoName] = useState("")
-    const [members, setTeam] = useState([{firstName: "", lastName: "", indexNumber: ""}])
+    const [packageName, setPackageName] = useState("")
+    const [className, setClassName] = useState("")
+    const [botName, setBotName] = useState("")
+    const [members, setTeam] = useState([{firstName: "", lastName: "", indexNumber: "", emailAddress: ""}])
 
     const [nameError, setNameError] = useState(false)
     const [repoError, setRepoError] = useState(false)
+    const [packageError, setPackageError] = useState(false)
+    const [classError, setClassError] = useState(false)
+    const [botError, setBotError] = useState(false)
     const [memberNameError, setMemberNameError] = useState(false)
     const [memberLastNameError, setMemberLastNameError] = useState(false)
     const [memberIndexError, setMemberIndexError] = useState(false)
+    const [memberEmailError, setMemberEmailError] = useState(false)
 
     useEffect(() => {
         setRepoError(false)
@@ -31,6 +38,18 @@ export const TeamForm: FC = (props) => {
     useEffect(() => {
         setNameError(false)
     },[name])
+
+    useEffect(() => {
+        setPackageError(false)
+    },[packageName])
+
+    useEffect(() => {
+        setClassError(false)
+    },[className])
+
+    useEffect(() => {
+        setBotError(false)
+    },[botName])
 
 
     const submitTeam= (e) => {
@@ -43,6 +62,21 @@ export const TeamForm: FC = (props) => {
 
         if(githubLink === "" || !validator.isURL(githubLink)){
             setRepoError(true);
+            errorFlag = true;
+        }
+
+        if(packageName === ""){
+            setPackageError(true);
+            errorFlag = true;
+        }
+
+        if(className === ""){
+            setClassError(true);
+            errorFlag = true;
+        }
+
+        if(botName === ""){
+            setBotError(true);
             errorFlag = true;
         }
 
@@ -59,6 +93,10 @@ export const TeamForm: FC = (props) => {
                 setMemberLastNameError(true);
                 errorFlag = true;
             }
+            if(teamMem['emailAddress'] === ""){
+                setMemberEmailError(true);
+                errorFlag = true;
+            }
         }
 
         if(errorFlag){
@@ -67,7 +105,8 @@ export const TeamForm: FC = (props) => {
         }
 
 
-        TeamService.createTeam({"name": name, "githubLink": githubLink, "members": members})
+        TeamService.createTeam({"name": name, "githubLink": githubLink, "packageName": packageName,
+            "className": className, "botName": botName, "members": members})
     }
 
     function handleMemberChange(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, i: number) {
@@ -89,6 +128,12 @@ export const TeamForm: FC = (props) => {
                            onChange={(e) => setName(e.target.value)}/>
                 <TextField error={repoError} fullWidth label={repoError?"Link to repository must be a URL":"Link to repository"}
                            onChange={(e) => setRepoName(e.target.value)}/>
+                <TextField error={packageError} fullWidth label={packageError?"Package name cannot be empty":"Package name"}
+                           onChange={(e) => setPackageName(e.target.value)}/>
+                <TextField error={classError} fullWidth label={classError?"Bot class name cannot be empty":"Bot class name"}
+                           onChange={(e) => setClassName(e.target.value)}/>
+                <TextField error={botError} fullWidth label={botError?"Bot name cannot be empty":"Bot name"}
+                           onChange={(e) => setBotName(e.target.value)}/>
                 {members.map((x, i) => {
                     return(
                         <Box>
@@ -101,9 +146,12 @@ export const TeamForm: FC = (props) => {
                         <TextField error={memberIndexError} name="indexNumber"
                                 label={memberIndexError ? "Enter correct index number" : "Index number"}
                                 onChange={(e) => handleMemberChange(e, i)}/>
+                            <TextField error={memberEmailError} name="emailAddress"
+                                       label={memberEmailError ? "Enter correct email address" : "Email address"}
+                                       onChange={(e) => handleMemberChange(e, i)}/>
                     {members.length-1 === i && <Button color="primary" startIcon={<PersonAdd/>} onClick={() => {
                         function handleAddMember() {
-                            setTeam([...members, { firstName: "", lastName: "", indexNumber: "" }]);
+                            setTeam([...members, { firstName: "", lastName: "", indexNumber: "", emailAddress: ""  }]);
                         }
 
                         handleAddMember() }}>

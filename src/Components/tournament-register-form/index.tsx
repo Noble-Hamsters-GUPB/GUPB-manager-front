@@ -14,7 +14,6 @@ import styles from "../tournament-form/styles.module.css";
 import CloseIcon from "@material-ui/icons/Close";
 import TextField from "@material-ui/core/TextField";
 import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
-import {GroupListTournament} from "../group-list-tournament";
 import React from "react";
 
 let data = [{id: 1, name: "Ekstraklasa", startDate: "12-05-2021", numberOfRounds: 5},
@@ -30,6 +29,7 @@ export const TournamentRegisterForm = (props: {returnLink: "#"}) => {
     const [teamCodeChecked, setTeamCodeChecked] = useState(false)
     const [teamCodeVisibility, setTeamCodeVisibility] = useState("none")
     const [team, setTeam] = useState({id: -1, name: ''})
+    const [addedNewTeam, setAddedNewTeam] = useState("none")
 
     const [tournamentCodeError, setTournamentCodeError] = useState(false)
     const [teamCodeError, setTeamCodeError] = useState(false)
@@ -192,10 +192,14 @@ export const TournamentRegisterForm = (props: {returnLink: "#"}) => {
                     <Grid item xs={12} style={{marginBottom: "1em"}}>
                         <Link style={{ textDecoration: 'none' }}>
                             <Button variant="outlined"
-                                    color="primary">
+                                    color="primary"
+                                    onClick={e => setAddedNewTeam("inline")}>
                                 Add new team
                             </Button>
                         </Link>
+                    </Grid>
+                    <Grid item xs={12} style={{marginBottom: "1em", display: addedNewTeam}}>
+                        <p style={{color: "#3f51b5", fontWeight: "bold"} }>Added new team: {team.name}</p>
                     </Grid>
                     <Grid item xs={6} className={styles.inlineBlock}>
                         <FormControlLabel

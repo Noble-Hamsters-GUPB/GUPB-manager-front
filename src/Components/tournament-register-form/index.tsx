@@ -132,6 +132,7 @@ export const TournamentRegisterForm = (props: {returnLink: "#"}) => {
     }
 
     const addNewTeam = (team) => {
+        setAddedNewTeam("inline")
         setTeam(team)
     }
 
@@ -194,12 +195,11 @@ export const TournamentRegisterForm = (props: {returnLink: "#"}) => {
                         <Router>
                         <Link to={"/create-team"} style={{ textDecoration: 'none' }}>
                             <Button variant="outlined"
-                                    color="primary"
-                                    onClick={e => setAddedNewTeam("inline")}>
+                                    color="primary">
                                 Add new team
                             </Button>
                         </Link>
-                            <Route to path={"/create-team"}><TeamForm teamId={-1} tournamentId={tournament.id}/></Route>
+                            <Route to path={"/create-team"}><TeamForm teamId={-1} tournamentId={tournament.id} addTeam={addNewTeam}/></Route>
                         </Router>
                     </Grid>
                     <Grid item xs={12} style={{marginBottom: "1em", display: addedNewTeam}}>

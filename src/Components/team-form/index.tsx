@@ -23,7 +23,7 @@ import validator from 'validator'
 import {DeleteOutline, Help, PersonAdd} from "@material-ui/icons";
 
 
-export const TeamForm: FC<{teamId: number, tournamentId: number}> = ({teamId, tournamentId}) => {
+export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}> = ({teamId, tournamentId, addTeam}) => {
     //TODO: set parameters if editing
     const [name, setName] = useState("")
     const [githubLink, setRepoName] = useState("")
@@ -81,6 +81,11 @@ export const TeamForm: FC<{teamId: number, tournamentId: number}> = ({teamId, to
         if(errorFlag){
             e.preventDefault();
             return;
+        }
+
+        //TODO: update id after add database connection
+        if(addTeam){
+
         }
 
         //TODO: update existing service and add edit option

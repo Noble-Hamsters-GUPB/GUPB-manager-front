@@ -15,6 +15,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import TextField from "@material-ui/core/TextField";
 import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
 import React from "react";
+import {TeamForm} from "../team-form";
 
 let data = [{id: 1, name: "Ekstraklasa", startDate: "12-05-2021", numberOfRounds: 5},
     {id: 2, name: "Okręgówka", startDate: "16-04-2021", numberOfRounds: 10},
@@ -28,7 +29,7 @@ export const TournamentRegisterForm = (props: {returnLink: "#"}) => {
     const [tournamentCodeVisibility, setTournamentCodeVisibility] = useState("none")
     const [teamCodeChecked, setTeamCodeChecked] = useState(false)
     const [teamCodeVisibility, setTeamCodeVisibility] = useState("none")
-    const [team, setTeam] = useState({id: -1, name: ''})
+    const [team, setTeam] = useState({id: -1, name: ""})
     const [addedNewTeam, setAddedNewTeam] = useState("none")
 
     const [tournamentCodeError, setTournamentCodeError] = useState(false)
@@ -190,13 +191,16 @@ export const TournamentRegisterForm = (props: {returnLink: "#"}) => {
                         <p style={{marginBottom: '1em', color: "red", fontSize: "0.8em"}}>{noTeamPickedError?"Add new team or enter code":""}</p>
                     </Grid>
                     <Grid item xs={12} style={{marginBottom: "1em"}}>
-                        <Link style={{ textDecoration: 'none' }}>
+                        <Router>
+                        <Link to={"/create-team"} style={{ textDecoration: 'none' }}>
                             <Button variant="outlined"
                                     color="primary"
                                     onClick={e => setAddedNewTeam("inline")}>
                                 Add new team
                             </Button>
                         </Link>
+                            <Route to path={"/create-team"}><TeamForm teamId={-1} tournamentId={tournament.id}/></Route>
+                        </Router>
                     </Grid>
                     <Grid item xs={12} style={{marginBottom: "1em", display: addedNewTeam}}>
                         <p style={{color: "#3f51b5", fontWeight: "bold"} }>Added new team: {team.name}</p>

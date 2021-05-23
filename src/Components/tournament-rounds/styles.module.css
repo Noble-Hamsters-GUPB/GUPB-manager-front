@@ -1,6 +1,6 @@
 .root{
     flex-grow: 1;
-    width: 50%;
+    width: 90%;
 }
 
 .listItem{
@@ -10,22 +10,24 @@
 
 .addIcon{
     transform: scale(5);
-    margin: 0.5em;
-    color: white;
+    margin: 1em 0.5em 0.5em;
+    color: #111173;
 }
 
 .card{
-    background-color: #adbdcc;
+    background-color: rgba(255, 255, 255, 0.8);
     text-align: center;
+    padding: 1em;
+    border-radius: 0.8em;
 }
 
 .roundText{
     text-align: center;
     color: darkred;
-    font-family: "Century Gothic", sans-serif;
     font-weight: bold;
     font-size: 1em;
 }
+
 
 .biggerNum{
     font-size: 3em;
@@ -38,8 +40,7 @@
 }
 
 .date{
-    font-family: "Century Gothic", sans-serif;
     font-weight: bold;
     font-size: 1.2em;
-    color: white;
+    color: black;
 }

@@ -1,0 +1,23 @@
+.root{
+    width: 100%;
+    display: flex;
+}
+
+.bell{
+    color: #081c15;
+    transform: scale(2);
+    margin-left: 1em;
+}
+
+.name{
+    font-size: 3em;
+    color: #081c15;
+    font-weight: bold;
+    float:left;
+    margin-right: 1em;
+}
+
+.logo {
+    height: 7vh;
+    pointer-events: none;
+}

@@ -16,14 +16,14 @@ const useStyles = makeStyles((theme) =>
         },
     })
 )
-export const TournamentProgression: FC = (props) => {
+export const TournamentProgression = (props:{time, maxRounds, currentRound}) => {
     const classes = useStyles()
 
-    const [round, setRound] = useState(9) //TODO: Zapiąć z gotowym turniejem jak będzie
+    const [round, setRound] = useState(props.currentRound) //TODO: Zapiąć z gotowym turniejem jak będzie
 
-    const [maxRounds, setMaxRounds] = useState(14) //TODO: Zapiąć z gotowym turniejem jak będzie
+    const [maxRounds, setMaxRounds] = useState(props.maxRounds) //TODO: Zapiąć z gotowym turniejem jak będzie
 
-    const [time, setTime] = useState(90) //TODO: Zapiąć z gotowym turniejem jak będzie
+    const [time, setTime] = useState(props.time) //TODO: Zapiąć z gotowym turniejem jak będzie
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -51,6 +51,7 @@ export const TournamentProgression: FC = (props) => {
     return <Box
             padding={"1em"}
             width={"8em"}
+            alignItems={"center"}
         >
             <Box
                 className={styles.roundProgress}

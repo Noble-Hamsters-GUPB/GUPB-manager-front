@@ -53,7 +53,7 @@ export const TournamentList: FC = (props) => {
     const styles = useStyles();
 
     const {path} = useRouteMatch();
-    const [tournaments, setTournaments] = useState([{name: "mleko", notifications: 10}, {name: "jajka", notifications: 7}]);
+    const [tournaments, setTournaments] = useState([{name: "mleko"}, {name: "jajka"}]);
 
     // useEffect(() => {
     //     console.log("useEffect ran")
@@ -68,12 +68,11 @@ export const TournamentList: FC = (props) => {
             {tournaments.map((tournament)=>{
                 return <Accordion>
                     <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-                        <OffsetBadge badgeContent={tournament.notifications} color={"primary"} max={9}>
+                        <OffsetBadge badgeContent={tournament.hasOwnProperty("notifications")?tournament["notifications"]:0} color={"primary"} max={9}>
                             <Typography className={styles.accordionHeading}>{tournament.name?(tournament.name.charAt(0).toUpperCase()+tournament.name.slice(1)):"Default name"}</Typography>
                         </OffsetBadge>
                         <IconButton className={styles.moreIcon} onClickCapture={(e) => {
                             e.stopPropagation()
-                            console.log("tell me more")
                         }}>
                             <MoreHorizIcon></MoreHorizIcon>
                         </IconButton>

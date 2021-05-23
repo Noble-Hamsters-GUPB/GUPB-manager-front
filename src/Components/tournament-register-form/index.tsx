@@ -53,6 +53,30 @@ export const TournamentRegisterForm = (props: {returnLink: "#"}) => {
         setNoTeamPickedError(false)
     }, [teamCode, team])
 
+
+    const checkTournament = (e) => {
+
+        if((tournamentCode === "" || (tournamentCode !== "" && !tournamentCodeChecked)) && tournament.id === -1){
+            setNoTournamentPickedError(true)
+        }
+
+        if(tournamentCodeChecked){
+            //test
+            if(tournamentCode === "1234") {
+                setTournament({id: 4, name: "Tajnyturniej", startDate: "13-05-2021", numberOfRounds: 7})
+            }
+            if(tournamentCode === ""){
+                setTournamentCodeError(true)
+            }
+            else{
+                //TODO: check in database
+            }
+        }
+
+        e.preventDefault()
+        return
+    }
+
     const submitTournamentRequest = (e) => {
         let errorFlag = false;
 
@@ -185,8 +209,10 @@ export const TournamentRegisterForm = (props: {returnLink: "#"}) => {
                     <Grid item xs={6} style={{display: tournamentCodeVisibility}}>
                         <TextField label="Enter tournament code" error={tournamentCodeError} variant="outlined" onChange={e => setTournamentCode(e.target.value)}/>
                     </Grid>
+                    {tournament.id===-1?null:
+                        <Grid container>
                     <Grid item xs={12}>
-                        <h3 style={{marginBottom: '1em'}}>Team</h3>
+                        <h3 style={{marginBottom: '1em'}}>Select team</h3>
                     </Grid>
                     <Grid item xs={12}>
                         <p style={{marginBottom: '1em', color: "red", fontSize: "0.8em"}}>{noTeamPickedError?"Add new team or enter code":""}</p>
@@ -221,6 +247,7 @@ export const TournamentRegisterForm = (props: {returnLink: "#"}) => {
                     <Grid item xs={6} style={{display: teamCodeVisibility}}>
                         <TextField label="Enter team code" error={teamCodeError} variant="outlined" onChange={e => setTeamCode(e.target.value)}/>
                     </Grid>
+                        </Grid>}
                 </Grid>
                 </FormControl>
             </DialogContent>
@@ -230,7 +257,7 @@ export const TournamentRegisterForm = (props: {returnLink: "#"}) => {
                     <Button
                         variant="contained"
                         color="secondary"
-                        onClick={(e) => submitTournamentRequest(e)}
+                        onClick={(e) => {tournament.id===-1?checkTournament(e):submitTournamentRequest(e)}}
                         disabled={tournamentCodeError || teamCodeError || noTournamentPickedError}
                     >SUBMIT</Button>
                 </Link>

@@ -21,7 +21,8 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import {Translate} from "@material-ui/icons";
 import {TournamentProgression} from "../tournament-progression";
 import {BotStatus} from "../bot-status";
-import {GroupListTournament} from "../group-list-tournament";
+import {GroupListTournament} from "../tournament-list-group-list";
+import {GroupListTournamentParticipant} from "../tournament-group-list-participant"
 
 const OffsetBadge = withStyles((theme: Theme) =>
     createStyles({
@@ -80,10 +81,17 @@ export const TournamentList: FC = (props) => {
                     <AccordionDetails >
                             <Grid container>
                                 <Grid item xs>
-                                    <TournamentProgression></TournamentProgression>
+                                    <TournamentProgression currentRound={1} maxRounds={21} time={1}/>
                                 </Grid>
                                 <Grid item xs={9} className={styles.groupList}>
-                                    <GroupListTournament></GroupListTournament>
+                                    <GroupListTournament data={[
+                                        {id: 12, name: "jajka", totalPoints: 100},
+                                        {id: 1, name: "ser", totalPoints: 100},
+                                        {id: 3, name: "mleko", totalPoints: 100},
+                                        {id: 4, name: "kiełbaska", totalPoints: 100},
+                                        {id: 4, name: "parówa", totalPoints: 100},
+                                        {id: 4, name: "ziemniaczki", totalPoints: 100}
+                                    ]} roundEnd={1}/>
                                 </Grid>
                             </Grid>
                     </AccordionDetails>

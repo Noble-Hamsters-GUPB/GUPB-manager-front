@@ -16,7 +16,7 @@ export const TournamentRoundList = (/*props:{data}*/) =>{
         RoundService.getRounds().then((res) => {
             setRounds(res.data)
         })
-    }) //todo: remove polling
+    }, [])
 
     function sortData(){
         if(rounds) {

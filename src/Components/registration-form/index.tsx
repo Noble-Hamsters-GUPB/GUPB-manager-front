@@ -15,12 +15,14 @@ import CloseIcon from '@material-ui/icons/Close';
 // @ts-ignore
 import {Link, Route, Switch, BrowserRouter as Router, useLocation} from 'react-router-dom';
 
-export const LoginForm: FC = (props) => {
+export const RegistrationForm: FC = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [password2, setPassword2] = useState("");
 
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    const [password2Error, setPassword2Error] = useState("");
 
     const location = useLocation();
 
@@ -36,7 +38,11 @@ export const LoginForm: FC = (props) => {
         setPasswordError("");
     },[password])
 
-    const submitLogin = (e) => {
+    useEffect(() => {
+        setPassword2Error("");
+    },[password2])
+
+    const submitRegistration = (e) => {
         let errorFlag = false;
 
         if(email === ""){
@@ -44,8 +50,12 @@ export const LoginForm: FC = (props) => {
             errorFlag = true;
         }
 
-        if(!email.match(new RegExp(".+@.+\..+"))){
+        if(!email.match(/.+@.+\..+/)){
             setEmailError("Invalid Email");
+            errorFlag = true;
+        }
+        if(false/*todo: validate email*/){
+            setEmailError("Email allready in use");
             errorFlag = true;
         }
 
@@ -54,8 +64,13 @@ export const LoginForm: FC = (props) => {
             errorFlag = true;
         }
 
-        if(false){//todo: incorrect password
-            setPasswordError("Incorrect password or login");
+        if(password2 === "") {
+            setPassword2Error("Password cannot be empty");
+            errorFlag = true;
+        }
+
+        if(password!==password2){
+            setPassword2Error("Passwords don't match");
             errorFlag = true;
         }
 
@@ -64,24 +79,25 @@ export const LoginForm: FC = (props) => {
             return;
         }
 
-        //todo: login
+        //todo: register
     }
 
     return (
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={location.pathname.split("/login")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
-            <DialogTitle className={styles.formTitle}>Log in</DialogTitle>
+            <IconButton component={Link} to={location.pathname.split("/register")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
+            <DialogTitle className={styles.formTitle}>Create account</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
-                <TextField error={!(emailError==="")} fullWidth label={emailError===""?"Email":emailError} onChange={(e) => setEmail(e.target.value)}/>
-                <TextField error={!(passwordError==="")} fullWidth label={passwordError===""?"Password":passwordError} onChange={(e) => setPassword(e.target.value)}/>
+                <TextField error={emailError!==""} fullWidth label={emailError===""?"Email":emailError} onChange={(e) => setEmail(e.target.value)}/>
+                <TextField error={passwordError!==""} fullWidth label={passwordError===""?"Password":passwordError} onChange={(e) => setPassword(e.target.value)}/>
+                <TextField error={password2Error!==""} fullWidth label={password2Error===""?"Password":password2Error} onChange={(e) => setPassword2(e.target.value)}/>
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(!(emailError==="") || !(passwordError===""))?"#":(location.pathname.split("/login")[0])}  style={{ textDecoration: 'none' }}>
+                    <Link to={(emailError!=="" || passwordError!=="" || password2Error!=="")?"#":(location.pathname.split("/register")[0])}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"
-                            onClick={(e) => submitLogin(e)}
-                            disabled={!(emailError==="") || !(passwordError==="")}
-                        >LOG IN</Button>
+                            onClick={(e) => submitRegistration(e)}
+                            disabled={emailError!=="" || passwordError!=="" || password2Error!==""}
+                        >REGISTER</Button>
                     </Link>
                 </DialogActions>
             </DialogContent>

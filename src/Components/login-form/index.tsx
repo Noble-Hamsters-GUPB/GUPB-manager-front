@@ -54,7 +54,7 @@ export const LoginForm: FC = (props) => {
             errorFlag = true;
         }
 
-        if(false){//todo: incorrect password
+        if(false/*todo: validate password*/){
             setPasswordError("Incorrect password or login");
             errorFlag = true;
         }

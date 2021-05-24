@@ -1,13 +1,3 @@
-.popupForm{
-    position: fixed;
-    top:50%;
-    left:50%;
-    transform: translate(-50%, -50%);
-    padding: 24px;
-    min-width: 9em;
-    width: 30%;
-}
-
 .closeButton.closeButton{
     position: absolute;
     right: 0;
@@ -22,6 +12,10 @@
 
 .formDialog{
     position: relative;
+}
+
+.formDialogContent.formDialogContent{
+    width: 300px;
 }
 
 .formDialogContent.formDialogContent>*+*{

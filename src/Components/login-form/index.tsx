@@ -44,7 +44,7 @@ export const LoginForm: FC = (props) => {
             errorFlag = true;
         }
 
-        if(!email.match(new RegExp(".+@.+\..+"))){
+        if(!email.match(/.+@.+\..+/)){
             setEmailError("Invalid Email");
             errorFlag = true;
         }
@@ -72,15 +72,15 @@ export const LoginForm: FC = (props) => {
             <IconButton component={Link} to={location.pathname.split("/login")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>Log in</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
-                <TextField error={!(emailError==="")} fullWidth label={emailError===""?"Email":emailError} onChange={(e) => setEmail(e.target.value)}/>
-                <TextField error={!(passwordError==="")} fullWidth label={passwordError===""?"Password":passwordError} onChange={(e) => setPassword(e.target.value)}/>
+                <TextField error={emailError!==""} fullWidth label={emailError===""?"Email":emailError} onChange={(e) => setEmail(e.target.value)}/>
+                <TextField error={passwordError!==""} fullWidth label={passwordError===""?"Password":passwordError} onChange={(e) => setPassword(e.target.value)}/>
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(!(emailError==="") || !(passwordError===""))?"#":(location.pathname.split("/login")[0])}  style={{ textDecoration: 'none' }}>
+                    <Link to={(emailError!=="" || passwordError!=="")?"#":(location.pathname.split("/login")[0])}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"
                             onClick={(e) => submitLogin(e)}
-                            disabled={!(emailError==="") || !(passwordError==="")}
+                            disabled={emailError!=="" || passwordError!==""}
                         >LOG IN</Button>
                     </Link>
                 </DialogActions>

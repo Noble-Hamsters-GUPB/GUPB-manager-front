@@ -54,6 +54,7 @@ export const RegistrationForm: FC = (props) => {
             setEmailError("Invalid Email");
             errorFlag = true;
         }
+
         if(false/*todo: validate email*/){
             setEmailError("Email allready in use");
             errorFlag = true;

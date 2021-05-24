@@ -23,7 +23,7 @@ import validator from 'validator'
 import {DeleteOutline, Help, PersonAdd} from "@material-ui/icons";
 
 
-export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}> = ({teamId, tournamentId, addTeam}) => {
+export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any, url: string}> = ({teamId, tournamentId, addTeam, url}) => {
     //TODO: set parameters if editing
     const [name, setName] = useState("")
     const [githubLink, setRepoName] = useState("")
@@ -110,7 +110,7 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
 
     return (
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={'/teams'} className={styles.closeButton}><CloseIcon/></IconButton>
+            <IconButton component={Link} to={url} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>{isTeamBeingCreated?"Create team":"Edit team"}</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
                 <TextField error={nameError} required fullWidth label={nameError?"Team name cannot be empty":"Team name"}
@@ -171,7 +171,7 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
                     </Grid>
                 </Grid>
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(repoError || nameError)?"#":"/teams"}  style={{ textDecoration: 'none' }}>
+                    <Link to={(repoError || nameError)?"#":url}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="primary"

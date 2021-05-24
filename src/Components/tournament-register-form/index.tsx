@@ -225,7 +225,7 @@ export const TournamentRegisterForm = (props: {returnLink: "#"}) => {
                                 Add new team
                             </Button>
                         </Link>
-                            <Route to path={"/create-team"}><TeamForm teamId={-1} tournamentId={tournament.id} addTeam={addNewTeam}/></Route>
+                            <Route to path={"/create-team"}><TeamForm teamId={-1} tournamentId={tournament.id} addTeam={addNewTeam} url={window.location.pathname}/></Route>
                         </Router>
                     </Grid>
                     <Grid item xs={12} style={{marginBottom: "1em", display: addedNewTeam}}>

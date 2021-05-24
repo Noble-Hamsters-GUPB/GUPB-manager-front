@@ -8,7 +8,7 @@ export const TeamList: FC = (props) => {
     return (
         <div>
             <Route path={`${path}/create_team`}>
-                <TeamForm teamId={1} tournamentId={-1}/>
+                <TeamForm teamId={1} tournamentId={-1} url={window.location.pathname}/>
             </Route>
         </div>
     )

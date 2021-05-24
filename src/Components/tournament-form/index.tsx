@@ -17,7 +17,7 @@ import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
 // @ts-ignore
 import TournamentService from '../../services/TournamentService';
 
-export const TournamentForm: FC = (props) => {
+export const TournamentForm: FC<{url: string}> = (props: {url}) => {
 
     const [name, setName] = useState("")
     const [accessMode, setAccessMode] = useState("OPEN")
@@ -59,7 +59,7 @@ export const TournamentForm: FC = (props) => {
 
     return (
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={'/tournaments'} className={styles.closeButton}><CloseIcon/></IconButton>
+            <IconButton component={Link} to={props.url} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>Create Tournament</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
                 <TextField error={nameError} fullWidth label={nameError?"Tournament name cannot be empty":"Tournament name"}
@@ -76,7 +76,7 @@ export const TournamentForm: FC = (props) => {
                     <TextField error={invitationCodeError} fullWidth label={invitationCodeError?"Invitation code cannot be empty":"Invitation code"}
                                                          onChange={(e) => setInvitationCode(e.target.value)}/> : null}
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(invitationCodeError || nameError)?"#":"/tournaments"}  style={{ textDecoration: 'none' }}>
+                    <Link to={(invitationCodeError || nameError)?"#":props.url}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"

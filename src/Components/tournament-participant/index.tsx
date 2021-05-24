@@ -1,13 +1,27 @@
 import {Dispatch, FC, useEffect, useState} from "react";
 import styles from './styles.module.css';
-import {Drawer, Grid, IconButton, makeStyles, List, ListItem, ListItemIcon, ListItemText,} from "@material-ui/core";
+import {
+    Drawer,
+    Grid,
+    IconButton,
+    makeStyles,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Dialog,
+} from "@material-ui/core";
 import {TournamentProgression} from "../tournament-progression";
 import {BotStatus} from "../bot-status";
 import {TournamentHeader} from "../tournament-header";
 import {GroupListTournamentParticipant} from "../tournament-group-list-participant";
 import {LibraryListParticipant} from "../library-list-participant";
 import TeamService from "../../services/TeamService";
+import {Link, Route, useHistory, BrowserRouter as Router} from 'react-router-dom';
 import {AccountCircle, Edit, FormatListBulleted, Menu} from "@material-ui/icons";
+import {TournamentList} from "../tournament-list";
+import {TournamentForm} from "../tournament-form";
+import {TeamForm} from "../team-form";
 
 // const groupData = [
 //     {id: 1, groupName: "Supergrupa", points: 456},
@@ -30,7 +44,10 @@ const useStyles = makeStyles(theme => ({
 
 export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
     const classes = useStyles();
+    const history = useHistory()
+    const path = window.location.pathname
     const [drawerState, setDrawerState] = useState(false)
+    const [tournamentListOpen, setTournamentListOpen] = useState(true)
 
     useEffect(() => {
         TeamService.getTeams().then((res) => {
@@ -39,8 +56,15 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
         })
     }, [props.teams])
 
+    const closeTournamentList = () => {
+        setTournamentListOpen(false)
+        history.push(path)
+    }
+
+    //TODO: set team id and tournament id in TournamentForm
     return(
         <div className={styles.root}>
+            <Router>
             <Grid container spacing={5} className={styles.grid}>
                 <Grid item xs={1}>
                     <IconButton onClick={(e) => setDrawerState(true)}>
@@ -51,14 +75,18 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
                             <img src="/logo_transparent.png" className={styles.MainLogo} alt="logo"/>
                         </div>
                         <List>
+                            <Link to={"/tournament-list"} style={{ textDecoration: 'none' }}>
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><FormatListBulleted/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Tournament list</ListItemText>
                             </ListItem>
+                            </Link>
+                            <Link to={"/edit-team"} style={{ textDecoration: 'none' }}>
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><Edit/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Edit team</ListItemText>
                             </ListItem>
+                            </Link>
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><AccountCircle/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Account</ListItemText>
@@ -84,6 +112,9 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
                     <GroupListTournamentParticipant data={[...props.teams]} groupId={1}/>
                 </Grid>
             </Grid>
+            <Route path={"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>
+            <Route path={"/edit-team"}><TeamForm teamId={1} tournamentId={1} url={path}/></Route>
+        </Router>
         </div>
     )
 }

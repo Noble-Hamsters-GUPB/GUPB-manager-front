@@ -1,6 +1,16 @@
 import {FC, useEffect, useState} from "react";
 import styles from './styles.module.css';
-import {Drawer, Grid, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles} from "@material-ui/core";
+import {
+    Dialog,
+    Drawer,
+    Grid,
+    IconButton,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    makeStyles
+} from "@material-ui/core";
 import {TournamentProgression} from "../tournament-progression";
 import {BotStatus} from "../bot-status";
 import {LibraryListOrganizer} from "../library-list-organizer";
@@ -10,6 +20,9 @@ import {TournamentRoundList} from "../tournament-rounds";
 import TeamService from "../../services/TeamService";
 import RoundService from "../../services/RoundService";
 import {AccountCircle, AddCircleOutline, AddCircleOutlined, FormatListBulleted, Menu} from "@material-ui/icons";
+import {Link, Route, useHistory, BrowserRouter as Router} from 'react-router-dom';
+import {TournamentList} from "../tournament-list";
+import {TournamentForm} from "../tournament-form";
 
 // const groupData = [
 //     {groupName: "Supergrupa", botStatus: "2021-04-11", points: 456},
@@ -38,8 +51,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
-    const classes = useStyles();
+    const classes = useStyles()
+    const history = useHistory()
+    const path = window.location.pathname
     const [drawerState, setDrawerState] = useState(false)
+    const [tournamentListOpen, setTournamentListOpen] = useState(true)
 
     useEffect(() => {
         TeamService.getTeams().then((res) => {
@@ -48,9 +64,14 @@ export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
         })
     }, [props.teams])
 
+    const closeTournamentList = () => {
+        setTournamentListOpen(false)
+        history.push(path)
+    }
 
     return(
         <div className={styles.root}>
+            <Router>
             <Grid container spacing={5} className={styles.grid}>
                 <Grid item xs={1}>
                     <IconButton onClick={(e) => setDrawerState(true)}>
@@ -61,14 +82,18 @@ export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
                             <img src="/logo_transparent.png" className={styles.MainLogo} alt="logo"/>
                         </div>
                         <List>
-                            <ListItem button>
+                            <Link to={"/tournament-list"} style={{ textDecoration: 'none' }}>
+                            <ListItem button onClick={(e) => setTournamentListOpen(true)}>
                                 <ListItemIcon className={classes.drawerText}><FormatListBulleted/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Tournament list</ListItemText>
                             </ListItem>
+                            </Link>
+                            <Link to={"/add-tournament"} style={{ textDecoration: 'none' }}>
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><AddCircleOutline/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Add tournament</ListItemText>
                             </ListItem>
+                            </Link>
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><AccountCircle/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Account</ListItemText>
@@ -94,6 +119,9 @@ export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
                     <TournamentRoundList /*data={roundsData}*//>
                 </Grid>
             </Grid>
+                <Route path={"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>
+                <Route path={"/add-tournament"}><TournamentForm url={path}/></Route>
+        </Router>
         </div>
     )
 }

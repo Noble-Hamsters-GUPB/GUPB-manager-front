@@ -1,6 +1,6 @@
 import {FC, useEffect, useState} from "react";
 import styles from './styles.module.css';
-import {Grid} from "@material-ui/core";
+import {Drawer, Grid, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles} from "@material-ui/core";
 import {TournamentProgression} from "../tournament-progression";
 import {BotStatus} from "../bot-status";
 import {LibraryListOrganizer} from "../library-list-organizer";
@@ -9,6 +9,7 @@ import {TournamentHeader} from "../tournament-header";
 import {TournamentRoundList} from "../tournament-rounds";
 import TeamService from "../../services/TeamService";
 import RoundService from "../../services/RoundService";
+import {AccountCircle, AddCircleOutline, AddCircleOutlined, FormatListBulleted, Menu} from "@material-ui/icons";
 
 // const groupData = [
 //     {groupName: "Supergrupa", botStatus: "2021-04-11", points: 456},
@@ -27,8 +28,19 @@ import RoundService from "../../services/RoundService";
 const roundEnd = "2021-05-16T00:00:00.00";
 const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
 
+const useStyles = makeStyles(theme => ({
+    drawer: {
+            backgroundColor: "rgba(17, 17, 115, 0.5);"
+        },
+    drawerText: {
+        color: "#fff59d;"
+    }
+}));
+
 export const TournamentOrganizerView = () => {
+    const classes = useStyles();
     const [teams, setTeams] = useState([])
+    const [drawerState, setDrawerState] = useState(false)
 
     useEffect(() => {
         TeamService.getTeams().then((res) => {
@@ -39,7 +51,31 @@ export const TournamentOrganizerView = () => {
     return(
         <div className={styles.root}>
             <Grid container spacing={5} className={styles.grid}>
-                <Grid item xs={12}>
+                <Grid item xs={1}>
+                    <IconButton onClick={(e) => setDrawerState(true)}>
+                    <Menu style={{color: "#081c15", transform: "scale(2)"}}/>
+                    </IconButton>
+                    <Drawer classes={{paper: classes.drawer}} anchor={"left"} open={drawerState} onClose={(e) => setDrawerState(false)}>
+                        <div style={{width: "15vw"}}>
+                            <img src="/logo_transparent.png" className={styles.MainLogo} alt="logo"/>
+                        </div>
+                        <List>
+                            <ListItem button>
+                                <ListItemIcon className={classes.drawerText}><FormatListBulleted/></ListItemIcon>
+                                <ListItemText className={classes.drawerText}>Tournament list</ListItemText>
+                            </ListItem>
+                            <ListItem button>
+                                <ListItemIcon className={classes.drawerText}><AddCircleOutline/></ListItemIcon>
+                                <ListItemText className={classes.drawerText}>Add tournament</ListItemText>
+                            </ListItem>
+                            <ListItem button>
+                                <ListItemIcon className={classes.drawerText}><AccountCircle/></ListItemIcon>
+                                <ListItemText className={classes.drawerText}>Account</ListItemText>
+                            </ListItem>
+                        </List>
+                        </Drawer>
+                </Grid>
+                <Grid item xs={11}>
                     <TournamentHeader/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>

@@ -34,6 +34,11 @@
     align-self: center;
 }
 
+.MainLogo {
+    height: 15vw;
+    pointer-events: none;
+}
+
 .roundList{
 }
 

@@ -27,14 +27,14 @@ import RoundService from "../../services/RoundService";
 const roundEnd = "2021-05-16T00:00:00.00";
 const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
 
-export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
+export const TournamentOrganizerView = () => {
+    const [teams, setTeams] = useState([])
 
     useEffect(() => {
         TeamService.getTeams().then((res) => {
-            if(!(JSON.stringify(res.data) == JSON.stringify(props.teams)))
-                props.setTeams(res.data)
+            setTeams(res.data)
         })
-    }, [props.teams])
+    }, [])
 
     return(
         <div className={styles.root}>
@@ -51,7 +51,7 @@ export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
                     <LibraryListOrganizer/>
                 </Grid>
                 <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
-                    <GroupListTournamentOrganizer data={[...props.teams]} roundEnd={roundEnd}/>
+                    <GroupListTournamentOrganizer data={teams} roundEnd={roundEnd}/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
                     <TournamentRoundList /*data={roundsData}*//>

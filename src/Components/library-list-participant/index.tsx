@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from "react"
+import React, {FC, useContext, useEffect, useState} from "react"
 import {
     Box,
     Button,
@@ -11,6 +11,8 @@ import styles from "./styles.module.css"
 import RequirementService from "../../services/RequirementService";
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
 import {LibraryRequestForm} from "../library-request-dialog";
+import SockJsClient from 'react-stomp';
+import {SocketUrlContext} from "../../App/App";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -46,6 +48,7 @@ const updateStatus = ()=>{
 
 export const LibraryListParticipant: FC = (props) =>{
     const classes = useStyles()
+    const SOCKET_URL = useContext(SocketUrlContext);
 
     const [libList, setLibList] = useState([
         {id: "", packageInfo: "", status: ""}
@@ -66,7 +69,11 @@ export const LibraryListParticipant: FC = (props) =>{
         RequirementService.getRequirements().then((res) => {
             setLibList(res.data)
         })
-    })
+    }, [])
+
+    const onMessageReceived = (msg) => {
+        setLibList(msg)
+    }
 
     const requestRemoval = (library) => {
         setLibList(libList.filter(lib => lib!==library))
@@ -112,6 +119,11 @@ export const LibraryListParticipant: FC = (props) =>{
     })
 
     return <div className={styles.root}>
+        <SockJsClient
+          url={SOCKET_URL}
+          topics={['/topic/requirements']}
+          onMessage={msg => onMessageReceived(msg)}
+          debug={false}/>
         <div>
         <div className={styles.header} style={{float: "left"}}>Libraries</div>
             <Router>

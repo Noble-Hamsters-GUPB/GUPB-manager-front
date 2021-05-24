@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from "react"
+import React, {FC, useContext, useEffect, useState} from "react"
 import {
     Box,
     Button,
@@ -14,6 +14,8 @@ import {yellow, red, blue, green, orange} from "@material-ui/core/colors";
 import styles from "./styles.module.css"
 import TeamService from "../../services/TeamService";
 import RequirementService from "../../services/RequirementService";
+import {SocketUrlContext} from "../../App/App";
+import SockJsClient from 'react-stomp';
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -49,6 +51,7 @@ const updateStatus = ()=>{
 
 export const LibraryListOrganizer: FC = (props) =>{
     const classes = useStyles()
+    const SOCKET_URL = useContext(SocketUrlContext);
 
     const [libList, setLibList] = useState([
         {id: "", packageInfo: "", status: ""}
@@ -57,9 +60,13 @@ export const LibraryListOrganizer: FC = (props) =>{
 
     useEffect(() => {
         RequirementService.getRequirements().then((res) => {
-                setLibList(res.data)
+            setLibList(res.data)
         })
-    }) //todo: better communication with another component
+    }, [])
+
+    const onMessageReceived = (msg) => {
+        setLibList(msg)
+    }
 
     const updateStatus = (library, status) => {
         let libraryCopy = {...library}
@@ -117,6 +124,11 @@ export const LibraryListOrganizer: FC = (props) =>{
     })
 
     return <div className={styles.root}>
+        <SockJsClient
+            url={SOCKET_URL}
+            topics={['/topic/requirements']}
+            onMessage={msg => onMessageReceived(msg)}
+            debug={false}/>
         <div className={styles.header}>Libraries</div>
         <List>
             {libList.map(lib => {

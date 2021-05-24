@@ -18,14 +18,14 @@ import TeamService from "../../services/TeamService";
 const roundEnd = "2021-05-16T00:00:00.00";
 const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
 
-export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
+export const TournamentParticipantView = () => {
+    const [teams, setTeams] = useState([])
 
     useEffect(() => {
         TeamService.getTeams().then((res) => {
-            if(!(JSON.stringify(res.data) == JSON.stringify(props.teams)))
-                props.setTeams(res.data)
+                setTeams(res.data)
         })
-    }, [props.teams])
+    }, [])
 
     return(
         <div className={styles.root}>
@@ -45,7 +45,7 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
                     <LibraryListParticipant/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow}>
-                    <GroupListTournamentParticipant data={[...props.teams]} groupId={1}/>
+                    <GroupListTournamentParticipant data={teams} groupId={1}/>
                 </Grid>
             </Grid>
         </div>

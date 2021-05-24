@@ -28,16 +28,16 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export const TournamentParticipantView = () => {
+export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
     const classes = useStyles();
-    const [teams, setTeams] = useState([])
     const [drawerState, setDrawerState] = useState(false)
 
     useEffect(() => {
         TeamService.getTeams().then((res) => {
-                setTeams(res.data)
+            if(!(JSON.stringify(res.data) == JSON.stringify(props.teams)))
+                props.setTeams(res.data)
         })
-    }, [])
+    }, [props.teams])
 
     return(
         <div className={styles.root}>
@@ -81,7 +81,7 @@ export const TournamentParticipantView = () => {
                     <LibraryListParticipant/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow}>
-                    <GroupListTournamentParticipant data={teams} groupId={1}/>
+                    <GroupListTournamentParticipant data={[...props.teams]} groupId={1}/>
                 </Grid>
             </Grid>
         </div>

@@ -8,6 +8,7 @@ import {TournamentParticipantView} from "../Components/tournament-participant";
 import {TournamentOrganizerView} from "../Components/tournament-organizer";
 import styles from "./styles.module.css";
 import {createContext} from "react";
+import {LoginForm} from "../Components/login-form";
 export const SocketUrlContext = createContext('http://localhost:8080/ws-message');
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
             <Route path="/teams" component={TeamList}/>
             <Route path="/tournament-participant"><TournamentParticipantView /></Route>
             <Route path="/tournament-organizer"><TournamentOrganizerView /></Route>
+            <Route path="*/login" component={LoginForm}/>
         </div>
     </Router>;
 }

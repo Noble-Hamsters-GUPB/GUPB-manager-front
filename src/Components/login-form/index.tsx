@@ -13,95 +13,78 @@ import {
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 // @ts-ignore
-import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
-// @ts-ignore
-import TournamentService from '../../services/TournamentService';
+import {Link, Route, Switch, BrowserRouter as Router, useLocation} from 'react-router-dom';
 
-export const TournamentForm: FC = (props) => {
+export const LoginForm: FC = (props) => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    const [date, setDate] = useState(getCurrentDate())
-    const [name, setName] = useState("")
-    const [accessMode, setAccessMode] = useState("OPEN")
+    const [emailError, setEmailError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
 
-
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-
-
-    const [usernameError, setUsernameError] = useState(false)
-    const [passwordError, setPasswordError] = useState(false)
+    const location = useLocation();
 
     useEffect(() => {
-        setUsernameError(false);
-    },[username])
+        console.log(location);
+    })
 
     useEffect(() => {
-        setPasswordError(false);
+        setEmailError("");
+    },[email])
+
+    useEffect(() => {
+        setPasswordError("");
     },[password])
 
     const submitLogin = (e) => {
         let errorFlag = false;
 
-        if(username === ""){
-            setUsernameError(true);
+        if(email === ""){
+            setEmailError("Email cannot be empty");
+            errorFlag = true;
+        }
+
+        if(!email.match(new RegExp(".+@.+\..+"))){
+            setEmailError("Invalid Email");
             errorFlag = true;
         }
 
         if(password === "") {
-            setPasswordError(true);
+            setPasswordError("Password cannot be empty");
             errorFlag = true;
         }
 
-        //todo: incorrect password
+        if(false){//todo: incorrect password
+            setPasswordError("Incorrect password or login");
+            errorFlag = true;
+        }
 
         if(errorFlag){
             e.preventDefault();
             return;
         }
 
-
-        TournamentService.createTournament({"date": date, "name": name, "accessMode": accessMode})
+        //todo: login
     }
 
     return (
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={'/tournaments'} className={styles.closeButton}><CloseIcon/></IconButton>
-            <DialogTitle className={styles.formTitle}>Create Tournament</DialogTitle>
+            <IconButton component={Link} to={location.pathname.split("/login")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
+            <DialogTitle className={styles.formTitle}>Log in</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
-                <TextField error={nameError} fullWidth label={nameError?"Tournament name cannot be empty":"Tournament name"} onChange={(e) => setName(e.target.value)}/>
-                <TextField error={userNameError} fullWidth defaultValue={date} label={userNameError?"Provide a future date":"Start time"} type="datetime-local"
-                           onChange={(e) => setDate(e.target.value)}/>
-                <FormControl className={styles.form} component={"fieldset"}>
-                    <FormLabel component="legend">Access mode</FormLabel>
-                    <RadioGroup className={styles.formRadios} row aria-label="Access" value={accessMode}
-                                onChange={(e) => setAccessMode(e.target.value)}>
-                        <FormControlLabel value="OPEN" control={<Radio/>} label="Open"/>
-                        <FormControlLabel value="RESTRICTED" control={<Radio/>} label="Restricted"/>
-                        <FormControlLabel value="INVITE_ONLY" control={<Radio/>} label="Invite only"/>
-                    </RadioGroup>
-                </FormControl>
+                <TextField error={!(emailError==="")} fullWidth label={emailError===""?"Email":emailError} onChange={(e) => setEmail(e.target.value)}/>
+                <TextField error={!(passwordError==="")} fullWidth label={passwordError===""?"Password":passwordError} onChange={(e) => setPassword(e.target.value)}/>
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(userNameError || nameError)?"#":"/tournaments"}  style={{ textDecoration: 'none' }}>
+                    <Link to={(!(emailError==="") || !(passwordError===""))?"#":(location.pathname.split("/login")[0])}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"
                             onClick={(e) => submitLogin(e)}
-                            disabled={userNameError || nameError}
-                        >CREATE</Button>
+                            disabled={!(emailError==="") || !(passwordError==="")}
+                        >LOG IN</Button>
                     </Link>
                 </DialogActions>
             </DialogContent>
         </Dialog>
     )
-
-    function getCurrentDate(separator='-'){
-
-        let newDate = new Date()
-        let date = newDate.getDate();
-        let month = newDate.getMonth() + 1;
-        let year = newDate.getFullYear();
-        let time = newDate.getHours()+":"+newDate.getMinutes();
-
-        return `${year}${separator}${month<10?`0${month}`:`${month}`}${separator}${date}T${time}`
-    }
 }

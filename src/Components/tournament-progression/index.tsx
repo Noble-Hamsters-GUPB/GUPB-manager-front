@@ -48,9 +48,7 @@ export const TournamentProgression = (props:{time, maxRounds, currentRound}) => 
         }
     }
 
-    return <div
-        className={styles.root}>
-        <Box
+    return <Box
             padding={"1em"}
             width={"8em"}
             alignItems={"center"}
@@ -97,5 +95,4 @@ export const TournamentProgression = (props:{time, maxRounds, currentRound}) => 
             </Box>
 
         </Box>
-    </div>
 }

@@ -69,7 +69,10 @@ export const TournamentParticipantView = () => {
     useEffect(() => {
         TeamService.getTeams().then((res) => {
                 setTeams(res.data)
-        })
+        },
+            (error) => {
+                AuthenticateService.logout();
+            })
     }, [])
 
     const closeTournamentList = () => {

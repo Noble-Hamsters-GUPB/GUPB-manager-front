@@ -18,7 +18,6 @@ import {GroupListTournamentParticipant} from "../tournament-group-list-participa
 import {LibraryListParticipant} from "../library-list-participant";
 import TeamService from "../../services/TeamService";
 import AuthenticateService from "../../services/AuthenticateService";
-import {useHistory} from "react-router-dom";
 import {Link, Route, useHistory, BrowserRouter as Router} from 'react-router-dom';
 import {AccountCircle, AddCircleOutline, Edit, FormatListBulleted, Menu} from "@material-ui/icons";
 import {TournamentList} from "../tournament-list";
@@ -132,7 +131,7 @@ export const TournamentParticipantView = () => {
                     <LibraryListParticipant/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow}>
-                    <GroupListTournamentParticipant data={[...props.teams]} groupId={1}/>
+                    <GroupListTournamentParticipant data={[...teams]} groupId={1}/>
                 </Grid>
             </Grid>
             <Route path={"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>

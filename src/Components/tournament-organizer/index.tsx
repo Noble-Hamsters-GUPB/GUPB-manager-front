@@ -18,7 +18,6 @@ import {GroupListTournamentOrganizer} from "../tournament-group-list-organizer";
 import {TournamentHeader} from "../tournament-header";
 import {TournamentRoundList} from "../tournament-rounds";
 import TeamService from "../../services/TeamService";
-import {useHistory} from "react-router-dom";
 import AuthenticateService from "../../services/AuthenticateService";
 import RoundService from "../../services/RoundService";
 import {AccountCircle, AddCircleOutline, AddCircleOutlined, FormatListBulleted, Menu} from "@material-ui/icons";
@@ -54,6 +53,10 @@ const useStyles = makeStyles(theme => ({
 export const TournamentOrganizerView = () => {
     const [teams, setTeams] = useState([])
     const history = useHistory();
+    const path = window.location.pathname
+    const classes = useStyles()
+    const [drawerState, setDrawerState] = useState(false)
+    const [tournamentListOpen, setTournamentListOpen] = useState(true)
 
     const user = AuthenticateService.getCurrentUser();
 
@@ -68,9 +71,6 @@ export const TournamentOrganizerView = () => {
         }
     }
 
-    const path = window.location.pathname
-    const [drawerState, setDrawerState] = useState(false)
-    const [tournamentListOpen, setTournamentListOpen] = useState(true)
     useEffect(() => {
         TeamService.getTeams().then((res) => {
             setTeams(res.data)
@@ -126,7 +126,7 @@ export const TournamentOrganizerView = () => {
                     <LibraryListOrganizer/>
                 </Grid>
                 <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
-                    <GroupListTournamentOrganizer data={[...props.teams]} roundEnd={roundEnd}/>
+                    <GroupListTournamentOrganizer data={[...teams]} roundEnd={roundEnd}/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
                     <TournamentRoundList /*data={roundsData}*//>

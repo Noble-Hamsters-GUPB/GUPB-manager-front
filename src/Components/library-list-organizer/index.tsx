@@ -5,14 +5,9 @@ import {
     ButtonGroup, CircularProgress, createStyles,
     List,
     ListItem,
-    ListItemSecondaryAction,
     ListItemText, makeStyles,
-    Switch,
-    Typography
 } from "@material-ui/core";
-import {yellow, red, blue, green, orange} from "@material-ui/core/colors";
 import styles from "./styles.module.css"
-import TeamService from "../../services/TeamService";
 import RequirementService from "../../services/RequirementService";
 import {SocketUrlContext} from "../../App/App";
 import SockJsClient from 'react-stomp';

@@ -101,7 +101,7 @@ export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
                         </List>
                         </Drawer>
                 </Grid>
-                <Grid item xs={11}>
+                <Grid item xs={11} style={{minHeight: "14vh"}}>
                     <TournamentHeader/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>

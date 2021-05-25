@@ -18,18 +18,18 @@ import {GroupListTournamentParticipant} from "../tournament-group-list-participa
 import {LibraryListParticipant} from "../library-list-participant";
 import TeamService from "../../services/TeamService";
 import {Link, Route, useHistory, BrowserRouter as Router} from 'react-router-dom';
-import {AccountCircle, AddCircleOutline, Edit, FormatListBulleted, Menu} from "@material-ui/icons";
+import {AccountCircle, AddCircleOutline, Edit, FormatListBulleted, Menu, Star} from "@material-ui/icons";
 import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
 import {TeamForm} from "../team-form";
 import {TournamentRegisterForm} from "../tournament-register-form";
 
-// const groupData = [
-//     {id: 1, groupName: "Supergrupa", points: 456},
-//     {id: 2, groupName: "Fajnagrupa",  points: 459},
-//     {id: 3, groupName: "Leniuchy",  points: 0},
-//     {id: 4, groupName: "Lemury", points: 441},
-// ]
+/* const groupData = [
+    {id: 1, name: "Supergrupa", totalPoints: 456},
+     {id: 2,name: "Fajnagrupa",  totalPoints: 459},
+     {id: 3, name: "Leniuchy",  totalPoints: 0},
+     {id: 4, name: "Lemury", totalPoints: 441},
+ ]*/
 
 const roundEnd = "2021-05-16T00:00:00.00";
 const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
@@ -77,7 +77,7 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
                         </div>
                         <List>
                             <Link to={"/tournament-list"} style={{ textDecoration: 'none' }}>
-                            <ListItem button>
+                            <ListItem button onClick={(e) => setTournamentListOpen(true)}>
                                 <ListItemIcon className={classes.drawerText}><FormatListBulleted/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Tournament list</ListItemText>
                             </ListItem>
@@ -101,7 +101,7 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
                         </List>
                     </Drawer>
                 </Grid>
-                <Grid item xs={11}>
+                <Grid item xs={11} style={{minHeight: "14vh"}}>
                     <TournamentHeader/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
@@ -112,10 +112,10 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
                 <Grid item xs={6} className={styles.botStatus+" "+styles.bar}>
                     <BotStatus/>
                 </Grid>
-                <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
+                <Grid item xs={4} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
                     <LibraryListParticipant/>
                 </Grid>
-                <Grid item xs={6} className={styles.roundList+" "+styles.secRow}>
+                <Grid item xs={4} className={styles.roundList+" "+styles.secRow}>
                     <GroupListTournamentParticipant data={[...props.teams]} groupId={1}/>
                 </Grid>
             </Grid>

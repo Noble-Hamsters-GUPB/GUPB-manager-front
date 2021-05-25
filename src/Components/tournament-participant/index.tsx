@@ -23,6 +23,7 @@ import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
 import {TeamForm} from "../team-form";
 import {TournamentRegisterForm} from "../tournament-register-form";
+import {TournamentRoundList} from "../tournament-rounds";
 
 /* const groupData = [
     {id: 1, name: "Supergrupa", totalPoints: 456},
@@ -117,6 +118,9 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
                 </Grid>
                 <Grid item xs={4} className={styles.roundList+" "+styles.secRow}>
                     <GroupListTournamentParticipant data={[...props.teams]} groupId={1}/>
+                </Grid>
+                <Grid item xs={4} className={styles.roundList+" "+styles.secRow}>
+                    <TournamentRoundList isOrganizer={false}/>
                 </Grid>
             </Grid>
             <Route path={"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>

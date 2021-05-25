@@ -16,13 +16,13 @@ import {BotStatus} from "../bot-status";
 import {LibraryListOrganizer} from "../library-list-organizer";
 import {GroupListTournamentOrganizer} from "../tournament-group-list-organizer";
 import {TournamentHeader} from "../tournament-header";
-import {TournamentRoundList} from "../tournament-rounds";
 import TeamService from "../../services/TeamService";
 import RoundService from "../../services/RoundService";
 import {AccountCircle, AddCircleOutline, AddCircleOutlined, FormatListBulleted, Menu} from "@material-ui/icons";
 import {Link, Route, useHistory, BrowserRouter as Router} from 'react-router-dom';
 import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
+import {TournamentRoundList} from "../tournament-rounds";
 
 // const groupData = [
 //     {groupName: "Supergrupa", botStatus: "2021-04-11", points: 456},
@@ -116,7 +116,7 @@ export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
                     <GroupListTournamentOrganizer data={[...props.teams]} roundEnd={roundEnd}/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
-                    <TournamentRoundList /*data={roundsData}*//>
+                    <TournamentRoundList /*data={roundsData}*/ isOrganizer={true}/>
                 </Grid>
             </Grid>
                 <Route path={"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>

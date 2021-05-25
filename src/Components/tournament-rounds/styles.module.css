@@ -14,8 +14,21 @@
     color: #111173;
 }
 
+
+.title{
+    color: white;
+    font-size: 2em;
+}
+
+.darkCard{
+    background-color: rgba(17, 17, 115, 0.6);
+    text-align: center;
+    padding: 1em;
+    border-radius: 0.8em;
+}
+
 .card{
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.6);
     text-align: center;
     padding: 1em;
     border-radius: 0.8em;

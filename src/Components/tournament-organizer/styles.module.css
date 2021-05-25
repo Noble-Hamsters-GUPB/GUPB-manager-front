@@ -37,7 +37,9 @@
     align-self: center;
 }
 
-.roundList{
+.MainLogo {
+    height: 15vw;
+    pointer-events: none;
 }
 
 .bar::-webkit-scrollbar-track

@@ -1,8 +1,18 @@
-import {Component, FC, useEffect, useState} from "react";
+import React, {ChangeEvent, Component, FC, useEffect, useState} from "react";
 import styles from "./styles.module.css"
 import TextField from '@material-ui/core/TextField'
 import {
-    Button, IconButton, Dialog, DialogContent, DialogTitle, DialogActions, Box
+    Button,
+    IconButton,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    DialogActions,
+    Box,
+    InputAdornment,
+    Tooltip,
+    Checkbox,
+    FormControlLabel, Grid, InputLabel, Select, Input, MenuItem, List, ListItem, Typography, ListSubheader
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 // @ts-ignore
@@ -10,26 +20,30 @@ import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
 // @ts-ignore
 import TeamService from "../../services/TeamService";
 import validator from 'validator'
-import {DeleteOutline, PersonAdd} from "@material-ui/icons";
+import {DeleteOutline, Help, PersonAdd} from "@material-ui/icons";
 
 
-export const TeamForm: FC = (props) => {
+export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any, url: string}> = ({teamId, tournamentId, addTeam, url}) => {
+    //TODO: set parameters if editing
     const [name, setName] = useState("")
     const [githubLink, setRepoName] = useState("")
-    const [packageName, setPackageName] = useState("")
     const [className, setClassName] = useState("")
-    const [botName, setBotName] = useState("")
-    const [members, setTeam] = useState([{firstName: "", lastName: "", indexNumber: "", emailAddress: ""}])
+    const [invitationCode, setInvitationCode] = useState("")
+    //TODO: if team is being edited, set members from database
+    const [members, setTeam] = useState([{id: 5, name: "Mania", surname: "Pawlik"}, {id: 10, name: "Andrzej", surname: "Kos"}])
+    const [addingMembers, setAddingMembers] = useState(false)
+    const [newMembers, setNewMembers] = useState([])
+    const [membersVisibility, setMembersVisibility] = useState("none")
+    const repositoryTooltip = "Requirements for repository structure"
+    const isTeamBeingCreated = teamId === -1
+    //TODO: get all available students for tournament from database
+    const students = [{id: 1, name: "Kasia", surname: "Wojas"},
+        {id: 2, name: "Anna", surname: "But"},
+        {id: 3, name: "Wojtek", surname: "Gruszka"}]
 
     const [nameError, setNameError] = useState(false)
     const [repoError, setRepoError] = useState(false)
-    const [packageError, setPackageError] = useState(false)
-    const [classError, setClassError] = useState(false)
-    const [botError, setBotError] = useState(false)
-    const [memberNameError, setMemberNameError] = useState(false)
-    const [memberLastNameError, setMemberLastNameError] = useState(false)
-    const [memberIndexError, setMemberIndexError] = useState(false)
-    const [memberEmailError, setMemberEmailError] = useState(false)
+    const [invitationCodeError, setInvitationCodeError] = useState(false)
 
     useEffect(() => {
         setRepoError(false)
@@ -40,16 +54,8 @@ export const TeamForm: FC = (props) => {
     },[name])
 
     useEffect(() => {
-        setPackageError(false)
-    },[packageName])
-
-    useEffect(() => {
-        setClassError(false)
-    },[className])
-
-    useEffect(() => {
-        setBotError(false)
-    },[botName])
+        setInvitationCodeError(false)
+    }, [invitationCode])
 
 
     const submitTeam= (e) => {
@@ -65,116 +71,113 @@ export const TeamForm: FC = (props) => {
             errorFlag = true;
         }
 
-        if(packageName === ""){
-            setPackageError(true);
-            errorFlag = true;
+        if(teamId === -1 && invitationCode === ""){
+            setInvitationCodeError(true)
+            errorFlag = true
         }
 
-        if(className === ""){
-            setClassError(true);
-            errorFlag = true;
-        }
-
-        if(botName === ""){
-            setBotError(true);
-            errorFlag = true;
-        }
-
-        for(let teamMem of members){
-            if(teamMem['indexNumber'] === "" || !/^(\d{6})$/.test(teamMem['indexNumber'])){
-                setMemberIndexError(true);
-                errorFlag = true;
-            }
-            if(teamMem['firstName'] === ""){
-                setMemberNameError(true);
-                errorFlag = true;
-            }
-            if(teamMem['lastName'] === ""){
-                setMemberLastNameError(true);
-                errorFlag = true;
-            }
-            if(teamMem['emailAddress'] === ""){
-                setMemberEmailError(true);
-                errorFlag = true;
-            }
-        }
+        //TODO: check in database if invitation code is unique
 
         if(errorFlag){
             e.preventDefault();
             return;
         }
 
+        //TODO: update id after add database connection
+        if(addTeam){
 
-        TeamService.createTeam({"name": name, "githubLink": githubLink, "packageName": packageName,
-            "className": className, "botName": botName, "members": members})
+        }
+
+        //TODO: update existing service and add edit option
+        TeamService.createTeam({"name": name, "githubLink": githubLink, "members": members})
     }
 
-    function handleMemberChange(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, i: number) {
-        const { name, value } = e.target;
-        const list = [...members];
-        list[i][name] = value;
-        setMemberNameError(false);
-        setMemberIndexError(false);
-        setMemberLastNameError(false);
-        setTeam(list);
+    const handleAddMembers = (event: ChangeEvent<HTMLInputElement>) => {
+        setAddingMembers(event.target.checked)
+        if(event.target.checked){
+            setMembersVisibility("flex")
+        }
+        else{
+            setMembersVisibility("none")
+            setTeam([])
+        }
+    }
+
+    const handleMembersChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        // @ts-ignore
+        setNewMembers(event.target.value as string[])
     }
 
     return (
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={'/teams'} className={styles.closeButton}><CloseIcon/></IconButton>
-            <DialogTitle className={styles.formTitle}>Create Team</DialogTitle>
+            <IconButton component={Link} to={url} className={styles.closeButton}><CloseIcon/></IconButton>
+            <DialogTitle className={styles.formTitle}>{isTeamBeingCreated?"Create team":"Edit team"}</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
-                <TextField error={nameError} fullWidth label={nameError?"Team name cannot be empty":"Team name"}
+                <TextField error={nameError} required fullWidth label={nameError?"Team name cannot be empty":"Team name"}
                            onChange={(e) => setName(e.target.value)}/>
-                <TextField error={repoError} fullWidth label={repoError?"Link to repository must be a URL":"Link to repository"}
-                           onChange={(e) => setRepoName(e.target.value)}/>
-                <TextField error={packageError} fullWidth label={packageError?"Package name cannot be empty":"Package name"}
-                           onChange={(e) => setPackageName(e.target.value)}/>
-                <TextField error={classError} fullWidth label={classError?"Bot class name cannot be empty":"Bot class name"}
+                <TextField error={repoError} required fullWidth label={repoError?"Link to repository must be a URL":"Link to repository"}
+                           onChange={(e) => setRepoName(e.target.value)}
+                           InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <Tooltip title={repositoryTooltip}>
+                            <Help style={{color: "rgba(113, 116, 120, 0.6)"}}/>
+                            </Tooltip>
+                        </InputAdornment>
+                    ),
+                }}/>
+                <TextField fullWidth label={"Main class name"}
                            onChange={(e) => setClassName(e.target.value)}/>
-                <TextField error={botError} fullWidth label={botError?"Bot name cannot be empty":"Bot name"}
-                           onChange={(e) => setBotName(e.target.value)}/>
-                {members.map((x, i) => {
-                    return(
-                        <Box>
-                        <TextField error={memberNameError} name="firstName"
-                               label={memberNameError ? "Name cannot be empty" : "Member name"}
-                               onChange={(e) => handleMemberChange(e, i)}/>
-                        <TextField error={memberLastNameError} name="lastName"
-                               label={memberLastNameError ? "Last name cannot be empty" : "Member last name"}
-                               onChange={(e) => handleMemberChange(e, i)}/>
-                        <TextField error={memberIndexError} name="indexNumber"
-                                label={memberIndexError ? "Enter correct index number" : "Index number"}
-                                onChange={(e) => handleMemberChange(e, i)}/>
-                            <TextField error={memberEmailError} name="emailAddress"
-                                       label={memberEmailError ? "Enter correct email address" : "Email address"}
-                                       onChange={(e) => handleMemberChange(e, i)}/>
-                    {members.length-1 === i && <Button color="primary" startIcon={<PersonAdd/>} onClick={() => {
-                        function handleAddMember() {
-                            setTeam([...members, { firstName: "", lastName: "", indexNumber: "", emailAddress: ""  }]);
-                        }
-
-                        handleAddMember() }}>
-                    Add new member</Button>}
-                    {members.length !== 1 && <Button color="primary" startIcon={<DeleteOutline/>} onClick={() => {
-                        function handleRemoveMember(i: number) {
-                            const list = [...members];
-                            list.splice(i, 1);
-                            setTeam(list);
-                        }
-
-                        handleRemoveMember(i) }}>
-                        Remove</Button>}
-                        </Box>)
-                })}
+                {isTeamBeingCreated? <div><TextField error={invitationCodeError} fullWidth required label={invitationCodeError?"Invitation code cannot be empty":"Pick invitation code"}
+                                         onChange={(e) => setClassName(e.target.value)}/>
+                    </div>
+                                         :null}
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={addingMembers}
+                            onChange={handleAddMembers}
+                            name="checked"
+                            color="primary"
+                        />
+                    }
+                    label="I want to add other team members"
+                />
+                <Grid container style={{display: membersVisibility}}>
+                    <Grid item xs={6}>
+                        <InputLabel id="addMembers">Students</InputLabel>
+                        <Select style={{minWidth: '18vw'}}
+                            labelId="addMembers"
+                            id="addMembers"
+                            multiple
+                            value={newMembers}
+                            onChange={handleMembersChange}
+                            input={<Input />}
+                        >
+                            {students.map((student) => (
+                                <MenuItem key={student.id} value={student.id}>
+                                    {student.name+" "+student.surname}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Grid>
+                    <Grid item xs={6} style={{display: isTeamBeingCreated?"none":"flex"}}>
+                        <List>
+                            <ListSubheader>Current members</ListSubheader>
+                        {members.map((student) => (
+                            <ListItem>{student.name} {student.surname}</ListItem>
+                        ))}
+                        </List>
+                    </Grid>
+                </Grid>
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(repoError || nameError)?"#":"/teams"}  style={{ textDecoration: 'none' }}>
+                    <Link to={(repoError || nameError)?"#":url}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="primary"
                             onClick={(e) => submitTeam(e)}
-                            disabled={repoError || nameError}
-                        >CREATE</Button>
+                            disabled={repoError || nameError || invitationCodeError}
+                        >{isTeamBeingCreated?"CREATE":"EDIT"}</Button>
                     </Link>
                 </DialogActions>
             </DialogContent>

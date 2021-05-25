@@ -7,7 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import RoundService from "../../services/RoundService";
 
 // @ts-ignore
-export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, setData}) => {
+export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, setData, url}) => {
     let initialDate = (props.date === "") ? getCurrentDate() : props.date;
     let initialNumberOfIterations = props.numberOfRuns;
 
@@ -47,6 +47,7 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, se
         let newRound
 
         if(props.number === -1){
+            //TODO: get round number from backend (or set in in backend end reload data in tournament page)
             newRound = {date: date, number: props.number, numberOfRuns: numberOfRuns, teamId: 1}
         }
         else {
@@ -55,7 +56,6 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, se
 
         props.setData([...props.data, newRound])
         RoundService.createRound(newRound)
-        //TODO: create or update round (backend)
     }
 
     let title = (props.date==="") ? "New round": "Edit round";
@@ -71,7 +71,7 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, se
                        <TextField error={numberOfIterationsError} fullWidth defaultValue={numberOfRuns} label={numberOfIterationsError?"Number should be higher than 0"
                            :"Number of runs"} type={"number"} onChange={(e) => setNumberOfIterations(e.target.value)}/>
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(dateError)?"#":"/tournament-organizer"}  style={{ textDecoration: 'none' }}>
+                    <Link to={(dateError)?"#":props.url}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"

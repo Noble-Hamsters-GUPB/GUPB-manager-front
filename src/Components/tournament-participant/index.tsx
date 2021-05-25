@@ -18,10 +18,11 @@ import {GroupListTournamentParticipant} from "../tournament-group-list-participa
 import {LibraryListParticipant} from "../library-list-participant";
 import TeamService from "../../services/TeamService";
 import {Link, Route, useHistory, BrowserRouter as Router} from 'react-router-dom';
-import {AccountCircle, Edit, FormatListBulleted, Menu} from "@material-ui/icons";
+import {AccountCircle, AddCircleOutline, Edit, FormatListBulleted, Menu} from "@material-ui/icons";
 import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
 import {TeamForm} from "../team-form";
+import {TournamentRegisterForm} from "../tournament-register-form";
 
 // const groupData = [
 //     {id: 1, groupName: "Supergrupa", points: 456},
@@ -81,6 +82,12 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
                                 <ListItemText className={classes.drawerText}>Tournament list</ListItemText>
                             </ListItem>
                             </Link>
+                            <Link to={"/tournament-register"} style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemIcon className={classes.drawerText}><AddCircleOutline/></ListItemIcon>
+                                    <ListItemText className={classes.drawerText}>Register to tournament</ListItemText>
+                                </ListItem>
+                            </Link>
                             <Link to={"/edit-team"} style={{ textDecoration: 'none' }}>
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><Edit/></ListItemIcon>
@@ -114,6 +121,7 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
             </Grid>
             <Route path={"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>
             <Route path={"/edit-team"}><TeamForm teamId={1} tournamentId={1} url={path}/></Route>
+                <Route path={"/tournament-register"}><TournamentRegisterForm returnLink={path}/></Route>
         </Router>
         </div>
     )

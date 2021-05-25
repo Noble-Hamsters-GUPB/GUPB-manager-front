@@ -21,7 +21,7 @@ let data = [{id: 1, name: "Ekstraklasa", startDate: "12-05-2021", numberOfRounds
     {id: 2, name: "Okręgówka", startDate: "16-04-2021", numberOfRounds: 10},
     {id: 3, name: "Superpuchar", startDate: "30-05-2021", numberOfRounds: 9}]
 
-export const TournamentRegisterForm = (props: {returnLink: "#"}) => {
+export const TournamentRegisterForm = (props: {returnLink: string}) => {
     const [tournamentCode, setTournamentCode] = useState("")
     const [teamCode, setTeamCode] = useState("")
     const [tournament, setTournament] = useState({id: -1, name: "", startDate: "", numberOfRounds: 0});

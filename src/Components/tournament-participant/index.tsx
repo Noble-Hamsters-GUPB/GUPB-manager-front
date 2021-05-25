@@ -7,6 +7,8 @@ import {TournamentHeader} from "../tournament-header";
 import {GroupListTournamentParticipant} from "../tournament-group-list-participant";
 import {LibraryListParticipant} from "../library-list-participant";
 import TeamService from "../../services/TeamService";
+import AuthenticateService from "../../services/AuthenticateService";
+import {useHistory} from "react-router-dom";
 
 // const groupData = [
 //     {id: 1, groupName: "Supergrupa", points: 456},
@@ -19,7 +21,22 @@ const roundEnd = "2021-05-16T00:00:00.00";
 const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
 
 export const TournamentParticipantView = () => {
+    const history = useHistory();
     const [teams, setTeams] = useState([])
+
+    const user = AuthenticateService.getCurrentUser();
+
+    if(!user) {
+        history.push("/login");
+    }
+    else if(user.roles[0] !== "STUDENT") {
+        if(user.roles[0] === "ADMIN") {
+            history.push("/tournament-organizer");
+        }
+        else {
+            history.push("/");
+        }
+    }
 
     useEffect(() => {
         TeamService.getTeams().then((res) => {

@@ -8,7 +8,8 @@ import {GroupListTournamentOrganizer} from "../tournament-group-list-organizer";
 import {TournamentHeader} from "../tournament-header";
 import {TournamentRoundList} from "../tournament-rounds";
 import TeamService from "../../services/TeamService";
-import RoundService from "../../services/RoundService";
+import {useHistory} from "react-router-dom";
+import AuthenticateService from "../../services/AuthenticateService";
 
 // const groupData = [
 //     {groupName: "Supergrupa", botStatus: "2021-04-11", points: 456},
@@ -29,6 +30,20 @@ const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
 
 export const TournamentOrganizerView = () => {
     const [teams, setTeams] = useState([])
+    const history = useHistory();
+
+    const user = AuthenticateService.getCurrentUser();
+
+    if(!user) {
+        history.push("/login");
+    }
+    else if(user.roles[0] !== "ADMIN") {
+        if(user.roles[0] === "STUDENT") {
+            history.push("/tournament-participant");
+        } else {
+            history.push("/");
+        }
+    }
 
     useEffect(() => {
         TeamService.getTeams().then((res) => {

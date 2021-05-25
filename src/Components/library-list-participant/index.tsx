@@ -123,7 +123,8 @@ export const LibraryListParticipant: FC = (props) =>{
           url={SOCKET_URL}
           topics={['/topic/requirements']}
           onMessage={msg => onMessageReceived(msg)}
-          debug={false}/>
+          debug={false}
+          />
         <div>
         <div className={styles.header} style={{float: "left"}}>Libraries</div>
             <Router>

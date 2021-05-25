@@ -44,7 +44,7 @@ export const TournamentRoundList = (/*props:{data}*/) =>{
                     </div>
                 </Grid>
                 </Button>
-                    <Route path='/tournament-rounds/form'><TournamentRoundForm number={Math.max(...rounds.map(o => o.number), 0)} date={""} data={rounds} setData={handleSetRounds} numberOfRuns={0}/></Route>
+                    <Route path='/tournament-rounds/form'><TournamentRoundForm number={Math.max(...rounds.map(o => o.number), 0)} date={""} data={rounds} setData={handleSetRounds} numberOfRuns={0} url={window.location.pathname}/></Route>
                 </Router>
             {rounds && rounds.map(function (elem, index){
                 if(Date.now() >= Date.parse(elem.date)){
@@ -105,7 +105,7 @@ export const TournamentRoundList = (/*props:{data}*/) =>{
                                         {/*</Grid>*/}
                                     </Grid>
                             </div>
-                            <Route path='/tournament-rounds/form'><TournamentRoundForm number={elem.number} date={elem.date} data={rounds} numberOfRuns={elem.numberOfRuns} setData={handleSetRounds}/></Route> {/*todo: end date in  database*/}
+                            <Route path='/tournament-rounds/form'><TournamentRoundForm number={elem.number} date={elem.date} data={rounds} numberOfRuns={elem.numberOfRuns} setData={handleSetRounds} url={window.location.pathname}/></Route> {/*todo: end date in  database*/}
                         </Router>
                     </Grid>)
                 }

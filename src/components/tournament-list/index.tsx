@@ -62,9 +62,6 @@ export const TournamentList: FC = (props) => {
 
     return (
         <div>
-            <Route path={`${path}/create_tournament`}>
-                <TournamentForm/>
-            </Route>
             {tournaments.map((tournament)=>{
                 return <Accordion>
                     <AccordionSummary expandIcon={<ExpandMoreIcon/>}>

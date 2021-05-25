@@ -1,6 +1,6 @@
 import {FC, useEffect, useState} from "react";
 import styles from "./styles.module.css";
-import {Button, Card, CardContent, Grid} from "@material-ui/core";
+import {Button, Grid} from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import moment from "moment/moment";
 import {TournamentRoundForm} from "../tournament-rounds-form";
@@ -9,7 +9,7 @@ import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
 import RoundService from "../../services/RoundService";
 
 export const TournamentRoundList = (/*props:{data}*/) =>{
-    const [rounds, setRounds] = useState( [{number: 0, date: "", numberOfRuns: ""}])
+    const [rounds, setRounds] = useState<{number: number, date: string, numberOfRuns: number}[]>( [])
     //const [rounds, setRounds] = useState(props.data);
 
     useEffect(() => {

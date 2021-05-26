@@ -9,8 +9,8 @@ import {
 } from "@material-ui/core";
 import styles from "./styles.module.css"
 import RequirementService from "../../services/RequirementService";
-import {SocketUrlContext} from "../../App/App";
 import SockJsClient from 'react-stomp';
+import {urls} from "../../services/BaseUrl";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -46,7 +46,7 @@ const updateStatus = ()=>{
 
 export const LibraryListOrganizer: FC = (props) =>{
     const classes = useStyles()
-    const SOCKET_URL = useContext(SocketUrlContext);
+    const SOCKET_URL = urls.getSocketUrl();
 
     const [libList, setLibList] = useState([
         {id: "", packageInfo: "", status: ""}

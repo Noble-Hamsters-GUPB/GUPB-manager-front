@@ -1,8 +1,9 @@
 import authHeader from "./AuthHeader";
+import {urls} from "./BaseUrl";
 
 const axios = require("axios").default;
 
-const ROUND_API_BASE_URL = "https://gupb-manager.herokuapp.com/api/v1/rounds"
+const ROUND_API_BASE_URL = urls.getBaseUrl() + "rounds"
 
 class RoundService {
 

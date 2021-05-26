@@ -1,8 +1,9 @@
 import authHeader from "./AuthHeader";
+import {urls} from "./BaseUrl";
 
 const axios = require("axios").default;
 
-const TEAM_API_BASE_URL = "https://gupb-manager.herokuapp.com/api/v1/teams"
+const TEAM_API_BASE_URL = urls.getBaseUrl() + "teams"
 
 class TeamService {
 

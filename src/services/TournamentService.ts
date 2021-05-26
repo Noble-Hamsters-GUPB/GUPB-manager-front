@@ -1,9 +1,10 @@
 import authHeader from "./AuthHeader";
 import {AxiosRequestConfig} from "axios";
+import {urls} from "./BaseUrl";
 
 const axios = require("axios").default;
 
-const TOURNAMENT_API_BASE_URL = "https://gupb-manager.herokuapp.com/api/v1/tournaments"
+const TOURNAMENT_API_BASE_URL = urls.getBaseUrl() + "tournaments"
 
     class TournamentService {
 

@@ -1,6 +1,8 @@
+import {urls} from "./BaseUrl";
+
 const axios = require("axios").default;
 
-const AUTHENTICATION_API_BASE_URL = "https://gupb-manager.herokuapp.com/api/v1/auth/signin"
+const AUTHENTICATION_API_BASE_URL = urls.getBaseUrl() + "auth/signin"
 
 class AuthenticationService {
     login = (email, password) => {
@@ -25,23 +27,6 @@ class AuthenticationService {
     getCurrentUser = () => {
         return JSON.parse(<string>localStorage.getItem("user"));
     };
-
-    // getRequirements() {
-    //     return axios.get(REQUIREMENT_API_BASE_URL);
-    // }
-    //
-    // createRequirement(requirement) {
-    //     return axios.post(REQUIREMENT_API_BASE_URL, requirement)
-    // }
-    //
-    // updateRequirement(requirement, requirementId) {
-    //     return axios.put(REQUIREMENT_API_BASE_URL + '/' + requirementId, requirement);
-    // }
-    //
-    // deleteRequirement(requirementId) {
-    //     return axios.delete(REQUIREMENT_API_BASE_URL + '/' + requirementId);
-    // }
-
 }
 
 export default new AuthenticationService();

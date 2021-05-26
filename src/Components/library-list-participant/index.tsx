@@ -12,7 +12,7 @@ import RequirementService from "../../services/RequirementService";
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
 import {LibraryRequestForm} from "../library-request-dialog";
 import SockJsClient from 'react-stomp';
-import {SocketUrlContext} from "../../App/App";
+import {urls} from "../../services/BaseUrl";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -48,7 +48,7 @@ const updateStatus = ()=>{
 
 export const LibraryListParticipant: FC = (props) =>{
     const classes = useStyles()
-    const SOCKET_URL = useContext(SocketUrlContext);
+    const SOCKET_URL = urls.getSocketUrl();
 
     const [libList, setLibList] = useState([
         {id: "", packageInfo: "", status: ""}

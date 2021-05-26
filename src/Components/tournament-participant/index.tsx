@@ -19,7 +19,7 @@ import {LibraryListParticipant} from "../library-list-participant";
 import TeamService from "../../services/TeamService";
 import AuthenticateService from "../../services/AuthenticateService";
 import {Link, Route, useHistory, BrowserRouter as Router} from 'react-router-dom';
-import {AccountCircle, AddCircleOutline, Edit, FormatListBulleted, Menu} from "@material-ui/icons";
+import {AccountCircle, AddCircleOutline, Edit, FormatListBulleted, MeetingRoom, Menu} from "@material-ui/icons";
 import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
 import {TeamForm} from "../team-form";
@@ -80,6 +80,11 @@ export const TournamentParticipantView = () => {
         history.push(path)
     }
 
+    const logout = () => {
+        AuthenticateService.logout();
+        history.push("/");
+    }
+
     //TODO: set team id and tournament id in TournamentForm
     return(
         <div className={styles.root}>
@@ -115,6 +120,10 @@ export const TournamentParticipantView = () => {
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><AccountCircle/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Account</ListItemText>
+                            </ListItem>
+                            <ListItem button onClick={() => logout()}>
+                                <ListItemIcon className={classes.drawerText}><MeetingRoom/></ListItemIcon>
+                                <ListItemText className={classes.drawerText}>Logout</ListItemText>
                             </ListItem>
                         </List>
                     </Drawer>

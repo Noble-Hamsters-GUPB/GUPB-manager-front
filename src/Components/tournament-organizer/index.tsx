@@ -20,7 +20,7 @@ import {TournamentRoundList} from "../tournament-rounds";
 import TeamService from "../../services/TeamService";
 import AuthenticateService from "../../services/AuthenticateService";
 import RoundService from "../../services/RoundService";
-import {AccountCircle, AddCircleOutline, AddCircleOutlined, FormatListBulleted, Menu} from "@material-ui/icons";
+import {AccountCircle, AddCircleOutline, AddCircleOutlined, FormatListBulleted, Menu, MeetingRoom} from "@material-ui/icons";
 import {Link, Route, useHistory, BrowserRouter as Router} from 'react-router-dom';
 import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
@@ -73,7 +73,7 @@ export const TournamentOrganizerView = () => {
 
     useEffect(() => {
         TeamService.getTeams().then((res) => {
-            setTeams(res.data)
+            setTeams(res.data);
         },
             (error) => {
                 AuthenticateService.logout();
@@ -81,8 +81,13 @@ export const TournamentOrganizerView = () => {
     }, [])
 
     const closeTournamentList = () => {
-        setTournamentListOpen(false)
-        history.push(path)
+        setTournamentListOpen(false);
+        history.push(path);
+    }
+
+    const logout = () => {
+        AuthenticateService.logout();
+        history.push("/");
     }
 
     return(
@@ -113,6 +118,10 @@ export const TournamentOrganizerView = () => {
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><AccountCircle/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Account</ListItemText>
+                            </ListItem>
+                            <ListItem button onClick={() => logout()}>
+                                <ListItemIcon className={classes.drawerText}><MeetingRoom/></ListItemIcon>
+                                <ListItemText className={classes.drawerText}>Logout</ListItemText>
                             </ListItem>
                         </List>
                         </Drawer>

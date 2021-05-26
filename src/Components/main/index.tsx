@@ -17,6 +17,9 @@ export const Main: FC = (props) => {
                     <Button variant="contained" color="secondary" className={styles.addButton} startIcon={<GroupAdd className="icon"/>}
                             component={Link} to={'/teams/create_team'}>
                         Create Team</Button>
+                    <Button variant="contained" color="secondary" className={styles.addButton} startIcon={<GroupAdd className="icon"/>}
+                            component={Link} to={'/login'}>
+                        Login</Button>
                 </Box>
             </header>
         </Box>

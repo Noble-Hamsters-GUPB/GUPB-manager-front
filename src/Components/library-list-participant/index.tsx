@@ -129,7 +129,7 @@ export const LibraryListParticipant: FC = (props) =>{
         <div className={styles.header} style={{float: "left"}}>Libraries</div>
             <Router>
             <div>
-            <Button style={{marginLeft: "21em", marginTop: "1.5em"}} component={Link} to={'/library-request'} variant={"contained"} color={"secondary"}>Request new library</Button>
+            <Button style={{marginLeft: "4vw", marginTop: "1.5em"}} component={Link} to={'/library-request'} variant={"contained"} color={"secondary"}>Request new library</Button>
             </div>
                 <Route path={'/library-request'}><LibraryRequestForm libraries={libList} addLibrary={setLibraries}/></Route>
             </Router>

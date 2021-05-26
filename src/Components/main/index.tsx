@@ -15,9 +15,9 @@ export const Main: FC = (props) => {
                     {/*<Button variant="contained" color="secondary" className={styles.addButton} startIcon={<PostAdd className="icon"/>}*/}
                     {/*        component={Link} to={'/tournaments/create_tournament'}>*/}
                     {/*    Create Tournament</Button>*/}
-                    <Button variant="contained" color="secondary" className={styles.addButton} startIcon={<GroupAdd className="icon"/>}
+                    {/*<Button variant="contained" color="secondary" className={styles.addButton} startIcon={<GroupAdd className="icon"/>}
                             component={Link} to={'/teams/create_team'}>
-                        Create Team</Button>
+                        Create Team</Button>*/}
                     <Button variant="contained" color="secondary" className={styles.addButton} startIcon={<VpnKeyIcon className="icon"/>}
                             component={Link} to={'/login'}>
                         Login</Button>

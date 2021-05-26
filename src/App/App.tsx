@@ -10,7 +10,7 @@ import styles from "./styles.module.css";
 import {createContext} from "react";
 import {LoginForm} from "../Components/login-form";
 import {RegistrationForm} from "../Components/registration-form";
-export const SocketUrlContext = createContext('http://localhost:8080/ws-message');
+export const SocketUrlContext = createContext('https://gupb-manager.herokuapp.com/ws-message');
 
 function App() {
 

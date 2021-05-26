@@ -3,7 +3,7 @@ import {AxiosRequestConfig} from "axios";
 
 const axios = require("axios").default;
 
-const TOURNAMENT_API_BASE_URL = "http://localhost:8080/api/v1/tournaments"
+const TOURNAMENT_API_BASE_URL = "https://gupb-manager.herokuapp.com/api/v1/tournaments"
 
     class TournamentService {
 

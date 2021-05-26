@@ -2,7 +2,7 @@ import authHeader from "./AuthHeader";
 
 const axios = require("axios").default;
 
-const REQUIREMENT_API_BASE_URL = "http://localhost:8080/api/v1/requirements"
+const REQUIREMENT_API_BASE_URL = "https://gupb-manager.herokuapp.com/api/v1/requirements"
 
 class RequirementService {
 

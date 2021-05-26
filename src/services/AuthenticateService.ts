@@ -1,6 +1,6 @@
 const axios = require("axios").default;
 
-const AUTHENTICATION_API_BASE_URL = "http://localhost:8080/api/v1/auth/signin"
+const AUTHENTICATION_API_BASE_URL = "https://gupb-manager.herokuapp.com/api/v1/auth/signin"
 
 class AuthenticationService {
     login = (email, password) => {

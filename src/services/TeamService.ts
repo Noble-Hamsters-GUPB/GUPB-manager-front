@@ -2,7 +2,7 @@ import authHeader from "./AuthHeader";
 
 const axios = require("axios").default;
 
-const TEAM_API_BASE_URL = "http://localhost:8080/api/v1/teams"
+const TEAM_API_BASE_URL = "https://gupb-manager.herokuapp.com/api/v1/teams"
 
 class TeamService {
 

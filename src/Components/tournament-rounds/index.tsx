@@ -55,7 +55,7 @@ export const TournamentRoundList: FC<{isOrganizer: boolean}> = ({isOrganizer}) =
                                 </div>
                             </Grid>
                         </Button>
-                        <Route path='/tournament-rounds-organizer/form'><TournamentRoundForm
+                        <Route path='/tournament-rounds/form'><TournamentRoundForm
                             number={Math.max(...rounds.map(o => o.number), 0)} date={""} data={rounds}
                             setData={handleSetRounds} numberOfRuns={0} url={window.location.pathname}/></Route>
                     </Router>

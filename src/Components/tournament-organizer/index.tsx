@@ -126,7 +126,7 @@ export const TournamentOrganizerView = () => {
                         </List>
                         </Drawer>
                 </Grid>
-                <Grid item xs={11} style={{minHeight: "14vh"}}>
+                <Grid item xs={11} style={{minHeight: "10vh"}}>
                     <TournamentHeader/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
@@ -141,7 +141,7 @@ export const TournamentOrganizerView = () => {
                     <GroupListTournamentOrganizer data={[...teams]} roundEnd={roundEnd}/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
-                    <TournamentRoundList /*data={roundsData}*/ isOrganizer={true}/>
+                    <TournamentRoundList isOrganizer={true}/>
                 </Grid>
             </Grid>
                 <Route path={"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>

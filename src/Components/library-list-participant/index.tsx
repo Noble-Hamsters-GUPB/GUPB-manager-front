@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) =>
             width: "100%"
         },
         actionButtonGroup:{
-            width: "10em",
+            width: "9em",
             color: "white"
         },
         buttonGroupContainer:{

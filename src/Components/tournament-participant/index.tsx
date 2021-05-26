@@ -19,7 +19,7 @@ import {LibraryListParticipant} from "../library-list-participant";
 import TeamService from "../../services/TeamService";
 import AuthenticateService from "../../services/AuthenticateService";
 import {Link, Route, useHistory, BrowserRouter as Router} from 'react-router-dom';
-import {AccountCircle, AddCircleOutline, Edit, FormatListBulleted, Menu, Star} from "@material-ui/icons";
+import {AccountCircle, AddCircleOutline, Edit, FormatListBulleted, Menu, MeetingRoom} from "@material-ui/icons";
 import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
 import {TeamForm} from "../team-form";
@@ -144,7 +144,7 @@ export const TournamentParticipantView = () => {
                     <LibraryListParticipant/>
                 </Grid>
                 <Grid item xs={4} className={styles.roundList+" "+styles.secRow}>
-                    <GroupListTournamentParticipant data={[...props.teams]} groupId={1}/>
+                    <GroupListTournamentParticipant data={[...teams]} groupId={1}/>
                 </Grid>
                 <Grid item xs={4} className={styles.roundList+" "+styles.secRow}>
                     <TournamentRoundList isOrganizer={false}/>

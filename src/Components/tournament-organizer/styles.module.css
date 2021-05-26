@@ -14,12 +14,12 @@
 }
 
 .firstRow{
-    min-height: 42vh;
+    min-height: 35vh;
     overflow-y: auto;
 }
 
 .secRow{
-    min-height: 43vh;
+    min-height: 36vh;
     overflow-y: auto;
     scroll-margin: 1em;
 }

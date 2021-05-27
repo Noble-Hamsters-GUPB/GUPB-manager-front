@@ -93,7 +93,7 @@ export const TournamentParticipantView = () => {
             <Grid container spacing={5} className={styles.grid}>
                 <Grid item xs={1}>
                     <IconButton onClick={(e) => setDrawerState(true)}>
-                        <Menu style={{color: "#081c15", transform: "scale(2)"}}/>
+                        <Menu style={{color: "#081c15", transform: "scale(2)", display: drawerState?"none":"inline"}}/>
                     </IconButton>
                     <Drawer classes={{paper: classes.drawer}} anchor={"left"} open={drawerState} onClose={(e) => setDrawerState(false)}>
                         <div style={{width: "15vw"}}>

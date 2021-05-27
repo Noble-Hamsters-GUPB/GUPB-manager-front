@@ -143,10 +143,10 @@ export const TournamentParticipantView = () => {
                 <Grid item xs={4} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
                     <LibraryListParticipant/>
                 </Grid>
-                <Grid item xs={4} className={styles.roundList+" "+styles.secRow}>
+                <Grid item xs={4} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
                     <GroupListTournamentParticipant data={[...teams]} groupId={1}/>
                 </Grid>
-                <Grid item xs={4} className={styles.roundList+" "+styles.secRow}>
+                <Grid item xs={4} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
                     <TournamentRoundList isOrganizer={false}/>
                 </Grid>
             </Grid>

@@ -12,7 +12,7 @@ import RequirementService from "../../services/RequirementService";
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
 import {LibraryRequestForm} from "../library-request-dialog";
 import SockJsClient from 'react-stomp';
-import {SocketUrlContext} from "../../App/App";
+import {urls} from "../../services/BaseUrl";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) =>
             width: "100%"
         },
         actionButtonGroup:{
-            width: "10em",
+            width: "9em",
             color: "white"
         },
         buttonGroupContainer:{
@@ -48,7 +48,7 @@ const updateStatus = ()=>{
 
 export const LibraryListParticipant: FC = (props) =>{
     const classes = useStyles()
-    const SOCKET_URL = useContext(SocketUrlContext);
+    const SOCKET_URL = urls.getSocketUrl();
 
     const [libList, setLibList] = useState([
         {id: "", packageInfo: "", status: ""}
@@ -123,12 +123,13 @@ export const LibraryListParticipant: FC = (props) =>{
           url={SOCKET_URL}
           topics={['/topic/requirements']}
           onMessage={msg => onMessageReceived(msg)}
-          debug={false}/>
+          debug={false}
+          />
         <div>
         <div className={styles.header} style={{float: "left"}}>Libraries</div>
             <Router>
             <div>
-            <Button style={{marginLeft: "21em", marginTop: "1.5em"}} component={Link} to={'/library-request'} variant={"contained"} color={"secondary"}>Request new library</Button>
+            <Button style={{marginLeft: "4vw", marginTop: "1.5em"}} component={Link} to={'/library-request'} variant={"contained"} color={"secondary"}>Request new library</Button>
             </div>
                 <Route path={'/library-request'}><LibraryRequestForm libraries={libList} addLibrary={setLibraries}/></Route>
             </Router>

@@ -3,12 +3,12 @@
 }
 
 .MainLogo {
-    height: 90vmin;
+    height: 100vh;
     pointer-events: none;
 }
 
 .MainHeader {
-    background-image: url(http://localhost:3000/background.png);
+    background-image: url(https://i.ibb.co/L04kHfZ/background.png);
     background-size: cover;
     height: 100vh;
     display: flex;

@@ -1,5 +1,6 @@
 import styles from "./styles.module.css";
 import {Grid} from "@material-ui/core";
+import moment from "moment/moment";
 
 
 export const GroupListTournamentOrganizer =  (props: {data, roundEnd}) => {
@@ -39,7 +40,7 @@ export const GroupListTournamentOrganizer =  (props: {data, roundEnd}) => {
                                         <div className={styles.typography}>{elem.name}</div>
                                     </Grid>
                                     <Grid item xs={5}>
-                                        <div className={is_updated+' '+styles.typography}>{elem.lastUpdated}</div>
+                                        <div className={is_updated+' '+styles.typography}>{moment(elem.lastUpdated).format("DD.MM.YYYY")}</div>
                                     </Grid>
                                     <Grid item xs={2}>
                                         <div className={styles.typography}>{elem.totalPoints}</div>

@@ -1,0 +1,35 @@
+.closeButton.closeButton{
+    position: absolute;
+    right: 0;
+}
+
+.formTitle.formTitle{
+    color: black;
+    font-size: larger;
+    padding-right: 48px;
+    padding-bottom: 8px;
+}
+
+.formDialog{
+    position: relative;
+}
+
+.formDialogContent.formDialogContent{
+    width: 300px;
+}
+
+.formDialogContent.formDialogContent>*+*{
+    margin-top: 32px;
+}
+
+.submitAction.submitAction{
+    margin-top:0;
+}
+
+.form.form{
+    display: flex;
+}
+
+.formRadios.formRadios{
+    justify-content: space-between;
+}

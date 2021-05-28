@@ -5,17 +5,12 @@ import {
     ButtonGroup, CircularProgress, createStyles,
     List,
     ListItem,
-    ListItemSecondaryAction,
     ListItemText, makeStyles,
-    Switch,
-    Typography
 } from "@material-ui/core";
-import {yellow, red, blue, green, orange} from "@material-ui/core/colors";
 import styles from "./styles.module.css"
-import TeamService from "../../services/TeamService";
 import RequirementService from "../../services/RequirementService";
-import {SocketUrlContext} from "../../App/App";
 import SockJsClient from 'react-stomp';
+import {urls} from "../../services/BaseUrl";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -51,7 +46,7 @@ const updateStatus = ()=>{
 
 export const LibraryListOrganizer: FC = (props) =>{
     const classes = useStyles()
-    const SOCKET_URL = useContext(SocketUrlContext);
+    const SOCKET_URL = urls.getSocketUrl();
 
     const [libList, setLibList] = useState([
         {id: "", packageInfo: "", status: ""}

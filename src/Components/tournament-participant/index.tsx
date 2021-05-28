@@ -17,19 +17,21 @@ import {TournamentHeader} from "../tournament-header";
 import {GroupListTournamentParticipant} from "../tournament-group-list-participant";
 import {LibraryListParticipant} from "../library-list-participant";
 import TeamService from "../../services/TeamService";
+import AuthenticateService from "../../services/AuthenticateService";
 import {Link, Route, useHistory, BrowserRouter as Router} from 'react-router-dom';
-import {AccountCircle, AddCircleOutline, Edit, FormatListBulleted, Menu} from "@material-ui/icons";
+import {AccountCircle, AddCircleOutline, Edit, FormatListBulleted, Menu, MeetingRoom} from "@material-ui/icons";
 import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
 import {TeamForm} from "../team-form";
 import {TournamentRegisterForm} from "../tournament-register-form";
+import {TournamentRoundList} from "../tournament-rounds";
 
-// const groupData = [
-//     {id: 1, groupName: "Supergrupa", points: 456},
-//     {id: 2, groupName: "Fajnagrupa",  points: 459},
-//     {id: 3, groupName: "Leniuchy",  points: 0},
-//     {id: 4, groupName: "Lemury", points: 441},
-// ]
+/* const groupData = [
+    {id: 1, name: "Supergrupa", totalPoints: 456},
+     {id: 2,name: "Fajnagrupa",  totalPoints: 459},
+     {id: 3, name: "Leniuchy",  totalPoints: 0},
+     {id: 4, name: "Lemury", totalPoints: 441},
+ ]*/
 
 const roundEnd = "2021-05-16T00:00:00.00";
 const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
@@ -42,24 +44,46 @@ const useStyles = makeStyles(theme => ({
         color: "#fff59d;"
     }
 }));
+export const TournamentParticipantView = () => {
+    const history = useHistory();
+    const [teams, setTeams] = useState([])
 
-export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
+    const user = AuthenticateService.getCurrentUser();
+
+    if(!user) {
+        history.push("/login");
+    }
+    else if(user.roles[0] !== "STUDENT") {
+        if(user.roles[0] === "ADMIN") {
+            history.push("/tournament-organizer");
+        }
+        else {
+            history.push("/");
+        }
+    }
+
     const classes = useStyles();
-    const history = useHistory()
     const path = window.location.pathname
     const [drawerState, setDrawerState] = useState(false)
     const [tournamentListOpen, setTournamentListOpen] = useState(true)
 
     useEffect(() => {
         TeamService.getTeams().then((res) => {
-            if(!(JSON.stringify(res.data) == JSON.stringify(props.teams)))
-                props.setTeams(res.data)
-        })
-    }, [props.teams])
+                setTeams(res.data)
+        },
+            (error) => {
+                AuthenticateService.logout();
+            })
+    }, [])
 
     const closeTournamentList = () => {
         setTournamentListOpen(false)
         history.push(path)
+    }
+
+    const logout = () => {
+        AuthenticateService.logout();
+        history.push("/");
     }
 
     //TODO: set team id and tournament id in TournamentForm
@@ -69,7 +93,7 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
             <Grid container spacing={5} className={styles.grid}>
                 <Grid item xs={1}>
                     <IconButton onClick={(e) => setDrawerState(true)}>
-                        <Menu style={{color: "#081c15", transform: "scale(2)"}}/>
+                        <Menu style={{color: "#081c15", transform: "scale(2)", display: drawerState?"none":"inline"}}/>
                     </IconButton>
                     <Drawer classes={{paper: classes.drawer}} anchor={"left"} open={drawerState} onClose={(e) => setDrawerState(false)}>
                         <div style={{width: "15vw"}}>
@@ -77,7 +101,7 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
                         </div>
                         <List>
                             <Link to={"/tournament-list"} style={{ textDecoration: 'none' }}>
-                            <ListItem button>
+                            <ListItem button onClick={(e) => setTournamentListOpen(true)}>
                                 <ListItemIcon className={classes.drawerText}><FormatListBulleted/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Tournament list</ListItemText>
                             </ListItem>
@@ -98,10 +122,14 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
                                 <ListItemIcon className={classes.drawerText}><AccountCircle/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Account</ListItemText>
                             </ListItem>
+                            <ListItem button onClick={() => logout()}>
+                                <ListItemIcon className={classes.drawerText}><MeetingRoom/></ListItemIcon>
+                                <ListItemText className={classes.drawerText}>Logout</ListItemText>
+                            </ListItem>
                         </List>
                     </Drawer>
                 </Grid>
-                <Grid item xs={11}>
+                <Grid item xs={11} style={{minHeight: "14vh"}}>
                     <TournamentHeader/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
@@ -112,11 +140,14 @@ export const TournamentParticipantView: FC<{teams, setTeams}> = (props) => {
                 <Grid item xs={6} className={styles.botStatus+" "+styles.bar}>
                     <BotStatus/>
                 </Grid>
-                <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
+                <Grid item xs={4} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
                     <LibraryListParticipant/>
                 </Grid>
-                <Grid item xs={6} className={styles.roundList+" "+styles.secRow}>
-                    <GroupListTournamentParticipant data={[...props.teams]} groupId={1}/>
+                <Grid item xs={4} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
+                    <GroupListTournamentParticipant data={[...teams]} groupId={1}/>
+                </Grid>
+                <Grid item xs={4} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
+                    <TournamentRoundList isOrganizer={false}/>
                 </Grid>
             </Grid>
             <Route path={"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>

@@ -16,13 +16,14 @@ import {BotStatus} from "../bot-status";
 import {LibraryListOrganizer} from "../library-list-organizer";
 import {GroupListTournamentOrganizer} from "../tournament-group-list-organizer";
 import {TournamentHeader} from "../tournament-header";
-import {TournamentRoundList} from "../tournament-rounds";
 import TeamService from "../../services/TeamService";
+import AuthenticateService from "../../services/AuthenticateService";
 import RoundService from "../../services/RoundService";
-import {AccountCircle, AddCircleOutline, AddCircleOutlined, FormatListBulleted, Menu} from "@material-ui/icons";
+import {AccountCircle, AddCircleOutline, AddCircleOutlined, FormatListBulleted, Menu, MeetingRoom} from "@material-ui/icons";
 import {Link, Route, useHistory, BrowserRouter as Router} from 'react-router-dom';
 import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
+import {TournamentRoundList} from "../tournament-rounds";
 
 // const groupData = [
 //     {groupName: "Supergrupa", botStatus: "2021-04-11", points: 456},
@@ -49,24 +50,44 @@ const useStyles = makeStyles(theme => ({
         color: "#fff59d;"
     }
 }));
-
-export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
-    const classes = useStyles()
-    const history = useHistory()
+export const TournamentOrganizerView = () => {
+    const [teams, setTeams] = useState([])
+    const history = useHistory();
     const path = window.location.pathname
+    const classes = useStyles()
     const [drawerState, setDrawerState] = useState(false)
     const [tournamentListOpen, setTournamentListOpen] = useState(true)
 
+    const user = AuthenticateService.getCurrentUser();
+
+    if(!user) {
+        history.push("/login");
+    }
+    else if(user.roles[0] !== "ADMIN") {
+        if(user.roles[0] === "STUDENT") {
+            history.push("/tournament-participant");
+        } else {
+            history.push("/");
+        }
+    }
+
     useEffect(() => {
         TeamService.getTeams().then((res) => {
-            if(!(JSON.stringify(res.data) == JSON.stringify(props.teams)))
-                props.setTeams(res.data)
-        })
-    }, [props.teams])
+            setTeams(res.data);
+        },
+            (error) => {
+                AuthenticateService.logout();
+            })
+    }, [])
 
     const closeTournamentList = () => {
-        setTournamentListOpen(false)
-        history.push(path)
+        setTournamentListOpen(false);
+        history.push(path);
+    }
+
+    const logout = () => {
+        AuthenticateService.logout();
+        history.push("/");
     }
 
     return(
@@ -75,7 +96,7 @@ export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
             <Grid container spacing={5} className={styles.grid}>
                 <Grid item xs={1}>
                     <IconButton onClick={(e) => setDrawerState(true)}>
-                    <Menu style={{color: "#081c15", transform: "scale(2)"}}/>
+                    <Menu style={{color: "#081c15", transform: "scale(2)", display: drawerState?"none":"inline"}}/>
                     </IconButton>
                     <Drawer classes={{paper: classes.drawer}} anchor={"left"} open={drawerState} onClose={(e) => setDrawerState(false)}>
                         <div style={{width: "15vw"}}>
@@ -98,10 +119,14 @@ export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
                                 <ListItemIcon className={classes.drawerText}><AccountCircle/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Account</ListItemText>
                             </ListItem>
+                            <ListItem button onClick={() => logout()}>
+                                <ListItemIcon className={classes.drawerText}><MeetingRoom/></ListItemIcon>
+                                <ListItemText className={classes.drawerText}>Logout</ListItemText>
+                            </ListItem>
                         </List>
                         </Drawer>
                 </Grid>
-                <Grid item xs={11}>
+                <Grid item xs={11} style={{minHeight: "10vh"}}>
                     <TournamentHeader/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
@@ -113,10 +138,10 @@ export const TournamentOrganizerView: FC<{teams, setTeams}> = (props) => {
                     <LibraryListOrganizer/>
                 </Grid>
                 <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
-                    <GroupListTournamentOrganizer data={[...props.teams]} roundEnd={roundEnd}/>
+                    <GroupListTournamentOrganizer data={[...teams]} roundEnd={roundEnd}/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
-                    <TournamentRoundList /*data={roundsData}*//>
+                    <TournamentRoundList isOrganizer={true}/>
                 </Grid>
             </Grid>
                 <Route path={"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>

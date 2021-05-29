@@ -3,7 +3,7 @@
 }
 
 .MainLogo {
-    height: 100vh;
+    height: 80vh;
     pointer-events: none;
 }
 
@@ -19,8 +19,8 @@
 }
 
 .addButton.addButton{
-    height: 8em;
-    width: 26em;
+    height: 6em;
+    width: 20em;
 }
 
 .icon{

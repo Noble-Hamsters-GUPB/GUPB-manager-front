@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
         color: "#fff59d;"
     }
 }));
-export const TournamentParticipantView:FC<{id:string}> = (props) => {
+export const TournamentParticipantView:FC<{id:number}> = (props) => {
     const history = useHistory();
     const [teams, setTeams] = useState([])
 

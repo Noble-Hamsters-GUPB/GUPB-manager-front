@@ -16,6 +16,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import {Link, Route, Switch, BrowserRouter as Router, useLocation} from 'react-router-dom';
 // @ts-ignore
 import TournamentService from '../../services/TournamentService';
+import AuthenticationService from '../../services/AuthenticateService'
 
 export const TournamentForm: FC<{url: string}> = (props: {url}) => {
 
@@ -56,7 +57,7 @@ export const TournamentForm: FC<{url: string}> = (props: {url}) => {
 
 
         TournamentService.createTournament({"name": name, "accessMode": accessMode,
-            "creator": 1, "invitationCode": invitationCode}) //TODO: change "1" to an id extracted from AuthenticationService, maybe add getters to the service
+            "creator": AuthenticationService.getCurrentUser().id, "invitationCode": invitationCode}) //TODO: change "1" to an id extracted from AuthenticationService, maybe add getters to the service
     }
 
     return (

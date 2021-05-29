@@ -44,23 +44,11 @@ const useStyles = makeStyles(theme => ({
         color: "#fff59d;"
     }
 }));
-export const TournamentParticipantView = () => {
+export const TournamentParticipantView:FC<{id:number}> = (props) => {
     const history = useHistory();
     const [teams, setTeams] = useState([])
 
     const user = AuthenticateService.getCurrentUser();
-
-    if(!user) {
-        history.push("/login");
-    }
-    else if(user.roles[0] !== "STUDENT") {
-        if(user.roles[0] === "ADMIN") {
-            history.push("/tournament-organizer");
-        }
-        else {
-            history.push("/");
-        }
-    }
 
     const classes = useStyles();
     const path = window.location.pathname

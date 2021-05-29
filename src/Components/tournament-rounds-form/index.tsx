@@ -34,7 +34,7 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, se
         }
 
 
-        if(numberOfRuns<=0){
+        if(!isPositiveInteger(numberOfRuns)){
             setNumberOfIterationsError(true);
             errorFlag = true;
         }
@@ -58,6 +58,10 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, se
         RoundService.createRound(newRound)
     }
 
+    const isPositiveInteger = (n:string) =>{
+        return !isNaN(parseFloat(n)) && (parseFloat(n) > 0) && ((parseFloat(n) % 1) == 0);
+    }
+
     let title = (props.date==="") ? "New round": "Edit round";
     let button = (props.date==="") ? "CREATE": "UPDATE";
     return(
@@ -68,7 +72,7 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, se
             <TextField error={dateError} fullWidth defaultValue={date} label={dateError?"Start date should be after current date":"Start date"} type="datetime-local"
                        onChange={(e) => setDate(e.target.value)}/>
 
-                       <TextField error={numberOfIterationsError} fullWidth defaultValue={numberOfRuns} label={numberOfIterationsError?"Number should be higher than 0"
+                       <TextField error={numberOfIterationsError} fullWidth defaultValue={numberOfRuns} label={numberOfIterationsError?"Number should be a positive integer"
                            :"Number of runs"} type={"number"} onChange={(e) => setNumberOfIterations(e.target.value)}/>
                 <DialogActions className={styles.submitAction}>
                     <Link to={(dateError)?"#":props.url}  style={{ textDecoration: 'none' }}>

@@ -3,7 +3,7 @@
 }
 
 .MainLogo {
-    height: 100vh;
+    height: 80vh;
     pointer-events: none;
 }
 
@@ -18,12 +18,9 @@
     color: white;
 }
 
-.addButton{
-    height: 8vh;
-    width: 18vw;
-    font-size: 2vh;
-    margin-left: 3vw;
-    margin-right: 3vw;
+.addButton.addButton{
+    height: 6em;
+    width: 20em;
 }
 
 .icon{

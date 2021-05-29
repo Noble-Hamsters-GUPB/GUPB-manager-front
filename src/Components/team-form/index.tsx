@@ -128,7 +128,7 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any, 
                 }}/>
                 <TextField fullWidth label={"Main class name"}
                            onChange={(e) => setClassName(e.target.value)}/>
-                {isTeamBeingCreated? <div><TextField error={invitationCodeError} fullWidth required label={invitationCodeError?"Invitation code cannot be empty":"Pick invitation code"}
+                {isTeamBeingCreated? <div><TextField error={invitationCodeError} fullWidth required label={invitationCodeError?"Invitation code can not be empty":"Pick invitation code"}
                                          onChange={(e) => setClassName(e.target.value)}/>
                     </div>
                                          :null}

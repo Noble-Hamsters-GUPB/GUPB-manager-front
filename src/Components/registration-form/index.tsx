@@ -89,8 +89,8 @@ export const RegistrationForm: FC = (props) => {
             <DialogTitle className={styles.formTitle}>Create account</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
                 <TextField error={emailError!==""} fullWidth label={emailError===""?"Email":emailError} onChange={(e) => setEmail(e.target.value)}/>
-                <TextField error={passwordError!==""} fullWidth label={passwordError===""?"Password":passwordError} onChange={(e) => setPassword(e.target.value)}/>
-                <TextField error={password2Error!==""} fullWidth label={password2Error===""?"Password":password2Error} onChange={(e) => setPassword2(e.target.value)}/>
+                <TextField type={"password"} error={passwordError!==""} fullWidth label={passwordError===""?"Password":passwordError} onChange={(e) => setPassword(e.target.value)}/>
+                <TextField type={"password"} error={password2Error!==""} fullWidth label={password2Error===""?"Password":password2Error} onChange={(e) => setPassword2(e.target.value)}/>
                 <DialogActions className={styles.submitAction}>
                     <Link to={(emailError!=="" || passwordError!=="" || password2Error!=="")?"#":(location.pathname.split("/register")[0])}  style={{ textDecoration: 'none' }}>
                         <Button

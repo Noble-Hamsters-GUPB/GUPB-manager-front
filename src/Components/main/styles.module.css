@@ -18,12 +18,9 @@
     color: white;
 }
 
-.addButton{
-    height: 8vh;
-    width: 18vw;
-    font-size: 2vh;
-    margin-left: 3vw;
-    margin-right: 3vw;
+.addButton.addButton{
+    height: 8em;
+    width: 26em;
 }
 
 .icon{

@@ -20,7 +20,7 @@ import TeamService from "../../services/TeamService";
 import AuthenticateService from "../../services/AuthenticateService";
 import RoundService from "../../services/RoundService";
 import {AccountCircle, AddCircleOutline, AddCircleOutlined, FormatListBulleted, Menu, MeetingRoom} from "@material-ui/icons";
-import {Link, Route, useHistory, BrowserRouter as Router} from 'react-router-dom';
+import {Link, Route, useHistory, BrowserRouter as Router, useLocation} from 'react-router-dom';
 import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
 import {TournamentRoundList} from "../tournament-rounds";
@@ -50,7 +50,8 @@ const useStyles = makeStyles(theme => ({
         color: "#fff59d;"
     }
 }));
-export const TournamentOrganizerView = () => {
+export const TournamentOrganizerView:FC<{id:string}> = (props) => {
+    const location = useLocation();
     const [teams, setTeams] = useState([])
     const history = useHistory();
     const path = window.location.pathname
@@ -59,17 +60,6 @@ export const TournamentOrganizerView = () => {
     const [tournamentListOpen, setTournamentListOpen] = useState(true)
 
     const user = AuthenticateService.getCurrentUser();
-
-    if(!user) {
-        history.push("/login");
-    }
-    else if(user.roles[0] !== "ADMIN") {
-        if(user.roles[0] === "STUDENT") {
-            history.push("/tournament-participant");
-        } else {
-            history.push("/");
-        }
-    }
 
     useEffect(() => {
         TeamService.getTeams().then((res) => {
@@ -103,13 +93,13 @@ export const TournamentOrganizerView = () => {
                             <img src="/logo_transparent.png" className={styles.MainLogo} alt="logo"/>
                         </div>
                         <List>
-                            <Link to={"/tournament-list"} style={{ textDecoration: 'none' }}>
+                            <Link to={location.pathname+"/tournaments"} style={{ textDecoration: 'none' }}>
                             <ListItem button onClick={(e) => setTournamentListOpen(true)}>
                                 <ListItemIcon className={classes.drawerText}><FormatListBulleted/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Tournament list</ListItemText>
                             </ListItem>
                             </Link>
-                            <Link to={"/add-tournament"} style={{ textDecoration: 'none' }}>
+                            <Link to={location.pathname+"/add-tournament"} style={{ textDecoration: 'none' }}>
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><AddCircleOutline/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Add tournament</ListItemText>

@@ -62,12 +62,7 @@ export const LoginForm: FC = (props) => {
 
         AuthenticateService.login(email, password).then(
             () => {
-                const userRole = AuthenticateService.getCurrentUser().roles[0];
-                if(userRole === "ADMIN") {
-                    history.push("/tournament-organizer");
-                } else {
-                    history.push("/tournament-participant")
-                }
+                history.push("/tournament/1");
             },
             (error) => {
                 const resMessage =

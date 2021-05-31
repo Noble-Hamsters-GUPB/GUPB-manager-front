@@ -16,14 +16,14 @@ import {
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 // @ts-ignore
-import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
+import {Link, Route, Switch, useLocation, BrowserRouter as Router} from 'react-router-dom';
 // @ts-ignore
 import TeamService from "../../services/TeamService";
 import validator from 'validator'
 import {DeleteOutline, Help, PersonAdd} from "@material-ui/icons";
 
 
-export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any, url: string}> = ({teamId, tournamentId, addTeam, url}) => {
+export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}> = ({teamId, tournamentId, addTeam}) => {
     //TODO: set parameters if editing
     const [name, setName] = useState("")
     const [githubLink, setRepoName] = useState("")
@@ -44,6 +44,8 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any, 
     const [nameError, setNameError] = useState(false)
     const [repoError, setRepoError] = useState(false)
     const [invitationCodeError, setInvitationCodeError] = useState(false)
+
+    const location = useLocation()
 
     useEffect(() => {
         setRepoError(false)
@@ -110,7 +112,7 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any, 
 
     return (
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={url} className={styles.closeButton}><CloseIcon/></IconButton>
+            <IconButton component={Link} to={isTeamBeingCreated?location.pathname.split("/add-team")[0]:location.pathname.split("/edit-team")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>{isTeamBeingCreated?"Create team":"Edit team"}</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
                 <TextField error={nameError} required fullWidth label={nameError?"Team name cannot be empty":"Team name"}
@@ -171,7 +173,7 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any, 
                     </Grid>
                 </Grid>
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(repoError || nameError)?"#":url}  style={{ textDecoration: 'none' }}>
+                    <Link to={(repoError || nameError)?"#":isTeamBeingCreated?location.pathname.split("/add-team")[0]:location.pathname.split("/edit-team")[0]}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="primary"

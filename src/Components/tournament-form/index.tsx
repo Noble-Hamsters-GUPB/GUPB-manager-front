@@ -18,7 +18,7 @@ import {Link, Route, Switch, BrowserRouter as Router, useLocation} from 'react-r
 import TournamentService from '../../services/TournamentService';
 import AuthenticationService from '../../services/AuthenticateService'
 
-export const TournamentForm: FC<{url: string}> = (props: {url}) => {
+export const TournamentForm: FC = () => {
 
     const [name, setName] = useState("")
     const [accessMode, setAccessMode] = useState("OPEN")
@@ -62,7 +62,7 @@ export const TournamentForm: FC<{url: string}> = (props: {url}) => {
 
     return (
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={location.pathname.split("/create_tournament")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
+            <IconButton component={Link} to={location.pathname.split("/add-tournament")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>Create Tournament</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
                 <TextField error={nameError} fullWidth label={nameError?"Tournament name cannot be empty":"Tournament name"}
@@ -79,7 +79,7 @@ export const TournamentForm: FC<{url: string}> = (props: {url}) => {
                     <TextField error={invitationCodeError} fullWidth label={invitationCodeError?"Invitation code cannot be empty":"Invitation code"}
                                                          onChange={(e) => setInvitationCode(e.target.value)}/> : null}
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(invitationCodeError || nameError)?"#":props.url}  style={{ textDecoration: 'none' }}>
+                    <Link to={(invitationCodeError || nameError)?"#":location.pathname.split("/add-tournament")[0]}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"

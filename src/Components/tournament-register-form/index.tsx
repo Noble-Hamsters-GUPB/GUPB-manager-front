@@ -13,7 +13,7 @@ import {
 import styles from "../tournament-form/styles.module.css";
 import CloseIcon from "@material-ui/icons/Close";
 import TextField from "@material-ui/core/TextField";
-import {Link, Route, Switch, BrowserRouter as Router} from 'react-router-dom';
+import {Link, Route, useLocation, BrowserRouter as Router} from 'react-router-dom';
 import React from "react";
 import {TeamForm} from "../team-form";
 
@@ -21,7 +21,7 @@ let data = [{id: 1, name: "Ekstraklasa", startDate: "12-05-2021", numberOfRounds
     {id: 2, name: "Okręgówka", startDate: "16-04-2021", numberOfRounds: 10},
     {id: 3, name: "Superpuchar", startDate: "30-05-2021", numberOfRounds: 9}]
 
-export const TournamentRegisterForm = (props: {returnLink: string}) => {
+export const TournamentRegisterForm: FC = () => {
     const [tournamentCode, setTournamentCode] = useState("")
     const [teamCode, setTeamCode] = useState("")
     const [tournament, setTournament] = useState({id: -1, name: "", startDate: "", numberOfRounds: 0});
@@ -36,6 +36,8 @@ export const TournamentRegisterForm = (props: {returnLink: string}) => {
     const [teamCodeError, setTeamCodeError] = useState(false)
     const [noTournamentPickedError, setNoTournamentPickedError] = useState(false)
     const [noTeamPickedError, setNoTeamPickedError] = useState(false)
+
+    const location = useLocation()
 
     useEffect(() => {
         setTournamentCodeError(false)
@@ -166,7 +168,7 @@ export const TournamentRegisterForm = (props: {returnLink: string}) => {
 
     return(
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={props.returnLink} className={styles.closeButton}><CloseIcon/></IconButton>
+            <IconButton component={Link} to={location.pathname.split("/tournament-register")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>Join tournament</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
                 <FormControl className={styles.form} component={"fieldset"}>
@@ -225,7 +227,7 @@ export const TournamentRegisterForm = (props: {returnLink: string}) => {
                                 Add new team
                             </Button>
                         </Link>
-                            <Route to path={"/create-team"}><TeamForm teamId={-1} tournamentId={tournament.id} addTeam={addNewTeam} url={window.location.pathname}/></Route>
+                            <Route to path={"/create-team"}><TeamForm teamId={-1} tournamentId={tournament.id} addTeam={addNewTeam}/></Route>
                         </Router>
                     </Grid>
                     <Grid item xs={12} style={{marginBottom: "1em", display: addedNewTeam}}>
@@ -261,7 +263,7 @@ export const TournamentRegisterForm = (props: {returnLink: string}) => {
                         disabled={tournamentCodeError || teamCodeError || noTournamentPickedError}
                     >SUBMIT</Button>
                 </Link>
-                    <Route to path='/tournament-register-confirm'><TournamentRegisterFormConfirm tournament={tournament} team={team} returnLink={props.returnLink}/></Route>
+                    <Route to path='/tournament-register-confirm'><TournamentRegisterFormConfirm tournament={tournament} team={team} returnLink={location.pathname.split("/tournament-register")[0]}/></Route>
                 </Router>
             </DialogActions>
         </Dialog>

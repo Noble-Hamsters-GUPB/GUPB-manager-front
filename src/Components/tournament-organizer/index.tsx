@@ -54,7 +54,6 @@ export const TournamentOrganizerView:FC<{id:number}> = (props) => {
     const location = useLocation();
     const [teams, setTeams] = useState([])
     const history = useHistory();
-    const path = window.location.pathname
     const classes = useStyles()
     const [drawerState, setDrawerState] = useState(false)
     const [tournamentListOpen, setTournamentListOpen] = useState(true)
@@ -72,13 +71,15 @@ export const TournamentOrganizerView:FC<{id:number}> = (props) => {
 
     const closeTournamentList = () => {
         setTournamentListOpen(false);
-        history.push(path);
+        history.push(location.pathname);
     }
 
     const logout = () => {
         AuthenticateService.logout();
         history.push("/");
     }
+
+    console.log(tournamentListOpen)
 
     return(
         <div className={styles.root}>
@@ -134,8 +135,8 @@ export const TournamentOrganizerView:FC<{id:number}> = (props) => {
                     <TournamentRoundList isOrganizer={true}/>
                 </Grid>
             </Grid>
-                <Route path={"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>
-                <Route path={"/add-tournament"}><TournamentForm url={path}/></Route>
+                <Route path={location.pathname+"/tournaments"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>
+                <Route path={location.pathname+"/add-tournament"}><TournamentForm/></Route>
         </Router>
         </div>
     )

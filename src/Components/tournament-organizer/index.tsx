@@ -24,6 +24,7 @@ import {Link, Route, useHistory, BrowserRouter as Router, useLocation} from 'rea
 import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
 import {TournamentRoundList} from "../tournament-rounds";
+import {AccountDetails} from "../account-details";
 
 // const groupData = [
 //     {groupName: "Supergrupa", botStatus: "2021-04-11", points: 456},
@@ -106,10 +107,12 @@ export const TournamentOrganizerView:FC<{id:number}> = (props) => {
                                 <ListItemText className={classes.drawerText}>Add tournament</ListItemText>
                             </ListItem>
                             </Link>
+                            <Link to={location.pathname+"/account"} style={{ textDecoration: 'none' }}>
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><AccountCircle/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Account</ListItemText>
                             </ListItem>
+                            </Link>
                             <ListItem button onClick={() => logout()}>
                                 <ListItemIcon className={classes.drawerText}><MeetingRoom/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Logout</ListItemText>
@@ -137,6 +140,7 @@ export const TournamentOrganizerView:FC<{id:number}> = (props) => {
             </Grid>
                 <Route path={location.pathname+"/tournaments"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>
                 <Route path={location.pathname+"/add-tournament"}><TournamentForm/></Route>
+                <Route path={location.pathname+"/account"}><AccountDetails/></Route>
         </Router>
         </div>
     )

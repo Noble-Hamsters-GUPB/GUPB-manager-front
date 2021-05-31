@@ -25,6 +25,7 @@ import {TournamentForm} from "../tournament-form";
 import {TeamForm} from "../team-form";
 import {TournamentRegisterForm} from "../tournament-register-form";
 import {TournamentRoundList} from "../tournament-rounds";
+import {AccountDetails} from "../account-details";
 
 
 const roundEnd = "2021-05-16T00:00:00.00";
@@ -101,10 +102,12 @@ export const TournamentParticipantView:FC<{id:number}> = (props) => {
                                 <ListItemText className={classes.drawerText}>Edit team</ListItemText>
                             </ListItem>
                             </Link>
+                            <Link to={location.pathname+"/account"} style={{ textDecoration: 'none' }}>
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><AccountCircle/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Account</ListItemText>
                             </ListItem>
+                            </Link>
                             <ListItem button onClick={() => logout()}>
                                 <ListItemIcon className={classes.drawerText}><MeetingRoom/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Logout</ListItemText>
@@ -136,6 +139,7 @@ export const TournamentParticipantView:FC<{id:number}> = (props) => {
             <Route path={location.pathname+"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>
             <Route path={location.pathname+"/edit-team"}><TeamForm teamId={1} tournamentId={1}/></Route>
                 <Route path={location.pathname+"/tournament-register"}><TournamentRegisterForm/></Route>
+                <Route path={location.pathname+"/account"}><AccountDetails/></Route>
         </Router>
         </div>
     )

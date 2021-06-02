@@ -17,15 +17,17 @@ import {Link, Route, useLocation, BrowserRouter as Router} from 'react-router-do
 import React from "react";
 import {TeamForm} from "../team-form";
 
-let data = [{id: 1, name: "Ekstraklasa", startDate: "12-05-2021", numberOfRounds: 5},
-    {id: 2, name: "Okręgówka", startDate: "16-04-2021", numberOfRounds: 10},
-    {id: 3, name: "Superpuchar", startDate: "30-05-2021", numberOfRounds: 9}]
+let data = [{id: 1, name: "Ekstraklasa", startDate: "12-05-2021", numberOfRounds: 5, accessMode: "OPEN"},
+    {id: 2, name: "Okręgówka", startDate: "16-04-2021", numberOfRounds: 10, accessMode: "INVITE_ONLY"},
+    {id: 3, name: "Superpuchar", startDate: "30-05-2021", numberOfRounds: 9, accessMode: "OPEN"}]
+
+let team_data = [{id: 1, name: "Kojoty"}, {id: 2, name: "Kotki"}, {id: 3, name: "Żyrafy"}]
 
 export const TournamentRegisterForm: FC = () => {
     const [tournamentCode, setTournamentCode] = useState("")
     const [teamCode, setTeamCode] = useState("")
-    const [tournament, setTournament] = useState({id: -1, name: "", startDate: "", numberOfRounds: 0});
-    const [tournamentCodeChecked, setTournamentCodeChecked] = useState(false)
+    const [tournament, setTournament] = useState({id: -1, name: "", startDate: "", numberOfRounds: 0, accessMode: ""});
+    const [tournamentOk, setTournamentOk] = useState(false)
     const [tournamentCodeVisibility, setTournamentCodeVisibility] = useState("none")
     const [teamCodeChecked, setTeamCodeChecked] = useState(false)
     const [teamCodeVisibility, setTeamCodeVisibility] = useState("none")
@@ -58,20 +60,23 @@ export const TournamentRegisterForm: FC = () => {
 
     const checkTournament = (e) => {
 
-        if((tournamentCode === "" || (tournamentCode !== "" && !tournamentCodeChecked)) && tournament.id === -1){
+        if(tournament.id === -1){
             setNoTournamentPickedError(true)
         }
 
-        if(tournamentCodeChecked){
-            //test
-            if(tournamentCode === "1234") {
-                setTournament({id: 4, name: "Tajnyturniej", startDate: "13-05-2021", numberOfRounds: 7})
-            }
-            if(tournamentCode === ""){
+        if(tournament.accessMode === "OPEN"){
+            setTournamentOk(true)
+            return
+        }
+
+        if(tournament.accessMode === "INVITE_ONLY"){
+            if(tournamentCode === "") {
                 setTournamentCodeError(true)
             }
             else{
-                //TODO: check in database
+                //TODO: check tournament code in database
+                setTournamentCodeError(false)
+                setTournamentOk(true)
             }
         }
 
@@ -85,29 +90,6 @@ export const TournamentRegisterForm: FC = () => {
         //TODO: need some backend validation for tournament code and team code
 
 
-        if((tournamentCode === "" || (tournamentCode !== "" && !tournamentCodeChecked)) && tournament.id === -1){
-            setNoTournamentPickedError(true)
-            errorFlag = true
-        }
-
-        if((teamCode === "" || (teamCode !== "" && !teamCodeChecked)) && team.id === -1){
-            setNoTeamPickedError(true)
-            errorFlag = true
-        }
-
-        if(tournamentCodeChecked){
-            //test
-            if(tournamentCode === "1234") {
-                setTournament({id: 4, name: "Tajnyturniej", startDate: "13-05-2021", numberOfRounds: 7})
-            }
-            if(tournamentCode === ""){
-                setTournamentCodeError(true)
-                errorFlag = true
-            }
-            else{
-                //TODO: check in database
-            }
-        }
 
         if(teamCodeChecked){
             //test
@@ -130,31 +112,25 @@ export const TournamentRegisterForm: FC = () => {
     }
 
     const handleChangeTournament = (event: ChangeEvent<{ value: unknown }>) => {
+        let tournament_tmp = event.target.value;
         // @ts-ignore
-        setTournament(event.target.value);
-    }
-
-    const handleCheck = (event: ChangeEvent<HTMLInputElement>) => {
-        setTournamentCodeChecked(event.target.checked);
-        if(event.target.checked){
+        setTournament(tournament_tmp)
+        // @ts-ignore
+        if(tournament_tmp.accessMode === "INVITE_ONLY"){
+            setTournamentOk(false)
             setTournamentCodeVisibility("inline")
-            setTournament({id: -1, name: "", startDate: "", numberOfRounds: 0})
         }
         else{
+            setTournamentOk(true)
             setTournamentCodeVisibility("none")
-            setTournament({id: -1, name: "", startDate: "", numberOfRounds: 0})
         }
     }
 
-    const handleCheckTeam = (event: ChangeEvent<HTMLInputElement>) => {
-        setTeamCodeChecked(event.target.checked);
-        if(event.target.checked){
-            setTeamCodeVisibility("inline")
-        }
-        else{
-            setTeamCodeVisibility("none")
-            setTeam({id: -1, name: ""})
-        }
+    function handleChangeTeam(event: ChangeEvent<{ value: unknown }>) {
+        let team_tmp = event.target.value;
+        setTeamCodeVisibility("inline")
+        // @ts-ignore
+        setTeam(team_tmp)
     }
 
     const addNewTeam = (team) => {
@@ -171,11 +147,11 @@ export const TournamentRegisterForm: FC = () => {
             <IconButton component={Link} to={location.pathname.split("/tournament-register")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>Join tournament</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
-                <FormControl className={styles.form} component={"fieldset"}>
                 <Grid container style={{minWidth: '37vw'}} direction={'row'}>
+                    <FormControl className={styles.form}>
                     <Grid item xs={12} style={{marginBottom: '2em'}}>
                         <InputLabel id="tournamentCode" error={noTournamentPickedError}>{noTournamentPickedError?
-                            "Select open tournament or enter code":"Select one of the open tournaments"}</InputLabel>
+                            "You need to select a tournament":"Select tournament"}</InputLabel>
                         <Select labelId="tournamentCode" id="select" value={tournament} style={{minWidth: '18vw'}} onChange={handleChangeTournament}>
                             {data.map((tournament) => {
                                 // @ts-ignore
@@ -190,68 +166,64 @@ export const TournamentRegisterForm: FC = () => {
                                         <Typography style={{fontSize: '0.8em'}} color="textSecondary">
                                             Number of rounds: {tournament.numberOfRounds}
                                         </Typography>
+                                        <Typography style={{fontSize: '0.8em', color: "#111173"}}>
+                                            {tournament.accessMode==="OPEN"?"Open tournament":"You need an invitation code"}
+                                        </Typography>
                                 </div>
                                 </MenuItem>
                             })}
                         </Select>
                     </Grid>
-                    <Grid item xs={6} className={styles.inlineBlock}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={tournamentCodeChecked}
-                                    onChange={handleCheck}
-                                    name="checked"
-                                    color="primary"
-                                />
-                            }
-                            label="I have tournament code"
-                        />
-                    </Grid>
-                    <Grid item xs={6} style={{display: tournamentCodeVisibility}}>
+                    <Grid item xs={12} style={{display: tournamentCodeVisibility}}>
                         <TextField label="Enter tournament code" error={tournamentCodeError} variant="outlined" onChange={e => setTournamentCode(e.target.value)}/>
                     </Grid>
-                    {tournament.id===-1?null:
+                    </FormControl>
+                    {!tournamentOk?null:
                         <Grid container>
                     <Grid item xs={12}>
                         <h3 style={{marginBottom: '1em'}}>Select team</h3>
                     </Grid>
+                            <Grid item xs={6} style={{marginBottom: '2em'}}>
+                                <FormControl className={styles.form}>
+                                <InputLabel id="teamCode" error={noTeamPickedError}>{noTeamPickedError?
+                                    "Select a team or create new one":"Select team"}</InputLabel>
+                                <Select labelId="teamCode" id="selectTeam" value={team} style={{minWidth: '7vw'}} onChange={handleChangeTeam}>
+                                    {team_data.map((team) => {
+                                        // @ts-ignore
+                                        return <MenuItem value={team} key={team}>
+                                            <div>
+                                                <Typography variant="h6">
+                                                    {team.name}
+                                                </Typography>
+                                            </div>
+                                        </MenuItem>
+                                    })}
+                                </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={6} style={{display: teamCodeVisibility}}>
+                                <TextField label="Enter team code" error={teamCodeError} variant="outlined" onChange={e => setTeamCode(e.target.value)}/>
+                            </Grid>
                     <Grid item xs={12}>
                         <p style={{marginBottom: '1em', color: "red", fontSize: "0.8em"}}>{noTeamPickedError?"Add new team or enter code":""}</p>
                     </Grid>
                     <Grid item xs={12} style={{marginBottom: "1em"}}>
                         <Router>
-                        <Link to={"/create-team"} style={{ textDecoration: 'none' }}>
+                        <Link to={location.pathname+"/add-team"} style={{ textDecoration: 'none' }}>
                             <Button variant="outlined"
                                     color="primary">
                                 Add new team
                             </Button>
                         </Link>
-                            <Route to path={"/create-team"}><TeamForm teamId={-1} tournamentId={tournament.id} addTeam={addNewTeam}/></Route>
+                            <Route to path={location.pathname+"/add-team"}><TeamForm teamId={-1} tournamentId={tournament.id} addTeam={addNewTeam}/></Route>
                         </Router>
                     </Grid>
                     <Grid item xs={12} style={{marginBottom: "1em", display: addedNewTeam}}>
                         <p style={{color: "#3f51b5", fontWeight: "bold"} }>Added new team: {team.name}</p>
                     </Grid>
-                    <Grid item xs={6} className={styles.inlineBlock}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={teamCodeChecked}
-                                    onChange={handleCheckTeam}
-                                    name="checked"
-                                    color="primary"
-                                />
-                            }
-                            label="I have team code"
-                        />
-                    </Grid>
-                    <Grid item xs={6} style={{display: teamCodeVisibility}}>
-                        <TextField label="Enter team code" error={teamCodeError} variant="outlined" onChange={e => setTeamCode(e.target.value)}/>
-                    </Grid>
-                        </Grid>}
+                        </Grid>
+                        }
                 </Grid>
-                </FormControl>
             </DialogContent>
             <DialogActions className={styles.submitAction}>
                 <Router>
@@ -259,7 +231,7 @@ export const TournamentRegisterForm: FC = () => {
                     <Button
                         variant="contained"
                         color="secondary"
-                        onClick={(e) => {tournament.id===-1?checkTournament(e):submitTournamentRequest(e)}}
+                        onClick={(e) => {!tournamentOk?checkTournament(e):submitTournamentRequest(e)}}
                         disabled={tournamentCodeError || teamCodeError || noTournamentPickedError}
                     >SUBMIT</Button>
                 </Link>

@@ -5,14 +5,19 @@ import AddIcon from '@material-ui/icons/Add';
 import moment from "moment/moment";
 import {TournamentRoundForm} from "../tournament-rounds-form";
 import React from "react";
-import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, useLocation} from 'react-router-dom';
 import RoundService from "../../services/RoundService";
+import AuthenticateService from "../../services/AuthenticateService";
+import ReactJson from "react-json-view";
+import LogService from "../../services/LogService";
 
 const roundData = [{number: 1, date: "2021-06-07", numberOfRuns: 100}]
 
-export const TournamentRoundList: FC<{isOrganizer: boolean}> = ({isOrganizer}) =>{
+export const TournamentRoundList: FC = () =>{
     const [rounds, setRounds] = useState<{number: number, date: string, numberOfRuns: number}[]>( [])
     //const [rounds, setRounds] = useState(props.data);
+    const userRole = AuthenticateService.getCurrentUser().roles[0];
+    const location = useLocation()
 
     useEffect(() => {
         RoundService.getRounds().then((res) => {
@@ -44,9 +49,9 @@ export const TournamentRoundList: FC<{isOrganizer: boolean}> = ({isOrganizer}) =
                         </div>
                     </div>
                 </Grid>
-                {isOrganizer?
+                {userRole=="ADMIN"?
                     <Router>
-                        <Button style={{width: '100%'}} component={Link} to={'/tournament-rounds/form'}>
+                        <Button style={{width: '100%'}} component={Link} to={location.pathname+'/tournament-rounds/form'}>
                             <Grid item xs={12}>
                                 <div className={styles.card}>
                                     <div style={{alignItems: 'center'}} className={styles.grid}>
@@ -55,9 +60,9 @@ export const TournamentRoundList: FC<{isOrganizer: boolean}> = ({isOrganizer}) =
                                 </div>
                             </Grid>
                         </Button>
-                        <Route path='/tournament-rounds/form'><TournamentRoundForm
+                        <Route path={location.pathname+'/tournament-rounds/form'}><TournamentRoundForm
                             number={Math.max(...rounds.map(o => o.number), 0)} date={""} data={rounds}
-                            setData={handleSetRounds} numberOfRuns={0} url={window.location.pathname}/></Route>
+                            setData={handleSetRounds} numberOfRuns={0}/></Route>
                     </Router>
                 :null}
             {rounds && rounds.map(function (elem, index){
@@ -65,6 +70,7 @@ export const TournamentRoundList: FC<{isOrganizer: boolean}> = ({isOrganizer}) =
                     if(Date.now() >= Date.parse(elem.date) + 10){ //todo: end date in  database
                         return(
                             <Grid item xs={12}>
+                                <Router>
                                 <div className={styles.card}>
                                         <Grid container direction={"row"} justify={"flex-start"} alignItems={"flex-start"} className={styles.grid}>
                                         <Grid item xs={3}  className={styles.alignItems}>
@@ -75,10 +81,13 @@ export const TournamentRoundList: FC<{isOrganizer: boolean}> = ({isOrganizer}) =
                                             <div className={styles.date}>Ended on {moment(elem.date).format("DD.MM.YYYY")}</div> {/*todo: end date in  database*/}
                                         </Grid>
                                             <Grid item xs={3} className={styles.alignItems}>
-                                                <Button variant={"contained"} color={"primary"}>LOGS</Button>
+                                                <Button variant={"contained"} color={"primary"} component={Link}
+                                                        to={location.pathname+"/round/logs/"+(rounds.length-index)}>LOGS</Button>
                                             </Grid>
                                         </Grid>
                                 </div>
+                                    <Route path={location.pathname+"/round/logs/"+(rounds.length-index)}><RoundLogs id={1}/></Route>
+                                </Router>
                             </Grid>
                         )
                     }
@@ -113,20 +122,36 @@ export const TournamentRoundList: FC<{isOrganizer: boolean}> = ({isOrganizer}) =
                                         <Grid item xs={6} className={styles.alignItems}>
                                             <div className={styles.date}>Starting on {moment(elem.date).format("DD.MM.YYYY")}</div>
                                         </Grid>
-                                        {/*{isOrganizer ?*/}
+                                        {/*{userRole=="ADMIN"?*/}
                                             {/*<Grid item xs={3} className={styles.alignItems}>*/}
                                             {/*    <Button variant={"contained"} color={"secondary"} component={Link}*/}
-                                        {/*            to={'/tournament-rounds/form'}>EDIT</Button>*/}
+                                        {/*            to={location.pathname+'/tournament-rounds/form'}>EDIT</Button>*/}
                                         {/*</Grid>*/}
                                         {/*:null}*/}
                                     </Grid>
                             </div>
-                            <Route path='/tournament-rounds/form'><TournamentRoundForm number={elem.number} date={elem.date} data={rounds} numberOfRuns={elem.numberOfRuns} setData={handleSetRounds} url={window.location.pathname}/></Route> {/*todo: end date in  database*/}
+                            <Route path={location.pathname+"/tournament-rounds/form"}><TournamentRoundForm number={elem.number} date={elem.date} data={rounds} numberOfRuns={elem.numberOfRuns} setData={handleSetRounds}/></Route> {/*todo: end date in  database*/}
                         </Router>
                     </Grid>)
                 }
         })}
             </Grid>
         </div>
+    )
+}
+
+const RoundLogs: FC<{id: number}> = (props: {id}) => {
+    const [data, setData] = useState("")
+
+    const getData = () => {
+        LogService.getLogs(props.id).then((res)=> setData(res.data))
+    }
+
+    useEffect(() =>
+        getData()
+    ,[])
+
+    return(
+        <p>{data}</p>
     )
 }

@@ -2,12 +2,12 @@ import {useEffect, useState} from "react";
 import styles from "../tournament-form/styles.module.css";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import RoundService from "../../services/RoundService";
 
 // @ts-ignore
-export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, setData, url}) => {
+export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, setData}) => {
     let initialDate = (props.date === "") ? getCurrentDate() : props.date;
     let initialNumberOfIterations = props.numberOfRuns;
 
@@ -16,6 +16,8 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, se
 
     const [dateError, setDateError] = useState(false);
     const [numberOfIterationsError, setNumberOfIterationsError] = useState(false);
+
+    const location = useLocation()
 
     useEffect(() => {
         setDateError(false)
@@ -66,7 +68,7 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, se
     let button = (props.date==="") ? "CREATE": "UPDATE";
     return(
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={'/tournament-organizer'} className={styles.closeButton}><CloseIcon/></IconButton>
+            <IconButton component={Link} to={location.pathname.split("/tournament-rounds/form")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>{title}</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
             <TextField error={dateError} fullWidth defaultValue={date} label={dateError?"Start date should be after current date":"Start date"} type="datetime-local"
@@ -75,7 +77,7 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, se
                        <TextField error={numberOfIterationsError} fullWidth defaultValue={numberOfRuns} label={numberOfIterationsError?"Number should be a positive integer"
                            :"Number of runs"} type={"number"} onChange={(e) => setNumberOfIterations(e.target.value)}/>
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(dateError)?"#":props.url}  style={{ textDecoration: 'none' }}>
+                    <Link to={(dateError)?"#":location.pathname.split("/tournament-rounds/form")[0]}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"

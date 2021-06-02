@@ -133,7 +133,7 @@ export const TournamentParticipantView:FC<{id:number}> = (props) => {
                     <GroupListTournamentParticipant data={[...teams]} groupId={1}/>
                 </Grid>
                 <Grid item xs={4} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
-                    <TournamentRoundList isOrganizer={false}/>
+                    <TournamentRoundList/>
                 </Grid>
             </Grid>
             <Route path={location.pathname+"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>

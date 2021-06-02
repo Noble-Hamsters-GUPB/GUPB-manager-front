@@ -25,7 +25,7 @@ export const AccountDetails: FC =  () => {
                     <div className={styles.bolder}>Last name:</div><div>last_name</div>
                 </Grid>
                 <Grid item xs={12}>
-                    <div className={styles.bolder}>E-mail address:</div><div>e-mail</div>
+                    <div className={styles.bolder}>E-mail address:</div><div>{AuthenticateService.getCurrentUser().email}</div>
                 </Grid>
                 {userRole==="STUDENT"?
                     <Grid item xs={12}>

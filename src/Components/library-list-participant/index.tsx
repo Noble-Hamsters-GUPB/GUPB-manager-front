@@ -46,7 +46,7 @@ const updateStatus = ()=>{
 
 }
 
-export const LibraryListParticipant: FC = (props) =>{
+export const LibraryListParticipant: FC<{tournamentId: number}> = (props) =>{
     const classes = useStyles()
     const SOCKET_URL = urls.getSocketUrl();
 
@@ -66,7 +66,7 @@ export const LibraryListParticipant: FC = (props) =>{
 
 
     useEffect(() => {
-        RequirementService.getRequirements().then((res) => {
+        RequirementService.getRequirementsForTournament(props.tournamentId).then((res) => {
             setLibList(res.data)
         })
     }, [])

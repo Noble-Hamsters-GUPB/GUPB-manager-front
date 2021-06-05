@@ -129,7 +129,7 @@ export const TournamentOrganizerView:FC<{id:number}> = (props) => {
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow+" "+styles.bar}/>
                 <Grid item xs={6} className={styles.botStatus+" "+styles.firstRow}>
-                    <LibraryListOrganizer/>
+                    <LibraryListOrganizer tournamentId={props.id}/>
                 </Grid>
                 <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
                     <GroupListTournamentOrganizer data={[...teams]} roundEnd={roundEnd}/>

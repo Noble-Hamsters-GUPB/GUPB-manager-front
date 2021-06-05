@@ -11,6 +11,10 @@ class RoundService {
         return axios.get(ROUND_API_BASE_URL, { headers: authHeader() });
     }
 
+    getRoundsByTournament(tournamentId) {
+        return axios.get(ROUND_API_BASE_URL+"/tournament", tournamentId, { headers: authHeader() });
+    }
+
     createRound(round) {
         return axios.post(ROUND_API_BASE_URL, round, { headers: authHeader() })
     }

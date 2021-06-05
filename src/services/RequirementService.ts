@@ -8,7 +8,11 @@ const REQUIREMENT_API_BASE_URL = urls.getBaseUrl() + "requirements"
 class RequirementService {
 
     getRequirements() {
-        return axios.get(REQUIREMENT_API_BASE_URL, { headers: authHeader() });
+        return axios.get(REQUIREMENT_API_BASE_URL, {headers: authHeader()});
+    }
+
+    getRequirementsForTournament(tournamentId){
+        return axios.get(REQUIREMENT_API_BASE_URL+"/tournament", tournamentId, {headers: authHeader()})
     }
 
     createRequirement(requirement) {

@@ -13,6 +13,14 @@ const TOURNAMENT_API_BASE_URL = urls.getBaseUrl() + "tournaments"
         return axios.get(TOURNAMENT_API_BASE_URL, { headers: authHeader() });
     }
 
+    getTournamentById(id) {
+        return axios.get(TOURNAMENT_API_BASE_URL+"/id", id,{ headers: authHeader() });
+    }
+
+    checkInvitationCode(tournamentId, code){
+        return axios.get(TOURNAMENT_API_BASE_URL+"/code", tournamentId, code, { headers: authHeader() });
+    }
+
     createTournament(tournament) {
         return axios.post(TOURNAMENT_API_BASE_URL, tournament, { headers: authHeader() });
     }

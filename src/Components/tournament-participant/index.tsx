@@ -127,7 +127,7 @@ export const TournamentParticipantView:FC<{id:number}> = (props) => {
                     <BotStatus/>
                 </Grid>
                 <Grid item xs={4} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
-                    <LibraryListParticipant/>
+                    <LibraryListParticipant tournamentId={props.id}/>
                 </Grid>
                 <Grid item xs={4} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
                     <GroupListTournamentParticipant data={[...teams]} groupId={1}/>

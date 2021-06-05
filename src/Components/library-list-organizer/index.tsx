@@ -44,7 +44,7 @@ const updateStatus = ()=>{
 
 }
 
-export const LibraryListOrganizer: FC = (props) =>{
+export const LibraryListOrganizer: FC<{tournamentId: number}> = ({tournamentId}) =>{
     const classes = useStyles()
     const SOCKET_URL = urls.getSocketUrl();
 
@@ -54,7 +54,7 @@ export const LibraryListOrganizer: FC = (props) =>{
 
 
     useEffect(() => {
-        RequirementService.getRequirements().then((res) => {
+        RequirementService.getRequirementsForTournament(tournamentId).then((res) => {
             setLibList(res.data)
         })
     }, [])

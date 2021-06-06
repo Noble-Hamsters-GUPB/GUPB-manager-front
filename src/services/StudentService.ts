@@ -3,7 +3,7 @@ import {urls} from "./BaseUrl";
 
 const axios = require("axios").default;
 
-const STUDENT_API_BASE_URL = urls.getBaseUrl() + "student"
+const STUDENT_API_BASE_URL = urls.getBaseUrl() + "students"
 
 class StudentService {
 
@@ -13,6 +13,10 @@ class StudentService {
 
     getStudentsNotInTournament(tournamentId) {
         return axios.get(STUDENT_API_BASE_URL+"/not_in_tournament", tournamentId, { headers: authHeader() })
+    }
+
+    createStudent(student) {
+        return axios.post(STUDENT_API_BASE_URL, student, { headers: authHeader() })
     }
 
 }

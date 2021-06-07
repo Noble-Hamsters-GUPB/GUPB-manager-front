@@ -8,8 +8,8 @@ class AuthenticationService {
     login = (email, password) => {
         return axios
             .post(AUTHENTICATION_API_BASE_URL, {
-                "emailAddress":email,
-                "password":password
+                "emailAddress": email,
+                "password": password
             })
             .then((response) => {
                 if (response.data.accessToken) {

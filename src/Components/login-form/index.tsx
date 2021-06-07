@@ -86,6 +86,12 @@ export const LoginForm: FC = (props) => {
         event.preventDefault();
     };
 
+    function handleKeyDown(e) {
+        if(e.key === "Enter"){
+            submitLogin(e)
+        }
+    }
+
     return (
         <Dialog open={true} className={styles.formDialog}>
             <IconButton component={Link} to={location.pathname.split("/login")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
@@ -99,6 +105,7 @@ export const LoginForm: FC = (props) => {
                     fullWidth
                     label={passwordError===""?"Password":passwordError}
                     onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     InputProps={{
                     endAdornment: (
                         <InputAdornment position="end">

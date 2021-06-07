@@ -8,20 +8,21 @@ import React from "react";
 import {BrowserRouter as Router, Link, Route, useLocation} from 'react-router-dom';
 import AuthenticateService from "../../services/AuthenticateService";
 import LogService from "../../services/LogService";
+import RoundService from "../../services/RoundService";
 
 
 export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, number: number,date: string, completedRuns: number,
         numberOfRuns: number, pathToLogs: string}[], tournamentId: number}> = (props ) =>{
 
     const [rounds, setRounds] = useState<{id: number,tournament: string, number: number,date: string, completedRuns: number,
-        numberOfRuns: number, pathToLogs: string}[]>( [])
-
-    const userRole = AuthenticateService.getCurrentUser().roles[0];
-    const location = useLocation()
+        numberOfRuns: number, pathToLogs: string}[]>([])
 
     useEffect(() => {
         setRounds(props.rounds)
-    }, [])
+    }, [props.rounds])
+
+    const userRole = AuthenticateService.getCurrentUser().roles[0];
+    const location = useLocation()
 
     function sortData(){
         if(rounds) {
@@ -31,7 +32,8 @@ export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, nu
     }
 
     let handleSetRounds = (data) => {
-        setRounds(data)
+        setRounds([...rounds, data])
+        sortData()
     }
 
     sortData()
@@ -58,8 +60,8 @@ export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, nu
                             </Grid>
                         </Button>
                         <Route path={location.pathname+'/tournament-rounds/form'}><TournamentRoundForm
-                            number={Math.max(...rounds.map(o => o.id), 0)} date={""} data={rounds}
-                            setData={handleSetRounds} numberOfRuns={0}/></Route>
+                            date={""} data={rounds}
+                            setData={handleSetRounds} numberOfRuns={0} tournamentId={props.tournamentId}/></Route>
                     </Router>
                 :null}
             {rounds && rounds.map(function (elem, index){
@@ -127,7 +129,7 @@ export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, nu
                                         {/*:null}*/}
                                     </Grid>
                             </div>
-                            <Route path={location.pathname+"/tournament-rounds/form"}><TournamentRoundForm date={""} numberOfRuns={0} tournamentId={props.tournamentId} data={[...rounds]} setData={handleSetRounds}/></Route>
+                            <Route path={location.pathname+"/tournament-rounds/form"}><TournamentRoundForm date={""} numberOfRuns={0} tournamentId={props.tournamentId} data={rounds} setData={handleSetRounds}/></Route>
                         </Router>
                     </Grid>)
                 }

@@ -45,12 +45,14 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
     const [tournament, setTournament] = useState<{id: number, name: string, accessMode: string, creator: string,
         githubLink: string, moduleName: string, branchName: string, invitationCode: string}>(
             {id: -1, name: "", accessMode: "", creator: "", githubLink:"", moduleName: "", branchName: "", invitationCode: ""})
-    const [rounds, setRounds] = useState<{id: number,tournament: string, number: number,date: string, completedRuns: number,
-        numberOfRuns: number, pathToLogs: string}[]>( [])
+
     const user = AuthenticateService.getCurrentUser();
-    const nextRound = rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
+    const nextRound = props.rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
         (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[0]
-    const timeToRoundEnd =  (Date.parse(nextRound.date) - Date.now())/1000;
+    let timeToRoundEnd;
+    if(nextRound !== undefined) {
+        timeToRoundEnd = (Date.parse(nextRound.date) - Date.now()) / 1000; //todo: what to do if nextRound is undefined?
+    }
 
     const classes = useStyles()
     const path = useLocation().pathname
@@ -64,10 +66,6 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
             (error) => {
                 AuthenticateService.logout();
             })
-    }, [])
-
-    useEffect(() => {
-        setRounds(props.rounds)
     }, [])
 
     useEffect(() => {
@@ -136,7 +134,7 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
                 <Grid item xs={2} className={styles.progression+" "+styles.firstRow+" "+styles.bar}>
-                    <TournamentProgression time={timeToRoundEnd} currentRound={nextRound.number} maxRounds={rounds.length}/>
+                    {nextRound !== undefined ? <TournamentProgression time={timeToRoundEnd} currentRound={nextRound.number} maxRounds={props.rounds.length}/> : null} {/*todo: what to do if nextRound is undefined?*/}
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
                 <Grid item xs={6} className={styles.botStatus+" "+styles.bar}>
@@ -149,7 +147,7 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
                     <GroupListTournamentParticipant data={[...teams]} groupId={1}/>
                 </Grid>
                 <Grid item xs={4} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
-                    <TournamentRoundList rounds={[...rounds]} tournamentId={props.id}/>
+                    <TournamentRoundList rounds={props.rounds} tournamentId={props.id}/>
                 </Grid>
             </Grid>
             <Route path={location.pathname+"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>

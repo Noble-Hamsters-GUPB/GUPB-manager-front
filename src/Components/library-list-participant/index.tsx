@@ -85,13 +85,13 @@ export const LibraryListParticipant: FC<{tournamentId: number}> = (props) =>{
         libraryCopy.status = "PENDING"
 
         RequirementService.updateRequirement(libraryCopy, libraryCopy.id).then(res => {
-            setLibList(libList.map((lib) => {
-                if (lib.id == library.id) {
-                    lib.status = "PENDING"
-                }
-                return lib;
-            }))
-        })
+            // setLibList(libList.map((lib) => {
+            //     if (lib.id == library.id) {
+            //         lib.status = "PENDING"
+            //     }
+            //     return lib;
+            // }))
+        }).catch(error => alert(error))
     }
 
     const requestAdd = (library) => {

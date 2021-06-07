@@ -59,87 +59,89 @@ export const RegistrationForm: FC = (props) => {
         setIndexError("");
     },[index])
 
-    const submitRegistration = (e) => {
+    const submitRegistration = async (e) => {
         let errorFlag = false;
 
-        if(email === ""){
+        if (email === "") {
             setEmailError("E-mail address cannot be empty");
             errorFlag = true;
         }
 
-        if(!email.match(/.+@.+\..+/)){
+        if (!email.match(/.+@.+\..+/)) {
             setEmailError("Invalid e-mail");
             errorFlag = true;
         }
 
-        if(false/*todo: validate email*/){
+        if (false/*todo: validate email*/) {
             setEmailError("E-mail already taken");
             errorFlag = true;
         }
 
-        if(password === "") {
+        if (password === "") {
             setPasswordError("Password cannot be empty");
             errorFlag = true;
         }
 
-        if(! /[ `!@#$%^&*()_+\-=\]{};':"\\|,.<>?~]/.test(password)){
+        if (!/[ `!@#$%^&*()_+\-=\]{};':"\\|,.<>?~]/.test(password)) {
             setPasswordError("Password should contain at least one special character")
             errorFlag = true
         }
 
-        if(! /\d/.test(password)) {
+        if (!/\d/.test(password)) {
             setPasswordError("Password should contain at least one number")
             errorFlag = true
         }
 
-        if(password.length < 8 ) {
+        if (password.length < 8) {
             setPasswordError("Password should contain at least 8 characters")
             errorFlag = true
         }
 
-        if(password2 === "") {
+        if (password2 === "") {
             setPassword2Error("Password confirmation cannot be empty");
             errorFlag = true;
         }
 
-        if(password!==password2){
+        if (password !== password2) {
             setPassword2Error("Passwords don't match");
             errorFlag = true;
         }
 
-        if(firstName === ""){
+        if (firstName === "") {
             setFirstNameError("First name cannot be empty");
             errorFlag = true;
         }
 
-        if(lastName === ""){
+        if (lastName === "") {
             setLastNameError("Last name cannot be empty");
             errorFlag = true;
         }
 
-        if(index === ""){
+        if (index === "") {
             setIndexError("Index number cannot be empty");
             errorFlag = true;
         }
 
-        if(!/^(\d{6})$/.test(index)){
+        if (!/^(\d{6})$/.test(index)) {
             setIndexError("Invalid index number")
             errorFlag = true
         }
 
-        if(false/*todo: validate index number*/){
+        if (false/*todo: validate index number*/) {
             setIndexError("Student with this index number is already registered");
             errorFlag = true;
         }
 
-        if(errorFlag){
+        if (errorFlag) {
             e.preventDefault();
             return;
         }
 
-        StudentService.createStudent({firstName: firstName, lastName: lastName, indexNumber: index
-            , emailAddress: email, password: password}).then((res) =>
-        AuthenticateService.login(email, password))
+        await StudentService.createStudent({
+            firstName: firstName, lastName: lastName, indexNumber: index
+            , emailAddress: email, password: password
+        }).then(async (res) =>
+            await AuthenticateService.login(email, password))
     }
 
     return (

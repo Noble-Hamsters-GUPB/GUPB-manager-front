@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import styles from "../tournament-form/styles.module.css";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -7,7 +7,6 @@ import TextField from "@material-ui/core/TextField";
 import RoundService from "../../services/RoundService";
 
 
-// @ts-ignore
 export const TournamentRoundForm: FC<{date: string, numberOfRuns: number, tournamentId: number,
     data: {id: number,tournament: string, number: number,date: string, completedRuns: number,
         numberOfRuns: number, pathToLogs: string}[], setData: any}> = (props) => {
@@ -53,19 +52,22 @@ export const TournamentRoundForm: FC<{date: string, numberOfRuns: number, tourna
 
         if(props.date === ""){
             newRound = {date: date, numberOfRuns: numberOfRuns, tournamentId: props.tournamentId}
-            RoundService.createRound(newRound)
+            RoundService.createRound(newRound).then(res => {
+                props.setData(newRound)
+            }).catch(error => alert(error)) //todo: better error handler
         }
         else {
             newRound = {date: date, numberOfRuns: numberOfRuns, tournamentId: props.tournamentId}
         }
     }
 
-    const isPositiveInteger = (n:string) =>{
-        return !isNaN(parseFloat(n)) && (parseFloat(n) > 0) && ((parseFloat(n) % 1) == 0);
+    const isPositiveInteger = (n: number) =>{
+        return !isNaN(n) && (n > 0) && ((n % 1) == 0);
     }
 
     let title = (props.date==="") ? "New round": "Edit round";
     let button = (props.date==="") ? "CREATE": "UPDATE";
+
     return(
         <Dialog open={true} className={styles.formDialog}>
             <IconButton component={Link} to={location.pathname.split("/tournament-rounds/form")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
@@ -75,7 +77,7 @@ export const TournamentRoundForm: FC<{date: string, numberOfRuns: number, tourna
                        onChange={(e) => setDate(e.target.value)}/>
 
                        <TextField error={numberOfIterationsError} fullWidth defaultValue={numberOfRuns} label={numberOfIterationsError?"Number should be a positive integer"
-                           :"Number of runs"} type={"number"} onChange={(e) => setNumberOfIterations(e.target.value)}/>
+                           :"Number of runs"} type={"number"} onChange={(e) => setNumberOfIterations(parseFloat(e.target.value))}/>
                 <DialogActions className={styles.submitAction}>
                     <Link to={(dateError)?"#":location.pathname.split("/tournament-rounds/form")[0]}  style={{ textDecoration: 'none' }}>
                         <Button

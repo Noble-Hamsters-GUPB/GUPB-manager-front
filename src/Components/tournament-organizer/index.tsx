@@ -54,12 +54,7 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
         githubLink: string, moduleName: string, branchName: string, invitationCode: string}>(
         {id: -1, name: "", accessMode: "", creator: "", githubLink:"", moduleName: "", branchName: "", invitationCode: ""})
 
-    const [rounds, setRounds] = useState<{id: number,tournament: string, number: number,date: string, completedRuns: number,
-        numberOfRuns: number, pathToLogs: string}[]>( [])
-
-    const nextRound = rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
-        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[0]
-    const timeToRoundEnd =  (Date.parse(nextRound.date) - Date.now())/1000;
+    const rounds = props.rounds
 
     const user = AuthenticateService.getCurrentUser();
 
@@ -72,9 +67,17 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
             })
     }, [])
 
-    useEffect(() => {
-        setRounds(props.rounds)
-    }, [])
+    // useEffect(() => {
+    //     setRounds(props.rounds)
+    // }, [])
+
+    const nextRound = rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
+        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[0]
+
+    let timeToRoundEnd;
+    if(nextRound !== undefined) {
+        timeToRoundEnd = (Date.parse(nextRound.date) - Date.now()) / 1000; //todo: what to do if nextRound is undefined?
+    }
 
     const closeTournamentList = () => {
         setTournamentListOpen(false);
@@ -129,17 +132,17 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
                 <Grid item xs={2} className={styles.progression+" "+styles.firstRow+" "+styles.bar}>
-                    <TournamentProgression time={timeToRoundEnd} currentRound={nextRound.number} maxRounds={rounds.length}/>
+                    {nextRound !== undefined ? <TournamentProgression time={timeToRoundEnd} currentRound={nextRound.number} maxRounds={rounds.length}/> : null} {/*todo: what to do if nextRound is undefined?*/}
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow+" "+styles.bar}/>
                 <Grid item xs={6} className={styles.botStatus+" "+styles.firstRow}>
                     <LibraryListOrganizer tournamentId={props.id}/>
                 </Grid>
                 <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
-                    <GroupListTournamentOrganizer data={[...teams]} roundEnd={nextRound.date}/>
+                    {nextRound !== undefined ? <GroupListTournamentOrganizer data={[...teams]} roundEnd={nextRound.date}/> : null} {/*todo: what to do if nextRound is undefined?*/}
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
-                    <TournamentRoundList  rounds={[...rounds] } tournamentId={props.id}/>
+                    <TournamentRoundList  rounds={rounds} tournamentId={props.id}/>
                 </Grid>
             </Grid>
                 <Route path={location.pathname+"/tournaments"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>

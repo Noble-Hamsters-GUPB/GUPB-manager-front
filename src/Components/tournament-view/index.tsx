@@ -15,14 +15,14 @@ export const TournamentView:FC<{match}> =  (props) => {
             setRounds(res.data)
         })
     }, [])
-    console.log(props.match);
+
     return <div>
         {(() => {
           if(userRole==="ADMIN"){
-              return <TournamentOrganizerView id={props.match.params.id} rounds={[...rounds]}/>;
+              return <TournamentOrganizerView id={props.match.params.id} rounds={rounds}/>;
           }
           if(userRole==="STUDENT"){
-              return <TournamentParticipantView id={props.match.params.id} rounds={[...rounds]}/>;
+              return <TournamentParticipantView id={props.match.params.id} rounds={rounds}/>;
           }
           history.push("/login");
         })()}

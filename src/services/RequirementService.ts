@@ -20,11 +20,11 @@ class RequirementService {
     }
 
     updateRequirement(requirement, requirementId) {
-        return axios.put(REQUIREMENT_API_BASE_URL + '/' + requirementId, requirement, {headers: authHeader()});
+        return axios.put(REQUIREMENT_API_BASE_URL, requirement, {params: {id: requirementId,}, headers: authHeader()});
     }
 
     deleteRequirement(requirementId) {
-        return axios.delete(REQUIREMENT_API_BASE_URL + '/' + requirementId, {headers: authHeader()});
+        return axios.delete(REQUIREMENT_API_BASE_URL, {params: {id: requirementId}, headers: authHeader()});
     }
 
 }

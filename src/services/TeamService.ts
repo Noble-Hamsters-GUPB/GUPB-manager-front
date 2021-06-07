@@ -19,6 +19,10 @@ class TeamService {
         return axios.get(TEAM_API_BASE_URL+"/code", teamId, code, { headers: authHeader() })
     }
 
+    joinTeam(teamId, studentId) {
+        return axios.post(TEAM_API_BASE_URL+"/join", teamId, studentId, { headers: authHeader() })
+    }
+
     createTeam(team) {
         return axios.post(TEAM_API_BASE_URL, team, { headers: authHeader() })
     }

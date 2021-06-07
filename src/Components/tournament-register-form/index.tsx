@@ -16,23 +16,30 @@ import TextField from "@material-ui/core/TextField";
 import {Link, Route, useLocation, BrowserRouter as Router} from 'react-router-dom';
 import React from "react";
 import {TeamForm} from "../team-form";
+import TournamentService from "../../services/TournamentService";
+import TeamService from "../../services/TeamService";
+import AuthenticateService from "../../services/AuthenticateService";
+import {TournamentView} from "../tournament-view";
 
-let data = [{id: 1, name: "Ekstraklasa", startDate: "12-05-2021", numberOfRounds: 5, accessMode: "OPEN"},
+/*let data = [{id: 1, name: "Ekstraklasa", startDate: "12-05-2021", numberOfRounds: 5, accessMode: "OPEN"},
     {id: 2, name: "Okręgówka", startDate: "16-04-2021", numberOfRounds: 10, accessMode: "INVITE_ONLY"},
-    {id: 3, name: "Superpuchar", startDate: "30-05-2021", numberOfRounds: 9, accessMode: "OPEN"}]
+    {id: 3, name: "Superpuchar", startDate: "30-05-2021", numberOfRounds: 9, accessMode: "OPEN"}]*/
 
-let team_data = [{id: 1, name: "Kojoty"}, {id: 2, name: "Kotki"}, {id: 3, name: "Żyrafy"}]
+/*let team_data = [{id: 1, name: "Kojoty"}, {id: 2, name: "Kotki"}, {id: 3, name: "Żyrafy"}]*/
 
 export const TournamentRegisterForm: FC = () => {
     const [tournamentCode, setTournamentCode] = useState("")
     const [teamCode, setTeamCode] = useState("")
-    const [tournament, setTournament] = useState({id: -1, name: "", startDate: "", numberOfRounds: 0, accessMode: ""});
+    const [tournamentData, setTournamentData] = useState([{id: -1, name: "", accessMode: "", creator: "", githubLink:"", moduleName: "", branchName: "", invitationCode: ""}])
+    const [tournament, setTournament] = useState({id: -1, name: "", accessMode: "", creator: "", githubLink:"", moduleName: "", branchName: "", invitationCode: ""});
     const [tournamentOk, setTournamentOk] = useState(false)
     const [tournamentCodeVisibility, setTournamentCodeVisibility] = useState("none")
-    const [teamCodeChecked, setTeamCodeChecked] = useState(false)
     const [teamCodeVisibility, setTeamCodeVisibility] = useState("none")
-    const [team, setTeam] = useState({id: -1, name: ""})
+    const [team, setTeam] = useState({id: -1, tournament: "", students: [], name: "", githubLink: "",
+        mainClassName: "", branchName: "", playerName: "", playerStatus: "", lastUpdated: "", message: "", totalPoints: "", invitationCode: ""})
     const [addedNewTeam, setAddedNewTeam] = useState("none")
+    const [teamData, setTeamData] = useState([{id: -1, tournament: "", students: [], name: "", githubLink: "",
+        mainClassName: "", branchName: "", playerName: "", playerStatus: "", lastUpdated: "", message: "", totalPoints: "", invitationCode: ""}])
 
     const [tournamentCodeError, setTournamentCodeError] = useState(false)
     const [teamCodeError, setTeamCodeError] = useState(false)
@@ -40,6 +47,10 @@ export const TournamentRegisterForm: FC = () => {
     const [noTeamPickedError, setNoTeamPickedError] = useState(false)
 
     const location = useLocation()
+
+    useEffect(() => {
+        TournamentService.getTournaments().then((res) => setTournamentData(res.data))
+    }, [])
 
     useEffect(() => {
         setTournamentCodeError(false)
@@ -74,9 +85,13 @@ export const TournamentRegisterForm: FC = () => {
                 setTournamentCodeError(true)
             }
             else{
-                //TODO: check tournament code in database
-                setTournamentCodeError(false)
-                setTournamentOk(true)
+                if(tournament.invitationCode === tournamentCode) {
+                    TeamService.getTeamsForTournament(tournament.id).then((res) => {
+                        setTeamData(res.data)
+                    })
+                    setTournamentCodeError(false)
+                    setTournamentOk(true)
+                }
             }
         }
 
@@ -87,21 +102,38 @@ export const TournamentRegisterForm: FC = () => {
     const submitTournamentRequest = (e) => {
         let errorFlag = false;
 
-        //TODO: need some backend validation for tournament code and team code
-
-
-
-        if(teamCodeChecked){
-            //test
-            if(teamCode === 'abcd') {
-                setTeam({id: 1, name: "Lemury"})
+        if(tournament.accessMode === "INVITE_ONLY"){
+            if(tournamentCode === "") {
+                setTournamentCodeError(true)
+                errorFlag = true
             }
+            else{
+                if(tournament.invitationCode === tournamentCode) {
+                    TeamService.getTeamsForTournament(tournament.id).then((res) => {
+                        setTeamData(res.data)
+                    })
+                    setTournamentCodeError(false)
+                    setTournamentOk(true)
+                }
+                else{
+                    errorFlag = true
+                }
+            }
+        }
+
+        if(addedNewTeam==="none"){
             if(teamCode === ""){
                 setTeamCodeError(true)
                 errorFlag = true
             }
             else{
-                //TODO: check in database
+                if(team.invitationCode === teamCode){
+                    setTeamCodeError(false)
+                }
+                else{
+                    setTeamCodeError(true)
+                    errorFlag = true
+                }
             }
         }
 
@@ -123,6 +155,9 @@ export const TournamentRegisterForm: FC = () => {
         else{
             setTournamentOk(true)
             setTournamentCodeVisibility("none")
+            TeamService.getTeamsForTournament(tournament.id).then((res) => {
+                setTeamData(res.data)
+            })
         }
     }
 
@@ -139,7 +174,7 @@ export const TournamentRegisterForm: FC = () => {
     }
 
     const getTournament = () => {
-        return data.find(element => element.id === tournament.id) || {id: "", name: "", startDate: "", numberOfRounds: ""};
+        return tournamentData.find(element => element.id === tournament.id) || {id: "", name: "", startDate: "", numberOfRounds: ""};
     }
 
     return(
@@ -153,7 +188,7 @@ export const TournamentRegisterForm: FC = () => {
                         <InputLabel id="tournamentCode" error={noTournamentPickedError}>{noTournamentPickedError?
                             "You need to select a tournament":"Select tournament"}</InputLabel>
                         <Select labelId="tournamentCode" id="select" value={tournament} style={{minWidth: '18vw'}} onChange={handleChangeTournament}>
-                            {data.map((tournament) => {
+                            {tournamentData.filter((elem) => elem.id!=-1).map((tournament) => {
                                 // @ts-ignore
                                 return <MenuItem value={tournament} key={tournament}>
                                     <div>
@@ -161,10 +196,7 @@ export const TournamentRegisterForm: FC = () => {
                                             {tournament.name}
                                         </Typography>
                                         <Typography color="textSecondary">
-                                            Starts on {tournament.startDate}
-                                        </Typography>
-                                        <Typography style={{fontSize: '0.8em'}} color="textSecondary">
-                                            Number of rounds: {tournament.numberOfRounds}
+                                            Github:  {tournament.githubLink}
                                         </Typography>
                                         <Typography style={{fontSize: '0.8em', color: "#111173"}}>
                                             {tournament.accessMode==="OPEN"?"Open tournament":"You need an invitation code"}
@@ -188,7 +220,7 @@ export const TournamentRegisterForm: FC = () => {
                                 <InputLabel id="teamCode" error={noTeamPickedError}>{noTeamPickedError?
                                     "Select a team or create new one":"Select team"}</InputLabel>
                                 <Select labelId="teamCode" id="selectTeam" value={team} style={{minWidth: '7vw'}} onChange={handleChangeTeam}>
-                                    {team_data.map((team) => {
+                                    {teamData.map((team) => {
                                         // @ts-ignore
                                         return <MenuItem value={team} key={team}>
                                             <div>
@@ -205,7 +237,7 @@ export const TournamentRegisterForm: FC = () => {
                                 <TextField label="Enter team code" error={teamCodeError} variant="outlined" onChange={e => setTeamCode(e.target.value)}/>
                             </Grid>
                     <Grid item xs={12}>
-                        <p style={{marginBottom: '1em', color: "red", fontSize: "0.8em"}}>{noTeamPickedError?"Add new team or enter code":""}</p>
+                        <p style={{marginBottom: '1em', color: "red", fontSize: "0.8em"}}>{noTeamPickedError?"Add new team or pick one from existing":""}</p>
                     </Grid>
                     <Grid item xs={12} style={{marginBottom: "1em"}}>
                         <Router>
@@ -235,16 +267,22 @@ export const TournamentRegisterForm: FC = () => {
                         disabled={tournamentCodeError || teamCodeError || noTournamentPickedError}
                     >SUBMIT</Button>
                 </Link>
-                    <Route to path='/tournament-register-confirm'><TournamentRegisterFormConfirm tournament={tournament} team={team} returnLink={location.pathname.split("/tournament-register")[0]}/></Route>
+                    <Route to path='/tournament-register-confirm'><TournamentRegisterFormConfirm tournament={tournament} team={team} isTeamCreated={addedNewTeam==="inline"}/></Route>
                 </Router>
             </DialogActions>
         </Dialog>
     )
 }
 
-const TournamentRegisterFormConfirm = (props: {tournament, team, returnLink}) => {
+const TournamentRegisterFormConfirm = (props: {tournament, team, isTeamCreated}) => {
     const addToTournament = () => {
-        //TODO: backend - add team/user to tournament
+        if(props.isTeamCreated){
+            props.team.tournament = props.tournament
+            TeamService.createTeam(props.team)
+        }
+        else{
+            TeamService.joinTeam(props.team.id, AuthenticateService.getCurrentUser().id)
+        }
     }
 
     return(
@@ -287,19 +325,22 @@ const TournamentRegisterFormConfirm = (props: {tournament, team, returnLink}) =>
             </Grid>
             </DialogContent>
             <DialogActions className={styles.submitAction}>
+                <Router>
                     <Link to={"/tournament-register"}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="outlined"
                             color="primary"
                         >CANCEL</Button>
                     </Link>
-                    <Link to={"#"}  style={{ textDecoration: 'none' }}>
+                    <Link to={"/tournament/"+props.tournament.id}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"
                             onClick={addToTournament}
                         >OK</Button>
                     </Link>
+                    <Route path={"/tournament/:" + props.tournament.id} component={TournamentView}/>
+                </Router>
             </DialogActions>
         </Dialog>
     )

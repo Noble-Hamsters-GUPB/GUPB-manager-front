@@ -6,16 +6,16 @@ import moment from "moment/moment";
 import {TournamentRoundForm} from "../tournament-rounds-form";
 import React from "react";
 import {BrowserRouter as Router, Link, Route, useLocation} from 'react-router-dom';
-import RoundService from "../../services/RoundService";
 import AuthenticateService from "../../services/AuthenticateService";
-import ReactJson from "react-json-view";
 import LogService from "../../services/LogService";
 
 
 export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, number: number,date: string, completedRuns: number,
         numberOfRuns: number, pathToLogs: string}[], tournamentId: number}> = (props ) =>{
+
     const [rounds, setRounds] = useState<{id: number,tournament: string, number: number,date: string, completedRuns: number,
         numberOfRuns: number, pathToLogs: string}[]>( [])
+
     const userRole = AuthenticateService.getCurrentUser().roles[0];
     const location = useLocation()
 

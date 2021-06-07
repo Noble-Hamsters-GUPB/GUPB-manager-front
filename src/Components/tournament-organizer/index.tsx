@@ -39,7 +39,12 @@ const useStyles = makeStyles(theme => ({
 export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tournament: string, number: number,date: string, completedRuns: number,
     numberOfRuns: number, pathToLogs: string}[]}> = (props) => {
     const location = useLocation();
-    const [teams, setTeams] = useState([])
+
+    const [teams, setTeams] = useState<{id: number, tournament: string, students: [], name: string, githubLink: string,
+        mainClassName: string, branchName: string, playerName: string, playerStatus: string, lastUpdated: string, message:
+            string, totalPoints: number, invitationCode: string}[]>([{id: -1, tournament: "", students: [], name: "", githubLink: "",
+        mainClassName: "", branchName: "", playerName: "", playerStatus: "", lastUpdated: "", message: "", totalPoints: -1, invitationCode: ""}])
+
     const history = useHistory();
     const classes = useStyles()
     const [drawerState, setDrawerState] = useState(false)
@@ -59,7 +64,7 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
     const user = AuthenticateService.getCurrentUser();
 
     useEffect(() => {
-        TeamService.getTeams().then((res) => {
+        TeamService.getTeamsForTournament(props.id).then((res) => {
             setTeams(res.data);
         },
             (error) => {

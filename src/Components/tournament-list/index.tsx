@@ -23,6 +23,11 @@ import {TournamentProgression} from "../tournament-progression";
 import {BotStatus} from "../bot-status";
 import {GroupListTournament} from "../tournament-list-group-list";
 import {GroupListTournamentParticipant} from "../tournament-group-list-participant"
+import AuthenticateService from "../../services/AuthenticateService";
+import StudentService from "../../services/StudentService";
+import set = Reflect.set;
+import RoundService from "../../services/RoundService";
+import TeamService from "../../services/TeamService";
 
 const OffsetBadge = withStyles((theme: Theme) =>
     createStyles({
@@ -51,18 +56,48 @@ const useStyles = makeStyles({
 
 export const TournamentList: FC = (props) => {
     const styles = useStyles();
+    const user = AuthenticateService.getCurrentUser().id;
 
     const {path} = useRouteMatch();
-    const [tournaments, setTournaments] = useState([{name: "mleko"}, {name: "jajka"}]);
+    const [tournaments, setTournaments] = useState<{id: number, name: string, accessMode: string, creator: string,
+        githubLink: string, moduleName: string, branchName: string, invitationCode: string}[]>([]);
 
-    // useEffect(() => {
-    //     console.log("useEffect ran")
-    //     TournamentService.getTournaments().then(res => console.log(res))
-    // }, tournaments)
+     useEffect(() => {
+         StudentService.getTournamentsForStudent(user).then((res) => {
+             setTournaments(res.data)
+         })
+     }, [])
 
     return (
         <div>
             {tournaments.map((tournament) => {
+                const [rounds, setRounds] = useState<{id: number,tournament: string, number: number, date: string, completedRuns: number,
+                    numberOfRuns: number, pathToLogs: string}[]>( [])
+
+                const [teams, setTeams] = useState<{id: number, tournament: string, students: [], name: string, githubLink: string,
+                    mainClassName: string, branchName: string, playerName: string, playerStatus: string, lastUpdated: string, message:
+                        string, totalPoints: number, invitationCode: string}[]>([{id: -1, tournament: "", students: [], name: "", githubLink: "",
+                    mainClassName: "", branchName: "", playerName: "", playerStatus: "", lastUpdated: "", message: "", totalPoints: -1, invitationCode: ""}])
+
+                const nextRound = rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
+                    (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[0]
+
+                const timeToRoundEnd =  (Date.parse(nextRound.date) - Date.now())/1000;
+
+                useEffect(() => {
+                    TeamService.getTeamsForTournament(tournament.id).then((res) => {
+                            setTeams(res.data);
+                        },
+                        (error) => {
+                            AuthenticateService.logout();
+                        })
+                }, [])
+
+                useEffect(() => {
+                    RoundService.getRoundsByTournament(tournament.id).then((res) => {
+                        setRounds(res.data)
+                    })
+                }, [])
                 return <Accordion>
                     <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
                         <OffsetBadge
@@ -74,23 +109,16 @@ export const TournamentList: FC = (props) => {
                         <IconButton className={styles.moreIcon} onClickCapture={(e) => {
                             e.stopPropagation()
                         }}>
-                            <MoreHorizIcon></MoreHorizIcon>
+                            <MoreHorizIcon/>
                         </IconButton>
                     </AccordionSummary>
                     <AccordionDetails>
                         <Grid container>
                             <Grid item xs>
-                                <TournamentProgression currentRound={1} maxRounds={21} time={1}/>
+                                <TournamentProgression currentRound={nextRound.number} maxRounds={rounds.length} time={timeToRoundEnd}/>
                             </Grid>
                             <Grid item xs={9} className={styles.groupList}>
-                                <GroupListTournament data={[
-                                    {id: 12, name: "jajka", totalPoints: 100},
-                                    {id: 1, name: "ser", totalPoints: 100},
-                                    {id: 3, name: "mleko", totalPoints: 100},
-                                    {id: 4, name: "kiełbaska", totalPoints: 100},
-                                    {id: 4, name: "parówa", totalPoints: 100},
-                                    {id: 4, name: "ziemniaczki", totalPoints: 100}
-                                ]} roundEnd={1}/>
+                                <GroupListTournament data={[...teams]} roundEnd={nextRound.date}/>
                             </Grid>
                         </Grid>
                     </AccordionDetails>

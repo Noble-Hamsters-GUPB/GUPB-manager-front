@@ -44,8 +44,14 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
     const classes = useStyles()
     const [drawerState, setDrawerState] = useState(false)
     const [tournamentListOpen, setTournamentListOpen] = useState(true)
+
+    const [tournament, setTournament] = useState<{id: number, name: string, accessMode: string, creator: string,
+        githubLink: string, moduleName: string, branchName: string, invitationCode: string}>(
+        {id: -1, name: "", accessMode: "", creator: "", githubLink:"", moduleName: "", branchName: "", invitationCode: ""})
+
     const [rounds, setRounds] = useState<{id: number,tournament: string, number: number,date: string, completedRuns: number,
         numberOfRuns: number, pathToLogs: string}[]>( [])
+
     const nextRound = rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
         (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[0]
     const timeToRoundEnd =  (Date.parse(nextRound.date) - Date.now())/1000;
@@ -114,7 +120,7 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
                         </Drawer>
                 </Grid>
                 <Grid item xs={11} style={{minHeight: "10vh"}}>
-                    <TournamentHeader/>
+                    <TournamentHeader name={tournament.name}/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
                 <Grid item xs={2} className={styles.progression+" "+styles.firstRow+" "+styles.bar}>

@@ -26,6 +26,7 @@ import {TeamForm} from "../team-form";
 import {TournamentRegisterForm} from "../tournament-register-form";
 import {TournamentRoundList} from "../tournament-rounds";
 import {AccountDetails} from "../account-details";
+import TournamentService from "../../services/TournamentService";
 
 
 const useStyles = makeStyles(theme => ({
@@ -41,6 +42,9 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
     const location = useLocation();
     const history = useHistory();
     const [teams, setTeams] = useState([])
+    const [tournament, setTournament] = useState<{id: number, name: string, accessMode: string, creator: string,
+        githubLink: string, moduleName: string, branchName: string, invitationCode: string}>(
+            {id: -1, name: "", accessMode: "", creator: "", githubLink:"", moduleName: "", branchName: "", invitationCode: ""})
     const [rounds, setRounds] = useState<{id: number,tournament: string, number: number,date: string, completedRuns: number,
         numberOfRuns: number, pathToLogs: string}[]>( [])
     const user = AuthenticateService.getCurrentUser();
@@ -48,8 +52,8 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
         (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[0]
     const timeToRoundEnd =  (Date.parse(nextRound.date) - Date.now())/1000;
 
-    const classes = useStyles();
-    const path = window.location.pathname
+    const classes = useStyles()
+    const path = useLocation().pathname
     const [drawerState, setDrawerState] = useState(false)
     const [tournamentListOpen, setTournamentListOpen] = useState(true)
 
@@ -64,6 +68,12 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
 
     useEffect(() => {
         setRounds(props.rounds)
+    }, [])
+
+    useEffect(() => {
+        TournamentService.getTournamentById(props.id).then((res) => {
+            setTournament((res.data))
+        })
     }, [])
 
     const closeTournamentList = () => {
@@ -122,7 +132,7 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
                     </Drawer>
                 </Grid>
                 <Grid item xs={11} style={{minHeight: "14vh"}}>
-                    <TournamentHeader/>
+                    <TournamentHeader name={tournament.name}/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
                 <Grid item xs={2} className={styles.progression+" "+styles.firstRow+" "+styles.bar}>

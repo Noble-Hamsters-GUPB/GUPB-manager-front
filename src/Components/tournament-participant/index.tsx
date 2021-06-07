@@ -39,11 +39,13 @@ const useStyles = makeStyles(theme => ({
         color: "#fff59d;"
     }
 }));
-export const TournamentParticipantView:FC<{id:number}> = (props) => {
+export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tournament: string, number: number,date: string, completedRuns: number,
+        numberOfRuns: number, pathToLogs: string}[]}> = (props) => {
     const location = useLocation();
     const history = useHistory();
     const [teams, setTeams] = useState([])
-
+    const [rounds, setRounds] = useState<{id: number,tournament: string, number: number,date: string, completedRuns: number,
+        numberOfRuns: number, pathToLogs: string}[]>( [])
     const user = AuthenticateService.getCurrentUser();
 
     const classes = useStyles();
@@ -58,6 +60,10 @@ export const TournamentParticipantView:FC<{id:number}> = (props) => {
             (error) => {
                 AuthenticateService.logout();
             })
+    }, [])
+
+    useEffect(() => {
+        setRounds(props.rounds)
     }, [])
 
     const closeTournamentList = () => {
@@ -133,7 +139,7 @@ export const TournamentParticipantView:FC<{id:number}> = (props) => {
                     <GroupListTournamentParticipant data={[...teams]} groupId={1}/>
                 </Grid>
                 <Grid item xs={4} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
-                    <TournamentRoundList/>
+                    <TournamentRoundList rounds={[...rounds]} tournamentId={props.id}/>
                 </Grid>
             </Grid>
             <Route path={location.pathname+"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>

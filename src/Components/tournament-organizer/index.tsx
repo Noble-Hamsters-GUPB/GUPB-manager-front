@@ -51,13 +51,16 @@ const useStyles = makeStyles(theme => ({
         color: "#fff59d;"
     }
 }));
-export const TournamentOrganizerView:FC<{id:number}> = (props) => {
+export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tournament: string, number: number,date: string, completedRuns: number,
+    numberOfRuns: number, pathToLogs: string}[]}> = (props) => {
     const location = useLocation();
     const [teams, setTeams] = useState([])
     const history = useHistory();
     const classes = useStyles()
     const [drawerState, setDrawerState] = useState(false)
     const [tournamentListOpen, setTournamentListOpen] = useState(true)
+    const [rounds, setRounds] = useState<{id: number,tournament: string, number: number,date: string, completedRuns: number,
+        numberOfRuns: number, pathToLogs: string}[]>( [])
 
     const user = AuthenticateService.getCurrentUser();
 
@@ -68,6 +71,10 @@ export const TournamentOrganizerView:FC<{id:number}> = (props) => {
             (error) => {
                 AuthenticateService.logout();
             })
+    }, [])
+
+    useEffect(() => {
+        setRounds(props.rounds)
     }, [])
 
     const closeTournamentList = () => {
@@ -135,7 +142,7 @@ export const TournamentOrganizerView:FC<{id:number}> = (props) => {
                     <GroupListTournamentOrganizer data={[...teams]} roundEnd={roundEnd}/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
-                    <TournamentRoundList/>
+                    <TournamentRoundList  rounds={[...rounds] } tournamentId={props.id}/>
                 </Grid>
             </Grid>
                 <Route path={location.pathname+"/tournaments"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>

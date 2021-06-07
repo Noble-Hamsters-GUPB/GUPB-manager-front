@@ -11,19 +11,16 @@ import AuthenticateService from "../../services/AuthenticateService";
 import ReactJson from "react-json-view";
 import LogService from "../../services/LogService";
 
-const roundData = [{number: 1, date: "2021-06-07", numberOfRuns: 100}]
 
-export const TournamentRoundList: FC = () =>{
-    const [rounds, setRounds] = useState<{number: number, date: string, numberOfRuns: number}[]>( [])
-    //const [rounds, setRounds] = useState(props.data);
+export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, number: number,date: string, completedRuns: number,
+        numberOfRuns: number, pathToLogs: string}[], tournamentId: number}> = (props ) =>{
+    const [rounds, setRounds] = useState<{id: number,tournament: string, number: number,date: string, completedRuns: number,
+        numberOfRuns: number, pathToLogs: string}[]>( [])
     const userRole = AuthenticateService.getCurrentUser().roles[0];
     const location = useLocation()
 
     useEffect(() => {
-        RoundService.getRounds().then((res) => {
-            setRounds(res.data)
-        })
-        setRounds([...roundData])
+        setRounds(props.rounds)
     }, [])
 
     function sortData(){
@@ -61,7 +58,7 @@ export const TournamentRoundList: FC = () =>{
                             </Grid>
                         </Button>
                         <Route path={location.pathname+'/tournament-rounds/form'}><TournamentRoundForm
-                            number={Math.max(...rounds.map(o => o.number), 0)} date={""} data={rounds}
+                            number={Math.max(...rounds.map(o => o.id), 0)} date={""} data={rounds}
                             setData={handleSetRounds} numberOfRuns={0}/></Route>
                     </Router>
                 :null}
@@ -78,7 +75,7 @@ export const TournamentRoundList: FC = () =>{
                                             <div className={styles.roundText+' '+styles.biggerNum}>{rounds.length-index}</div>
                                         </Grid>
                                         <Grid item xs={6} className={styles.alignItems}>
-                                            <div className={styles.date}>Ended on {moment(elem.date).format("DD.MM.YYYY")}</div> {/*todo: end date in  database*/}
+                                            <div className={styles.date}>DATE: {moment(elem.date).format("DD.MM.YYYY")}</div>
                                         </Grid>
                                             <Grid item xs={3} className={styles.alignItems}>
                                                 <Button variant={"contained"} color={"primary"} component={Link}
@@ -130,7 +127,7 @@ export const TournamentRoundList: FC = () =>{
                                         {/*:null}*/}
                                     </Grid>
                             </div>
-                            <Route path={location.pathname+"/tournament-rounds/form"}><TournamentRoundForm number={elem.number} date={elem.date} data={rounds} numberOfRuns={elem.numberOfRuns} setData={handleSetRounds}/></Route> {/*todo: end date in  database*/}
+                            <Route path={location.pathname+"/tournament-rounds/form"}><TournamentRoundForm date={""} numberOfRuns={0} tournamentId={props.tournamentId} data={[...rounds]} setData={handleSetRounds}/></Route>
                         </Router>
                     </Grid>)
                 }

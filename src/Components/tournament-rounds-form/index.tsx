@@ -6,8 +6,11 @@ import {Link, useLocation} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import RoundService from "../../services/RoundService";
 
+
 // @ts-ignore
-export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, setData}) => {
+export const TournamentRoundForm: FC<{date: string, numberOfRuns: number, tournamentId: number,
+    data: {id: number,tournament: string, number: number,date: string, completedRuns: number,
+        numberOfRuns: number, pathToLogs: string}[], setData: any}> = (props) => {
     let initialDate = (props.date === "") ? getCurrentDate() : props.date;
     let initialNumberOfIterations = props.numberOfRuns;
 
@@ -48,16 +51,13 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, se
 
         let newRound
 
-        if(props.number === -1){
-            //TODO: get round number from backend (or set in in backend end reload data in tournament page)
-            newRound = {date: date, number: props.number, numberOfRuns: numberOfRuns, teamId: 1}
+        if(props.date === ""){
+            newRound = {date: date, numberOfRuns: numberOfRuns, tournamentId: props.tournamentId}
+            RoundService.createRound(newRound)
         }
         else {
-            newRound = {date: date, number: props.number+1, numberOfRuns: numberOfRuns, teamId: 1}
+            newRound = {date: date, numberOfRuns: numberOfRuns, tournamentId: props.tournamentId}
         }
-
-        props.setData([...props.data, newRound])
-        RoundService.createRound(newRound)
     }
 
     const isPositiveInteger = (n:string) =>{

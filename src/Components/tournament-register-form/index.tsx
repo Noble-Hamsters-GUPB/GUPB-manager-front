@@ -30,16 +30,22 @@ import {TournamentView} from "../tournament-view";
 export const TournamentRegisterForm: FC = () => {
     const [tournamentCode, setTournamentCode] = useState("")
     const [teamCode, setTeamCode] = useState("")
-    const [tournamentData, setTournamentData] = useState([{id: -1, name: "", accessMode: "", creator: "", githubLink:"", moduleName: "", branchName: "", invitationCode: ""}])
-    const [tournament, setTournament] = useState({id: -1, name: "", accessMode: "", creator: "", githubLink:"", moduleName: "", branchName: "", invitationCode: ""});
+    const [tournamentData, setTournamentData] = useState<{id: number, name: string, accessMode: string, creator: string,
+        githubLink: string, moduleName: string, branchName: string, invitationCode: string}[]>([])
+    const [tournament, setTournament] = useState<{id: number, name: string, accessMode: string, creator: string,
+        githubLink: string, moduleName: string, branchName: string, invitationCode: string}>(
+            {id: -1, name: "", accessMode: "", creator: "", githubLink:"", moduleName: "", branchName: "", invitationCode: ""});
     const [tournamentOk, setTournamentOk] = useState(false)
     const [tournamentCodeVisibility, setTournamentCodeVisibility] = useState("none")
     const [teamCodeVisibility, setTeamCodeVisibility] = useState("none")
-    const [team, setTeam] = useState({id: -1, tournament: "", students: [], name: "", githubLink: "",
-        mainClassName: "", branchName: "", playerName: "", playerStatus: "", lastUpdated: "", message: "", totalPoints: "", invitationCode: ""})
+    const [team, setTeam] = useState<{id: number, tournament: string, students: [], name: string, githubLink: string,
+        mainClassName: string, branchName: string, playerName: string, playerStatus: string, lastUpdated: string, message:
+            string, totalPoints: number, invitationCode: string}>({id: -1, tournament: "", students: [], name: "", githubLink: "",
+        mainClassName: "", branchName: "", playerName: "", playerStatus: "", lastUpdated: "", message: "", totalPoints: -1, invitationCode: ""})
     const [addedNewTeam, setAddedNewTeam] = useState("none")
-    const [teamData, setTeamData] = useState([{id: -1, tournament: "", students: [], name: "", githubLink: "",
-        mainClassName: "", branchName: "", playerName: "", playerStatus: "", lastUpdated: "", message: "", totalPoints: "", invitationCode: ""}])
+    const [teamData, setTeamData] = useState<{id: number, tournament: string, students: [], name: string, githubLink: string,
+        mainClassName: string, branchName: string, playerName: string, playerStatus: string, lastUpdated: string, message:
+            string, totalPoints: number, invitationCode: string}[]>([])
 
     const [tournamentCodeError, setTournamentCodeError] = useState(false)
     const [teamCodeError, setTeamCodeError] = useState(false)

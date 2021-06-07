@@ -8,15 +8,18 @@ const ROUND_API_BASE_URL = urls.getBaseUrl() + "rounds"
 class RoundService {
 
     getRounds() {
-        return axios.get(ROUND_API_BASE_URL, { headers: authHeader() });
+        return axios.get(ROUND_API_BASE_URL, {headers: authHeader()});
     }
 
     getRoundsByTournament(tournamentId) {
-        return axios.get(ROUND_API_BASE_URL+"/tournament", tournamentId, { headers: authHeader() });
+        return axios.get(ROUND_API_BASE_URL + "/tournament", {
+            params: {tournamentId: tournamentId},
+            headers: authHeader()
+        });
     }
 
     createRound(round) {
-        return axios.post(ROUND_API_BASE_URL, round, { headers: authHeader() })
+        return axios.post(ROUND_API_BASE_URL, round, {headers: authHeader()})
     }
 
 }

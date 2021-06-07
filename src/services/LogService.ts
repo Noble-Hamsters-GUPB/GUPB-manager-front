@@ -8,7 +8,7 @@ const LOGS_API_BASE_URL = urls.getBaseUrl() + "logs"
 class LogsService {
 
     getLogs(id) {
-        return axios.get(LOGS_API_BASE_URL, id,  { headers: authHeader() })
+        return axios.get(LOGS_API_BASE_URL, {params: {roundId: id}, headers: authHeader()})
     }
 
 }

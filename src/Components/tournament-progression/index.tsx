@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme) =>
         },
     })
 )
-export const TournamentProgression = (props:{time, maxRounds, currentRound}) => {
+export const TournamentProgression: FC<{time: number, maxRounds: number, currentRound: number}>
+    = (props) => {
     const classes = useStyles()
 
     const [round, setRound] = useState(props.currentRound) //TODO: Zapiąć z gotowym turniejem jak będzie

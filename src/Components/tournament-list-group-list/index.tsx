@@ -2,8 +2,6 @@ import styles from "./styles.module.css";
 import {Box, Card, CardContent, Grid, makeStyles, Typography} from "@material-ui/core";
 import {FC} from "react";
 
-const currentRoundStart = "2021-04-17";
-
 export const GroupListTournament =  (props: {data, roundEnd}) => {
     props.data.sort(((a, b) => (a.totalPoints>b.totalPoints)? -1 : ((b.totalPoints > a.totalPoints)? 1 : 0)))
     return(

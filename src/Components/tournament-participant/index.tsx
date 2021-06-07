@@ -28,9 +28,6 @@ import {TournamentRoundList} from "../tournament-rounds";
 import {AccountDetails} from "../account-details";
 
 
-const roundEnd = "2021-05-16T00:00:00.00";
-const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
-
 const useStyles = makeStyles(theme => ({
     drawer: {
         backgroundColor: "rgba(17, 17, 115, 0.5);"
@@ -47,6 +44,9 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
     const [rounds, setRounds] = useState<{id: number,tournament: string, number: number,date: string, completedRuns: number,
         numberOfRuns: number, pathToLogs: string}[]>( [])
     const user = AuthenticateService.getCurrentUser();
+    const nextRound = rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
+        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[0]
+    const timeToRoundEnd =  (Date.parse(nextRound.date) - Date.now())/1000;
 
     const classes = useStyles();
     const path = window.location.pathname
@@ -126,7 +126,7 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
                 <Grid item xs={2} className={styles.progression+" "+styles.firstRow+" "+styles.bar}>
-                    <TournamentProgression time={timeToRoundEnd} currentRound={3} maxRounds={4}/>
+                    <TournamentProgression time={timeToRoundEnd} currentRound={nextRound.number} maxRounds={rounds.length}/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
                 <Grid item xs={6} className={styles.botStatus+" "+styles.bar}>

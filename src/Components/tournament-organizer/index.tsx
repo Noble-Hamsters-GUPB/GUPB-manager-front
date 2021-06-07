@@ -26,22 +26,7 @@ import {TournamentForm} from "../tournament-form";
 import {TournamentRoundList} from "../tournament-rounds";
 import {AccountDetails} from "../account-details";
 
-// const groupData = [
-//     {groupName: "Supergrupa", botStatus: "2021-04-11", points: 456},
-//     {groupName: "Fajnagrupa", botStatus: "2021-04-18", points: 459},
-//     {groupName: "Leniuchy", botStatus: null, points: 0},
-//     {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
-// ]
 
-// const roundsData = [
-//     {id: 1, startDate: "2021-04-05T00:00:00.00", endDate: "2021-04-18T00:00:00.00", numberOfIterations: 200},
-//     {id: 2, startDate: "2021-04-19T00:00:00.00", endDate: "2021-05-02T00:00:00.00", numberOfIterations: 200},
-//     {id: 3, startDate: "2021-05-03T00:00:00.00", endDate: "2021-05-16T00:00:00.00", numberOfIterations: 200},
-//     {id: 4, startDate: "2021-05-17T00:00:00.00", endDate: "2021-05-21T00:00:00.00", numberOfIterations: 200}
-// ]
-
-const roundEnd = "2021-05-16T00:00:00.00";
-const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
 
 const useStyles = makeStyles(theme => ({
     drawer: {
@@ -61,6 +46,9 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
     const [tournamentListOpen, setTournamentListOpen] = useState(true)
     const [rounds, setRounds] = useState<{id: number,tournament: string, number: number,date: string, completedRuns: number,
         numberOfRuns: number, pathToLogs: string}[]>( [])
+    const nextRound = rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
+        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[0]
+    const timeToRoundEnd =  (Date.parse(nextRound.date) - Date.now())/1000;
 
     const user = AuthenticateService.getCurrentUser();
 
@@ -86,8 +74,6 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
         AuthenticateService.logout();
         history.push("/");
     }
-
-    console.log(tournamentListOpen)
 
     return(
         <div className={styles.root}>
@@ -132,14 +118,14 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
                 <Grid item xs={2} className={styles.progression+" "+styles.firstRow+" "+styles.bar}>
-                    <TournamentProgression time={timeToRoundEnd} currentRound={3} maxRounds={4}/>
+                    <TournamentProgression time={timeToRoundEnd} currentRound={nextRound.number} maxRounds={rounds.length}/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow+" "+styles.bar}/>
                 <Grid item xs={6} className={styles.botStatus+" "+styles.firstRow}>
                     <LibraryListOrganizer tournamentId={props.id}/>
                 </Grid>
                 <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
-                    <GroupListTournamentOrganizer data={[...teams]} roundEnd={roundEnd}/>
+                    <GroupListTournamentOrganizer data={[...teams]} roundEnd={nextRound.date}/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
                     <TournamentRoundList  rounds={[...rounds] } tournamentId={props.id}/>

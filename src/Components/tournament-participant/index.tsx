@@ -48,7 +48,8 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
 
     const user = AuthenticateService.getCurrentUser();
     const nextRound = props.rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
-        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[0]
+        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[props.rounds.length-1]
+
     let timeToRoundEnd;
     if(nextRound !== undefined) {
         timeToRoundEnd = (Date.parse(nextRound.date) - Date.now()) / 1000; //todo: what to do if nextRound is undefined?

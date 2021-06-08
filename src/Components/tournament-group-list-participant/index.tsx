@@ -3,6 +3,7 @@ import {Grid} from "@material-ui/core";
 
 
 export const GroupListTournamentParticipant =  (props: {data, groupId}) => {
+    console.log(props.data)
     props.data.sort(((a, b) => (a.totalPoints>b.totalPoints)? -1 : ((b.totalPoints > a.totalPoints)? 1 : 0)))
     return(
         <div className={styles.root}>

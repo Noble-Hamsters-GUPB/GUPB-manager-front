@@ -37,7 +37,8 @@ const useStyles = makeStyles((theme) =>
         libraryName:{
             overflow: "hidden",
             marginRight: "0.3em",
-            flex: "0 1 40%"
+            flex: "0 1 40%",
+            fontSize: "0.5em",
         }
     })
 )

@@ -32,6 +32,13 @@ class StudentService {
         })
     }
 
+    getStudent(id) {
+        return axios.get(STUDENT_API_BASE_URL + "/id", {
+            params: {id: id},
+            headers: authHeader()
+        })
+    }
+
     createStudent(student) {
         return axios.post(STUDENT_API_BASE_URL, student, {headers: authHeader()})
     }

@@ -18,6 +18,20 @@ class StudentService {
         })
     }
 
+    emailAlreadyExists(email) {
+        return axios.get(STUDENT_API_BASE_URL + "/email", {
+            params: {emailAddress: email},
+            headers: authHeader()
+        })
+    }
+
+    indexAlreadyExists(indexNumber) {
+        return axios.get(STUDENT_API_BASE_URL + "/index", {
+            params: {indexNumber: indexNumber},
+            headers: authHeader()
+        })
+    }
+
     createStudent(student) {
         return axios.post(STUDENT_API_BASE_URL, student, {headers: authHeader()})
     }

@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 // @ts-ignore
-import {Link, Route, Switch, BrowserRouter as Router, useLocation} from 'react-router-dom';
+import {Link, Route, Switch, BrowserRouter as Router, useLocation, useHistory} from 'react-router-dom';
 import StudentService from "../../services/StudentService";
 import {TournamentRegisterForm} from "../tournament-register-form";
 import AuthenticateService from "../../services/AuthenticateService";
@@ -34,6 +34,7 @@ export const RegistrationForm: FC = (props) => {
     const [indexError, setIndexError] = useState("")
 
     const location = useLocation();
+    const history = useHistory();
 
     useEffect(() => {
         setEmailError("");
@@ -69,11 +70,6 @@ export const RegistrationForm: FC = (props) => {
 
         if (!email.match(/.+@.+\..+/)) {
             setEmailError("Invalid e-mail");
-            errorFlag = true;
-        }
-
-        if (false/*todo: validate email*/) {
-            setEmailError("E-mail already taken");
             errorFlag = true;
         }
 
@@ -127,21 +123,36 @@ export const RegistrationForm: FC = (props) => {
             errorFlag = true
         }
 
-        if (false/*todo: validate index number*/) {
-            setIndexError("Student with this index number is already registered");
-            errorFlag = true;
-        }
+        e.preventDefault();
 
         if (errorFlag) {
-            e.preventDefault();
             return;
         }
 
-        await StudentService.createStudent({
-            firstName: firstName, lastName: lastName, indexNumber: index
-            , emailAddress: email, password: password
-        }).then(async (res) =>
-            await AuthenticateService.login(email, password))
+        StudentService.emailAlreadyExists(email).then((res) => {
+            if(res.data === true){
+                setEmailError("E-mail already exists")
+                return
+            }
+            else{
+                StudentService.indexAlreadyExists(index).then((res) => {
+                    if(res.data === true){
+                        setIndexError("Index already exists")
+                        return
+                    }
+                    else{
+                        StudentService.createStudent({
+                            firstName: firstName, lastName: lastName, indexNumber: index
+                            , emailAddress: email, password: password
+                        }).then(async (res) =>
+                            AuthenticateService.login(email, password).then((res) => {
+                                history.push("/tournament-register")
+                            }))
+                    }
+                })
+            }
+        })
+
     }
 
     return (
@@ -156,17 +167,12 @@ export const RegistrationForm: FC = (props) => {
                 <TextField required error={lastNameError!==""} fullWidth label={lastName===""?"Last name":lastNameError} onChange={(e) => setLastName(e.target.value)}/>
                 <TextField required error={indexError!==""} fullWidth label={index===""?"Index number":indexError} onChange={(e) => setIndex(e.target.value)}/>
                 <DialogActions className={styles.submitAction}>
-                    <Router>
-                    <Link to={(emailError!=="" || passwordError!=="" || password2Error!=="" || firstNameError!=="" || lastNameError!=="" || indexError!=="")?"#":("/tournament-register")}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"
                             onClick={(e) => submitRegistration(e)}
                             disabled={emailError!=="" || passwordError!=="" || password2Error!=="" || firstNameError!=="" || lastNameError!=="" || indexError!==""}
                         >REGISTER</Button>
-                    </Link>
-                        <Route path={"/tournament-register"}><TournamentRegisterForm/></Route>
-                    </Router>
                 </DialogActions>
             </DialogContent>
         </Dialog>

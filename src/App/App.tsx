@@ -7,6 +7,7 @@ import styles from "./styles.module.css";
 import {LoginForm} from "../Components/login-form";
 import {RegistrationForm} from "../Components/registration-form";
 import {TournamentView} from "../Components/tournament-view";
+import {TournamentRegisterForm} from "../Components/tournament-register-form";
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
             <Route path="/tournament/:id" component={TournamentView}/>
             <Route path="/login" component={LoginForm}/>
             <Route path="/register" component={RegistrationForm}/>
+            <Route path="/tournament-register" component={TournamentRegisterForm}/>
         </div>
     </Router>;
 }

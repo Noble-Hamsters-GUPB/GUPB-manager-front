@@ -71,6 +71,7 @@ export const LoginForm: FC = (props) => {
                         error.response.data.message) ||
                     error.message ||
                     error.toString();
+                setEmailError("Incorrect password or login");
                 setPasswordError("Incorrect password or login");
                 errorFlag = true;
                 setLoading(false);

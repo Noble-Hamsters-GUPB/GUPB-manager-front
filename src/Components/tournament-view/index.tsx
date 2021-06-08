@@ -14,7 +14,7 @@ export const TournamentView:FC<{match}> =  (props) => {
         RoundService.getRoundsByTournament(props.match.params.id).then((res) => {
             setRounds(res.data)
         })
-    }, [])
+    }, [props.match.params.id])
 
     return <div style={{height: "100vh"}}>
         {(() => {

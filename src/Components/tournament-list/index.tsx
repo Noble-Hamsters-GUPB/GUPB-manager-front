@@ -59,7 +59,7 @@ export const TournamentList: FC = (props) => {
 
     const wrapTournaments = () => {
         return ([...tournaments].map((tournament) => {
-            return <TournamentListElement tournament={tournament}/>
+            return <TournamentListElement tournament={tournament} key={tournament.id}/>
         }))
     }
 

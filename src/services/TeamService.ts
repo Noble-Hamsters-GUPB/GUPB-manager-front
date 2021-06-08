@@ -37,6 +37,18 @@ class TeamService {
         })
     }
 
+    updateBot(teamId) {
+        return axios.post(urls.getBaseUrl() + "/update-player", null, {
+            params: {teamId: teamId},
+            headers: authHeader()
+        })
+    }
+
+    getTeamByTournamentAndStudent(tournamentId, studentId){
+        return axios.get(TEAM_API_BASE_URL + "/tournament-student", {params: {tournamentId: tournamentId,
+                studentId: studentId}, headers: authHeader()})
+    }
+
     createTeam(team) {
         return axios.post(TEAM_API_BASE_URL, team, {headers: authHeader()})
     }

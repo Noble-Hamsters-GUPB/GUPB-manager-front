@@ -139,7 +139,7 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
                 <Grid item xs={6} className={styles.botStatus+" "+styles.bar}>
-                    <BotStatus/>
+                    <BotStatus tournamentId={props.id}/>
                 </Grid>
                 <Grid item xs={4} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
                     <LibraryListParticipant tournamentId={props.id}/>

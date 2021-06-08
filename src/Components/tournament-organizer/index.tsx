@@ -25,6 +25,7 @@ import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
 import {TournamentRoundList} from "../tournament-rounds";
 import {AccountDetails} from "../account-details";
+import TournamentService from "../../services/TournamentService";
 
 
 
@@ -61,10 +62,17 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
     useEffect(() => {
         TeamService.getTeamsForTournament(props.id).then((res) => {
             setTeams(res.data);
-        },
-            (error) => {
-                AuthenticateService.logout();
-            })
+        }).catch((error) => {
+            alert(error)
+            AuthenticateService.logout()
+        })
+
+        TournamentService.getTournamentById(props.id).then((res) => {
+                setTournament(res.data);
+            }).catch((error) => {
+            alert(error)
+            AuthenticateService.logout()
+        })
     }, [])
 
     // useEffect(() => {

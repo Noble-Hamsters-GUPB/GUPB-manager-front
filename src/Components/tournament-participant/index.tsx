@@ -60,17 +60,17 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
     const [tournamentListOpen, setTournamentListOpen] = useState(true)
 
     useEffect(() => {
-        TeamService.getTeams().then((res) => {
-                setTeams(res.data)
-        },
-            (error) => {
-                AuthenticateService.logout();
-            })
-    }, [])
-
-    useEffect(() => {
+        TeamService.getTeamsForTournament(props.id).then((res) => {
+            setTeams(res.data);
+        }).catch((error) => {
+            alert(error)
+            AuthenticateService.logout()
+        })
         TournamentService.getTournamentById(props.id).then((res) => {
             setTournament((res.data))
+        }).catch((error) => {
+            alert(error)
+            AuthenticateService.logout()
         })
     }, [])
 

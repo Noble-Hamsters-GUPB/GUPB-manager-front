@@ -13,11 +13,14 @@ import {
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 // @ts-ignore
-import {Link, Route, Switch, BrowserRouter as Router, useLocation} from 'react-router-dom';
+import {Link, Route, Switch, BrowserRouter as Router, useLocation, useHistory} from 'react-router-dom';
 // @ts-ignore
 import TournamentService from '../../services/TournamentService';
 import AuthenticationService from '../../services/AuthenticateService'
 import {Help} from "@material-ui/icons";
+import validator from 'validator'
+
+
 
 
 const isEndingOnGit = function(string) {
@@ -42,6 +45,7 @@ export const TournamentForm: FC = () => {
     const repositoryTooltip = "Here put requirements for repository"
 
     const location = useLocation();
+    const history = useHistory();
 
 
 
@@ -81,10 +85,8 @@ export const TournamentForm: FC = () => {
             errorFlag = true
         }
 
-        let re = new RegExp('(?:git|https?|git@)(?:\\:\\/\\/)?github.com[/|:][A-Za-z0-9-]' +
-            '+?\\\\/[\\\\w\\\\.-]+\\\\/?(?!=.git)(?:\\\\.git(?:\\\\/?|\\\\#[\\\\w\\\\.\\\\-_]+)?)?$');
 
-        if(!re.test(githubLink)){
+        if(!validator.isURL(githubLink)){
             setGithubLinkError("Invalid link to Github repository")
             errorFlag = true
         }
@@ -117,7 +119,10 @@ export const TournamentForm: FC = () => {
 
         TournamentService.createTournament({name: name, accessMode: accessMode,
             creator: AuthenticationService.getCurrentUser().id, invitationCode: invitationCode,
-        moduleName: moduleName, githubLink: githubLink, branchName: branchName})
+        moduleName: moduleName, githubLink: githubLink, branchName: branchName}).then( (res) => {
+            history.push('/tournament/'+res.data.id)
+            history.go(0)
+        })
     }
 
     return (
@@ -125,9 +130,9 @@ export const TournamentForm: FC = () => {
             <IconButton component={Link} to={location.pathname.split("/add-tournament")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>Create Tournament</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
-                <TextField required error={nameError===""} fullWidth label={nameError===""?"Tournament name":nameError}
+                <TextField required error={nameError!==""} fullWidth label={nameError===""?"Tournament name":nameError}
                            onChange={(e) => setName(e.target.value)}/>
-                <TextField required error={githubLinkError===""} fullWidth label={githubLinkError===""?"Link to repository on Github":githubLinkError}
+                <TextField required error={githubLinkError!==""} fullWidth label={githubLinkError===""?"Link to repository on Github":githubLinkError}
                            onChange={(e) => setGithubLink(e.target.value)}
                            InputProps={{
                                endAdornment: (
@@ -138,9 +143,9 @@ export const TournamentForm: FC = () => {
                                    </InputAdornment>
                                ),
                            }}/>
-                <TextField required error={branchNameError===""} fullWidth label={branchNameError===""?"Main branch name":branchNameError}
+                <TextField required error={branchNameError!==""} fullWidth label={branchNameError===""?"Main branch name":branchNameError}
                            onChange={(e) => setBranchName(e.target.value)}/>
-                <TextField required error={moduleNameError===""} fullWidth label={moduleNameError===""?"Main branch name":moduleNameError}
+                <TextField required error={moduleNameError!==""} fullWidth label={moduleNameError===""?"Module name":moduleNameError}
                            onChange={(e) => setModuleName(e.target.value)}/>
                 <FormControl className={styles.form} component={"fieldset"}>
                     <FormLabel component="legend">Access mode</FormLabel>
@@ -151,7 +156,7 @@ export const TournamentForm: FC = () => {
                     </RadioGroup>
                 </FormControl>
                 {accessMode === "INVITE_ONLY"?
-                    <TextField required error={invitationCodeError===""} fullWidth label={invitationCodeError===""?"Invitation code":invitationCodeError}
+                    <TextField required error={invitationCodeError!==""} fullWidth label={invitationCodeError===""?"Invitation code":invitationCodeError}
                                                          onChange={(e) => setInvitationCode(e.target.value)}/> : null}
                 <DialogActions className={styles.submitAction}>
                     <Link to={(invitationCodeError || nameError)?"#":location.pathname.split("/add-tournament")[0]}  style={{ textDecoration: 'none' }}>
@@ -159,7 +164,8 @@ export const TournamentForm: FC = () => {
                             variant="contained"
                             color="secondary"
                             onClick={(e) => submitTournament(e)}
-                            disabled={invitationCodeError==="" || nameError===""}
+                            disabled={invitationCodeError!=="" || nameError!=="" || branchNameError!==""
+                            || moduleNameError!=="" || githubLinkError!==""}
                         >CREATE</Button>
                     </Link>
                 </DialogActions>

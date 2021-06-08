@@ -16,7 +16,7 @@ export const TournamentView:FC<{match}> =  (props) => {
         })
     }, [])
 
-    return <div>
+    return <div style={{height: "100vh"}}>
         {(() => {
           if(userRole==="ADMIN"){
               return <TournamentOrganizerView id={props.match.params.id} rounds={rounds}/>;

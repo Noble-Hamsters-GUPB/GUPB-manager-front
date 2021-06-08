@@ -25,6 +25,7 @@ import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
 import {TournamentRoundList} from "../tournament-rounds";
 import {AccountDetails} from "../account-details";
+import TournamentService from "../../services/TournamentService";
 
 
 
@@ -67,12 +68,18 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
             })
     }, [])
 
+    useEffect(() => {
+        TournamentService.getTournamentById(props.id).then((res) => {
+            setTournament(res.data)
+        })
+    })
+
     // useEffect(() => {
     //     setRounds(props.rounds)
     // }, [])
 
     const nextRound = rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
-        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[0]
+        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[rounds.length-1]
 
     let timeToRoundEnd;
     if(nextRound !== undefined) {

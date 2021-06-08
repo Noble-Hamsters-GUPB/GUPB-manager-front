@@ -13,7 +13,7 @@ import {
 import styles from "../tournament-form/styles.module.css";
 import CloseIcon from "@material-ui/icons/Close";
 import TextField from "@material-ui/core/TextField";
-import {Link, Route, useLocation, BrowserRouter as Router} from 'react-router-dom';
+import {Link, Route, useLocation, useHistory, BrowserRouter as Router} from 'react-router-dom';
 import React from "react";
 import {TeamForm} from "../team-form";
 import TournamentService from "../../services/TournamentService";
@@ -61,7 +61,8 @@ export const TournamentRegisterForm: FC = () => {
     const location = useLocation()
 
     useEffect(() => {
-        TournamentService.getTournaments().then((res) => setTournamentData(res.data))
+        TournamentService.getTournamentsWithoutStudent(AuthenticateService.getCurrentUser().id).then((res) => {
+            setTournamentData(res.data) })
     }, [])
 
     useEffect(() => {
@@ -103,6 +104,10 @@ export const TournamentRegisterForm: FC = () => {
                     })
                     setTournamentCodeError(false)
                     setTournamentOk(true)
+                }
+                else{
+                    setTournamentCodeError(true)
+                    setTournamentOk(false)
                 }
             }
         }
@@ -167,7 +172,8 @@ export const TournamentRegisterForm: FC = () => {
         else{
             setTournamentOk(true)
             setTournamentCodeVisibility("none")
-            TeamService.getTeamsForTournament(tournament.id).then((res) => {
+            // @ts-ignore
+            TeamService.getTeamsForTournament(tournament_tmp.id).then((res) => {
                 setTeamData(res.data)
             })
         }
@@ -182,6 +188,7 @@ export const TournamentRegisterForm: FC = () => {
 
     const addNewTeam = (team) => {
         setAddedNewTeam("inline")
+        console.log(team)
         setTeam(team)
     }
 
@@ -202,7 +209,7 @@ export const TournamentRegisterForm: FC = () => {
                         <Select labelId="tournamentCode" id="select" value={tournament} style={{minWidth: '18vw'}} onChange={handleChangeTournament}>
                             {tournamentData.filter((elem) => elem.id!=-1).map((tournament) => {
                                 // @ts-ignore
-                                return <MenuItem value={tournament} key={tournament}>
+                                return <MenuItem value={tournament} key={tournament.id}>
                                     <div>
                                         <Typography variant="h5" component="h2">
                                             {tournament.name}
@@ -234,7 +241,7 @@ export const TournamentRegisterForm: FC = () => {
                                 <Select labelId="teamCode" id="selectTeam" value={team} style={{minWidth: '7vw'}} onChange={handleChangeTeam}>
                                     {teamData.map((team) => {
                                         // @ts-ignore
-                                        return <MenuItem value={team} key={team}>
+                                        return <MenuItem value={team} key={team.id}>
                                             <div>
                                                 <Typography variant="h6">
                                                     {team.name}
@@ -287,15 +294,22 @@ export const TournamentRegisterForm: FC = () => {
 }
 
 const TournamentRegisterFormConfirm = (props: {tournament, team, isTeamCreated}) => {
+    const history = useHistory()
+
     const addToTournament = () => {
         if(props.isTeamCreated){
-            props.team.tournament = props.tournament
             TeamService.createTeam(props.team)
+            history.push(`/tournament/${props.tournament.id}`)
+            history.go(0)
         }
         else{
             TeamService.joinTeam(props.team.id, AuthenticateService.getCurrentUser().id)
+            history.push(`/tournament/${props.tournament.id}`)
+            history.go(0)
         }
     }
+
+    const location = useLocation()
 
     return(
         <Dialog open={true} className={styles.formDialog}>
@@ -338,20 +352,17 @@ const TournamentRegisterFormConfirm = (props: {tournament, team, isTeamCreated})
             </DialogContent>
             <DialogActions className={styles.submitAction}>
                 <Router>
-                    <Link to={"/tournament-register"}  style={{ textDecoration: 'none' }}>
+                    <Link to={location.pathname.split('/tournament-register-confirm')[0]}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="outlined"
                             color="primary"
                         >CANCEL</Button>
                     </Link>
-                    <Link to={"/tournament/"+props.tournament.id}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"
                             onClick={addToTournament}
                         >OK</Button>
-                    </Link>
-                    <Route path={"/tournament/:" + props.tournament.id} component={TournamentView}/>
                 </Router>
             </DialogActions>
         </Dialog>

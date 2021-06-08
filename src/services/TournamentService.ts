@@ -24,6 +24,13 @@ class TournamentService {
         });
     }
 
+    getTournamentsWithoutStudent(studentId) {
+        return axios.get(TOURNAMENT_API_BASE_URL + "/not-in-tournament", {
+            params: {id: studentId},
+            headers: authHeader()
+        });
+    }
+
     createTournament(tournament) {
         return axios.post(TOURNAMENT_API_BASE_URL, tournament, {headers: authHeader()});
     }

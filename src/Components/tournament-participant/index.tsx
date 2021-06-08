@@ -53,6 +53,8 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
     let timeToRoundEnd;
     if(nextRound !== undefined) {
         timeToRoundEnd = (Date.parse(nextRound.date) - Date.now()) / 1000; //todo: what to do if nextRound is undefined?
+    }else{
+        timeToRoundEnd = -5;
     }
 
     const classes = useStyles()

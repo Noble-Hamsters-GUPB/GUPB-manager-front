@@ -88,7 +88,9 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
 
     let timeToRoundEnd;
     if(nextRound !== undefined) {
-        timeToRoundEnd = (Date.parse(nextRound.date) - Date.now()) / 1000; //todo: what to do if nextRound is undefined?
+        timeToRoundEnd = (Date.parse(nextRound.date) - Date.now()) / 1000;
+    }else{
+        timeToRoundEnd = -5;
     }
 
     const closeTournamentList = () => {

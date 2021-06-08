@@ -77,7 +77,7 @@ export const TournamentRoundListElem: FC<{round: {id: number,tournament: string,
                                     <div className={styles.roundText+' '+styles.biggerNum}>{props.rounds.length-props.index}</div>
                                 </Grid>
                                 <Grid item xs={6} className={styles.alignItems}>
-                                    <div className={styles.date}>Starting on {moment(props.round.date).format("DD.MM.YYYY")}</div>
+                                    <div className={styles.date}>Date: {moment(props.round.date).format("DD.MM.YYYY")}</div>
                                     <div className={styles.runs}>Completed runs: {finishedRuns}/{props.round.numberOfRuns}</div>
                                 </Grid>
                                 {/*{userRole=="ADMIN"?*/}

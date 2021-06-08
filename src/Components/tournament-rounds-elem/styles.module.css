@@ -1,0 +1,63 @@
+.root{
+    flex-grow: 1;
+    width: 90%;
+}
+
+.listItem{
+    box-shadow: 0 0 0.3em black;
+    margin: 1em;
+}
+
+.addIcon{
+    transform: scale(5);
+    margin: 1em 0.5em 0.5em;
+    color: #111173;
+}
+
+
+.title{
+    color: white;
+    font-size: 2em;
+}
+
+.darkCard{
+    background-color: rgba(17, 17, 115, 0.6);
+    text-align: center;
+    padding: 1em;
+    border-radius: 0.8em;
+}
+
+.card{
+    background-color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    padding: 1em;
+    border-radius: 0.8em;
+}
+
+.roundText{
+    text-align: center;
+    color: darkred;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+
+.biggerNum{
+    font-size: 3em;
+}
+
+.alignItems{
+    display: grid;
+    align-self: center;
+    text-align: center;
+}
+
+.date{
+    font-weight: bold;
+    font-size: 1.2em;
+    color: black;
+}
+
+.runs{
+    color: black
+}

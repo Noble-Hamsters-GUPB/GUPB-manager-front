@@ -3,7 +3,6 @@ import styles from "./styles.module.css"
 import {Box, CircularProgress, createStyles, LinearProgress, makeStyles, Paper, Typography, Theme} from "@material-ui/core";
 import {green, orange, red, yellow} from "@material-ui/core/colors";
 import {urls} from "../../services/BaseUrl";
-import SockJsClient from 'react-stomp';
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -20,7 +19,6 @@ const useStyles = makeStyles((theme) =>
 )
 export const TournamentProgression: FC<{time: number, maxRounds: number, currentRound: number}>
     = (props) => {
-    const SOCKET_URL = urls.getSocketUrl();
 
     const classes = useStyles()
 
@@ -29,8 +27,6 @@ export const TournamentProgression: FC<{time: number, maxRounds: number, current
     const [maxRounds, setMaxRounds] = useState(props.maxRounds) //TODO: Zapiąć z gotowym turniejem jak będzie
 
     const [time, setTime] = useState(props.time) //TODO: Zapiąć z gotowym turniejem jak będzie
-
-    const [finishedRuns, setFinishedRuns] = useState(props.finishedRuns)
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -55,10 +51,6 @@ export const TournamentProgression: FC<{time: number, maxRounds: number, current
         }
     }
 
-    const onMessageReceived = (msg) => {
-        setFinishedRuns(msg)
-    }
-
     return <Box
             padding={"1em"}
             width={"12em"}
@@ -75,13 +67,6 @@ export const TournamentProgression: FC<{time: number, maxRounds: number, current
                 <Box>
                     <Typography variant={"caption"}>Round progress: <b>{round}/{maxRounds}</b></Typography>
                     <LinearProgress variant={"determinate"} color={"primary"} value={round/maxRounds*100}/>
-                    <SockJsClient
-                        url={SOCKET_URL}
-                        topics={[`/topic/rounds/${props.roundId}`]}
-                        onMessage={msg => onMessageReceived(msg)}
-                        debug={false}
-                    />
-                    <Typography variant={"caption"}>Round run progress: <b>{finishedRuns}/{props.allRuns}</b></Typography>
                 </Box>
             </Box>
             <Box position={"relative"} display={"inline-flex"} alignItems={"center"} left={"1em"}>

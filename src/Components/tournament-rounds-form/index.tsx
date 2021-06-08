@@ -9,7 +9,7 @@ import RoundService from "../../services/RoundService";
 
 export const TournamentRoundForm: FC<{date: string, numberOfRuns: number, tournamentId: number,
     data: {id: number,tournament: string, number: number,date: string, completedRuns: number,
-        numberOfRuns: number, pathToLogs: string}[], setData: any}> = (props) => {
+        numberOfRuns: number, pathToLogs: string}[], reloadData: any}> = (props) => {
     let initialDate = (props.date === "") ? getCurrentDate() : props.date;
     let initialNumberOfIterations = props.numberOfRuns;
 
@@ -52,8 +52,8 @@ export const TournamentRoundForm: FC<{date: string, numberOfRuns: number, tourna
 
         if(props.date === ""){
             newRound = {date: date, numberOfRuns: numberOfRuns, tournamentId: props.tournamentId}
-            RoundService.createRound(newRound).then(res => {
-                props.setData(newRound)
+            RoundService.createRound(newRound).then(() => {
+                props.reloadData()
             }).catch(error => alert(error)) //todo: better error handler
         }
         else {

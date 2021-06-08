@@ -9,6 +9,7 @@ import {BrowserRouter as Router, Link, Route, useLocation} from 'react-router-do
 import AuthenticateService from "../../services/AuthenticateService";
 import LogService from "../../services/LogService";
 import RoundService from "../../services/RoundService";
+import {TournamentRoundListElem} from "../tournament-rounds-elem";
 
 
 export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, number: number,date: string, completedRuns: number,
@@ -31,8 +32,13 @@ export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, nu
         }
     }
 
-    let handleSetRounds = (data) => {
-        setRounds([...rounds, data])
+    const reloadData = async () => {
+        await RoundService.getRoundsByTournament(props.tournamentId).then((res) => {
+            setRounds(res.data)
+        }).catch((error) => {
+            alert(error)
+            AuthenticateService.logout()
+        })
         sortData()
     }
 
@@ -61,96 +67,16 @@ export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, nu
                         </Button>
                         <Route path={location.pathname+'/tournament-rounds/form'}><TournamentRoundForm
                             date={""} data={rounds}
-                            setData={handleSetRounds} numberOfRuns={0} tournamentId={props.tournamentId}/></Route>
+                            reloadData={reloadData} numberOfRuns={0} tournamentId={props.tournamentId}/></Route>
                     </Router>
                 :null}
-            {rounds && rounds.map(function (elem, index){
-                if(Date.now() >= Date.parse(elem.date)){
-                    if(Date.now() >= Date.parse(elem.date) + 10){ //todo: end date in  database
-                        return(
-                            <Grid item xs={12}>
-                                <Router>
-                                <div className={styles.card}>
-                                        <Grid container direction={"row"} justify={"flex-start"} alignItems={"flex-start"} className={styles.grid}>
-                                        <Grid item xs={3}  className={styles.alignItems}>
-                                            <div className={styles.roundText}>ROUND</div>
-                                            <div className={styles.roundText+' '+styles.biggerNum}>{rounds.length-index}</div>
-                                        </Grid>
-                                        <Grid item xs={6} className={styles.alignItems}>
-                                            <div className={styles.date}>DATE: {moment(elem.date).format("DD.MM.YYYY")}</div>
-                                        </Grid>
-                                            <Grid item xs={3} className={styles.alignItems}>
-                                                <Button variant={"contained"} color={"primary"} component={Link}
-                                                        to={location.pathname+"/round/logs/"+(rounds.length-index)}>LOGS</Button>
-                                            </Grid>
-                                        </Grid>
-                                </div>
-                                    <Route path={location.pathname+"/round/logs/"+(rounds.length-index)}><RoundLogs id={1}/></Route>
-                                </Router>
-                            </Grid>
-                        )
-                    }
-                    else{
-                        return(
-                            <Grid item xs={12}>
-                                <div className={styles.card}>
-                                            <Grid container direction={"row"} justify={"flex-start"} alignItems={"flex-start"}>
-                                            <Grid item xs={3} className={styles.alignItems}>
-                                                <div className={styles.roundText}>ROUND</div>
-                                                <div className={styles.roundText+' '+styles.biggerNum}>{rounds.length-index}</div>
-                                            </Grid>
-                                                <Grid item xs={6} className={styles.alignItems}>
-                                                    <div className={styles.date}>In progress</div>
-                                                </Grid>
-                                            </Grid>
-                                </div>
-                            </Grid>
-                        )
-                    }
-                }
-                else{
-                    return(
-                        <Grid item xs={12}>
-                        <Router>
-                            <div className={styles.card}>
-                                    <Grid container direction={"row"} justify={"flex-start"} alignItems={"flex-start"}>
-                                    <Grid item xs={3} className={styles.alignItems}>
-                                        <div className={styles.roundText}>ROUND</div>
-                                        <div className={styles.roundText+' '+styles.biggerNum}>{rounds.length-index}</div>
-                                    </Grid>
-                                        <Grid item xs={6} className={styles.alignItems}>
-                                            <div className={styles.date}>Starting on {moment(elem.date).format("DD.MM.YYYY")}</div>
-                                        </Grid>
-                                        {/*{userRole=="ADMIN"?*/}
-                                            {/*<Grid item xs={3} className={styles.alignItems}>*/}
-                                            {/*    <Button variant={"contained"} color={"secondary"} component={Link}*/}
-                                        {/*            to={location.pathname+'/tournament-rounds/form'}>EDIT</Button>*/}
-                                        {/*</Grid>*/}
-                                        {/*:null}*/}
-                                    </Grid>
-                            </div>
-                            <Route path={location.pathname+"/tournament-rounds/form"}><TournamentRoundForm date={""} numberOfRuns={0} tournamentId={props.tournamentId} data={rounds} setData={handleSetRounds}/></Route>
-                        </Router>
-                    </Grid>)
-                }
+            {rounds.map((elem, index) => {
+                console.log("done")
+                return <TournamentRoundListElem round={elem} index={index} reloadData={reloadData} rounds={rounds} tournamentId={props.tournamentId}/>
         })}
             </Grid>
         </div>
     )
 }
 
-const RoundLogs: FC<{id: number}> = (props: {id}) => {
-    const [data, setData] = useState("")
 
-    const getData = () => {
-        LogService.getLogs(props.id).then((res)=> setData(res.data))
-    }
-
-    useEffect(() =>
-        getData()
-    ,[])
-
-    return(
-        <p>{data}</p>
-    )
-}

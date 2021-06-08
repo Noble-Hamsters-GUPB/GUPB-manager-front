@@ -75,11 +75,11 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
         })
     }, [])
 
-    useEffect(() => {
-        TournamentService.getTournamentById(props.id).then((res) => {
-            setTournament(res.data)
-        })
-    })
+    // useEffect(() => {
+    //     TournamentService.getTournamentById(props.id).then((res) => {
+    //         setTournament(res.data)
+    //     })
+    // }, [])
 
     // useEffect(() => {
     //     setRounds(props.rounds)

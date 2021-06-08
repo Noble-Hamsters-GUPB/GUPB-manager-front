@@ -99,7 +99,7 @@ export const TournamentListElement: FC<{tournament: {id: number, name: string, a
         <AccordionDetails>
             <Grid container>
                 <Grid item xs>
-                    {nextRound !== undefined ? <TournamentProgression currentRound={nextRound.number} maxRounds={rounds.length} time={timeToRoundEnd}/> : null} {/*todo: what to do if nextRound is undefined?*/}
+                    {nextRound !== undefined ? <TournamentProgression finishedRounds={nextRound.number} maxRounds={rounds.length} time={timeToRoundEnd}/> : null} {/*todo: what to do if nextRound is undefined?*/}
                 </Grid>
                 <Grid item xs={9} className={styles.groupList}>
                     {nextRound !== undefined ? <GroupListTournament data={[...teams]} roundEnd={nextRound.date}/> : null} {/*todo: what to do if nextRound is undefined?*/}

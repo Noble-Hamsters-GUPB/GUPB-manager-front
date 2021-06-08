@@ -16,6 +16,10 @@ export const TournamentRoundListElem: FC<{round: {id: number,tournament: string,
 
     const [finishedRuns, setFinishedRuns] = useState(props.round.completedRuns !== undefined ? props.round.completedRuns : 0)
 
+    useEffect(() => {
+        setFinishedRuns(props.round.completedRuns)
+    }, [props.rounds])
+
     const onMessageReceived = (msg) => {
         setFinishedRuns(msg)
     }
@@ -37,7 +41,7 @@ export const TournamentRoundListElem: FC<{round: {id: number,tournament: string,
                                         <div className={styles.runs}>Completed runs: {finishedRuns}/{props.round.numberOfRuns}</div>
                                     </Grid>
                                     <Grid item xs={3} className={styles.alignItems}>
-                                        <Button variant={"contained"} color={"primary"} component={Link}
+                                        <Button variant={"contained"} color={"primary"} component={Link} disabled={finishedRuns !== props.round.numberOfRuns}
                                                 to={location.pathname+"/round/logs/"+(props.rounds.length-props.index)}>LOGS</Button>
                                     </Grid>
                                 </Grid>

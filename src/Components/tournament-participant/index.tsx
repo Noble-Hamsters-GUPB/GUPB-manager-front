@@ -135,7 +135,7 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
                 <Grid item xs={2} className={styles.progression+" "+styles.firstRow+" "+styles.bar}>
-                    {nextRound !== undefined ? <TournamentProgression time={timeToRoundEnd} currentRound={nextRound.number} maxRounds={props.rounds.length}/> : null} {/*todo: what to do if nextRound is undefined?*/}
+                    <TournamentProgression time={timeToRoundEnd} finishedRounds={props.rounds.reduce((a, b) => (a+(Date.parse(b.date) < Date.now()?1:0)), 0)} maxRounds={props.rounds.length}/> {/*todo: what to do if nextRound is undefined?*/}
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
                 <Grid item xs={6} className={styles.botStatus+" "+styles.bar}>

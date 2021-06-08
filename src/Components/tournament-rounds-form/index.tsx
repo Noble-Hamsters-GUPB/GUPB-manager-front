@@ -52,8 +52,8 @@ export const TournamentRoundForm: FC<{date: string, numberOfRuns: number, tourna
 
         if(props.date === ""){
             newRound = {date: date, numberOfRuns: numberOfRuns, tournamentId: props.tournamentId}
-            RoundService.createRound(newRound).then(() => {
-                props.reloadData()
+            RoundService.createRound(newRound).then((res) => {
+                props.reloadData(res.data)
             }).catch(error => alert(error)) //todo: better error handler
         }
         else {

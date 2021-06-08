@@ -32,13 +32,8 @@ export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, nu
         }
     }
 
-    const reloadData = async () => {
-        await RoundService.getRoundsByTournament(props.tournamentId).then((res) => {
-            setRounds(res.data)
-        }).catch((error) => {
-            alert(error)
-            AuthenticateService.logout()
-        })
+    const reloadData = async (round) => {
+        setRounds([...rounds, round])
         sortData()
     }
 
@@ -71,7 +66,6 @@ export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, nu
                     </Router>
                 :null}
             {rounds.map((elem, index) => {
-                console.log("done")
                 return <TournamentRoundListElem round={elem} index={index} reloadData={reloadData} rounds={rounds} tournamentId={props.tournamentId}/>
         })}
             </Grid>

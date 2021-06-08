@@ -119,7 +119,7 @@ export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, nu
                                         <div className={styles.roundText+' '+styles.biggerNum}>{rounds.length-index}</div>
                                     </Grid>
                                         <Grid item xs={6} className={styles.alignItems}>
-                                            <div className={styles.date}>Starting on {moment(elem.date).format("DD.MM.YYYY")}</div>
+                                            <div className={styles.date}>DATE: {moment(elem.date).format("DD.MM.YYYY")}</div>
                                         </Grid>
                                         {/*{userRole=="ADMIN"?*/}
                                             {/*<Grid item xs={3} className={styles.alignItems}>*/}

@@ -22,6 +22,14 @@ class TeamService {
         return axios.get(TEAM_API_BASE_URL + "/code", {params: {id: teamId, code: code}, headers: authHeader()})
     }
 
+    nameAlreadyExists(name) {
+        return axios.get(TEAM_API_BASE_URL + "/name", {params: {name: name}, headers: authHeader()})
+    }
+
+    playerNameAlreadyExists(name) {
+        return axios.get(TEAM_API_BASE_URL + "/player", {params: {playerName: name}, headers: authHeader()})
+    }
+
     joinTeam(teamId, studentId) {
         return axios.post(TEAM_API_BASE_URL + "/join", null, {
             params: {id: teamId, studentId: studentId},

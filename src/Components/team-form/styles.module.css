@@ -15,6 +15,10 @@
     background: rgba(0, 0, 0, 0.5);
 }
 
+.dialogText{
+    color: #111173;
+}
+
 .closeButton.closeButton{
     position: absolute;
     right: 0;

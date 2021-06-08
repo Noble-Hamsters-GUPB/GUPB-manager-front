@@ -12,16 +12,27 @@ import {
     InputAdornment,
     Tooltip,
     Checkbox,
-    FormControlLabel, Grid, InputLabel, Select, Input, MenuItem, List, ListItem, Typography, ListSubheader
+    FormControlLabel,
+    Grid,
+    InputLabel,
+    Select,
+    Input,
+    MenuItem,
+    List,
+    ListItem,
+    Typography,
+    ListSubheader,
+    DialogContentText
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 // @ts-ignore
-import {Link, Route, Switch, useLocation, BrowserRouter as Router} from 'react-router-dom';
+import {Link, Route, Switch, useLocation,useHistory, BrowserRouter as Router} from 'react-router-dom';
 // @ts-ignore
 import TeamService from "../../services/TeamService";
 import validator from 'validator'
 import {DeleteOutline, Help, PersonAdd} from "@material-ui/icons";
 import StudentService from "../../services/StudentService";
+import AuthenticateService from "../../services/AuthenticateService";
 
 
 export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}> = ({teamId, tournamentId, addTeam}) => {
@@ -46,9 +57,10 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
 
     //TODO: if team is being edited, set members from database
 
-    const [members, setMembers] = useState([{id: 5, name: "Mania", surname: "Pawlik"}, {id: 10, name: "Andrzej", surname: "Kos"}])
+    const [members, setMembers] = useState<{id: number, teams: [], firstName: string, lastName: string,
+        indexNumber: string, emailAddress: string, password: string}[]>([])
     const [addingMembers, setAddingMembers] = useState(false)
-    const [newMembers, setNewMembers] = useState([])
+    const [newMembers, setNewMembers] = useState<number[]>([])
     const [membersVisibility, setMembersVisibility] = useState("none")
 
     const repositoryTooltip = "Requirements for repository structure"
@@ -66,11 +78,12 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
     const [invitationCodeError, setInvitationCodeError] = useState(false)
 
     const location = useLocation()
+    const history = useHistory()
 
 
     useEffect(() => {
         StudentService.getStudentsNotInTournament(tournamentId).then((res) => {
-            setStudents(res.data)
+            setStudents(res.data.filter((e) => e.id!==AuthenticateService.getCurrentUser().id))
         })
     }, [])
 
@@ -95,11 +108,7 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
             errorFlag = true;
         }
 
-        let re = new RegExp('(?:git|https?|git@)(?:\\:\\/\\/)?github.com[/|:][A-Za-z0-9-]' +
-            '+?\\\\/[\\\\w\\\\.-]+\\\\/?(?!=.git)(?:\\\\.git(?:\\\\/?|\\\\#[\\\\w\\\\.\\\\-_]+)?)?$');
-
-
-        if(githubLink === "" || re.test(githubLink) || /git(@|:)|\.git(?:\/?|\\#[\d\w.\-_]+)$/.test(githubLink)){
+        if(githubLink === "" || !validator.isURL(githubLink) || /git(@|:)|\.git(?:\/?|\\#[\d\w.\-_]+)$/.test(githubLink)){
             setRepoError(true);
             errorFlag = true;
         }
@@ -124,21 +133,39 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
             errorFlag = true
         }
 
-        //TODO: check in database if invitation code is unique
+        e.preventDefault()
 
         if(errorFlag){
-            e.preventDefault();
             return;
         }
 
-        //TODO: update id after add database connection
-        if(addTeam){
+        TeamService.nameAlreadyExists(name).then((res) => {
+            if(res.data === true){
+                setNameError(true)
+                return;
+            }
+            else{
+                TeamService.playerNameAlreadyExists(playerName).then((res) => {
+                    if(res.data === true){
+                        setPlayerNameError(true)
+                        return;
+                    }
+                    else{
+                        if(addTeam){
+                            let membersList:{id: number}[] = []
+                            newMembers.forEach((e) => membersList.push({id: e}))
+                            membersList.push({id: AuthenticateService.getCurrentUser().id})
+                            addTeam({name: name, githubLink: githubLink, members: membersList, tournament_id: tournamentId,
+                                playerName: playerName, branchName: branchName, className: className, invitationCode: invitationCode})
+                            history.push(location.pathname.split("/add-team")[0])
+                            //TODO: add edit option
+                        }
+                    }
+                })
+            }})
 
-        }
 
-        //TODO: add edit option
-        TeamService.createTeam({name: name, githubLink: githubLink, members: members, tournament_id: tournamentId,
-        playerName: playerName, branchName: branchName, className: className, invitationCode: invitationCode})
+
     }
 
     const handleAddMembers = (event: ChangeEvent<HTMLInputElement>) => {
@@ -154,7 +181,7 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
 
     const handleMembersChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         // @ts-ignore
-        setNewMembers(event.target.value as string[])
+        setNewMembers(event.target.value as number)
     }
 
     return (
@@ -162,8 +189,14 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
             <IconButton component={Link} to={isTeamBeingCreated?location.pathname.split("/add-team")[0]:location.pathname.split("/edit-team")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>{isTeamBeingCreated?"Create team":"Edit team"}</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
-                <TextField error={nameError} required fullWidth label={nameError?"Team name cannot be empty":"Team name"}
+                <DialogContentText className={styles.dialogText}>Team details</DialogContentText>
+                <TextField error={nameError} required fullWidth label={nameError?"Team name cannot be empty or name already in use":"Team name"}
                            onChange={(e) => setName(e.target.value)}/>
+                {isTeamBeingCreated? <div><TextField error={invitationCodeError} fullWidth required label={invitationCodeError?"Invitation code cannot be empty":"Enter invitation code"}
+                                                     onChange={(e) => setInvitationCode(e.target.value)}/>
+                    </div>
+                    :null}
+                           <DialogContentText className={styles.dialogText}>Repository</DialogContentText>
                 <TextField error={repoError} required fullWidth label={repoError?"Link to repository must be a URL":"Link to repository"}
                            onChange={(e) => setRepoName(e.target.value)}
                            InputProps={{
@@ -175,16 +208,13 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
                         </InputAdornment>
                     ),
                 }}/>
-                <TextField required error={classNameError} fullWidth label={classNameError?"Main class name cannot be empty":"Main class name"}
-                           onChange={(e) => setClassName(e.target.value)}/>
                 <TextField required error={branchNameError} fullWidth label={branchNameError?"Branch name cannot be empty":"Branch name"}
                            onChange={(e) => setBranchName(e.target.value)}/>
-                <TextField required error={playerNameError} fullWidth label={playerNameError?"Player name cannot be empty":"Player name"}
+                <DialogContentText className={styles.dialogText}>Bot details</DialogContentText>
+                <TextField required error={classNameError} fullWidth label={classNameError?"Main class name cannot be empty":"Main class name"}
+                           onChange={(e) => setClassName(e.target.value)}/>
+                <TextField required error={playerNameError} fullWidth label={playerNameError?"Player name cannot be empty or name already in use":"Player name"}
                            onChange={(e) => setPlayerName(e.target.value)}/>
-                {isTeamBeingCreated? <div><TextField error={invitationCodeError} fullWidth required label={invitationCodeError?"Invitation code cannot be empty":"Enter invitation code"}
-                                         onChange={(e) => setInvitationCode(e.target.value)}/>
-                    </div>
-                                         :null}
                 <FormControlLabel
                     control={
                         <Checkbox
@@ -218,7 +248,7 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
                         <List>
                             <ListSubheader>Current members</ListSubheader>
                         {members.map((student) => (
-                            <ListItem>{student.name} {student.surname}</ListItem>
+                            <ListItem>{student.firstName} {student.lastName}</ListItem>
                         ))}
                         </List>
                     </Grid>

@@ -1,9 +1,19 @@
 import React, {FC, useEffect, useState} from "react";
 import styles from "./styles.module.css"
-import {Grid, IconButton} from "@material-ui/core";
+import {
+    Button,
+    Card,
+    CardContent,
+    Dialog, DialogActions,
+    DialogContent,
+    DialogTitle,
+    Grid,
+    IconButton,
+    Typography
+} from "@material-ui/core";
 import {Edit, Sync} from "@material-ui/icons";
 import moment from "moment/moment";
-import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, useLocation, useHistory} from 'react-router-dom';
 import {EditRepository} from "../bot-status-repository-edit";
 import TournamentService from "../../services/TournamentService";
 import TeamService from "../../services/TeamService";
@@ -12,16 +22,17 @@ import AuthenticateService from "../../services/AuthenticateService";
 
 
 export const BotStatus: FC<{tournamentId: number}> = (props) =>{
-    const [team, setTeam] = useState<{id: number, githubLink: string, lastUpdated: string}>
-    ({id: -1, githubLink: "", lastUpdated: ""})
+    const [team, setTeam] = useState<{id: number, githubLink: string, lastUpdated: string, message: string}>
+    ({id: -1, githubLink: "", lastUpdated: "", message: ""})
 
     useEffect(() => {
         TeamService.getTeamByTournamentAndStudent(props.tournamentId, AuthenticateService.getCurrentUser().id)
             .then((res) => {
-                console.log(res.data)
             setTeam(res.data)
         })
     }, [])
+
+    const location = useLocation()
 
     return(
         <div className={styles.root}>
@@ -37,6 +48,14 @@ export const BotStatus: FC<{tournamentId: number}> = (props) =>{
                 <Grid item xs={12} className={styles.status}><div>
                     LAST UPDATED ON {moment(team.lastUpdated).format("DD.MM.YYYY")}
                 </div></Grid>
+                <Grid item xs={4} className={styles.status}>Message: </Grid>
+                {team.message.length <= 30?<Grid item xs={8} className={styles.status}>Message: </Grid>:
+                    <Router>
+                    <Grid item xs={8} className={styles.status}>
+                        <Button variant="contained" color="primary" component={Link} to={location.pathname+"/bot-message"}>MESSAGE</Button>
+                    </Grid>
+                        <Route path={location.pathname+"/bot-message"}><Message message={team.message}/></Route>
+                    </Router>}
             </Grid>
         </div>
     )
@@ -44,4 +63,31 @@ export const BotStatus: FC<{tournamentId: number}> = (props) =>{
 
 function getRepositoryName(fullName: string): string{
     return fullName.replace("https://github.com/", "");
+}
+
+const Message: FC<{message: string}> = (props) => {
+
+    const location = useLocation()
+    const history = useHistory()
+
+    function backToPrev() {
+        history.push(location.pathname.split("/bot-message")[0])
+    }
+
+    return(<Dialog open={true} className={styles.formDialog}>
+        <DialogTitle className={styles.formTitle}>Bot message</DialogTitle>
+        <DialogContent className={styles.formDialogContent}>
+            {props.message}
+        </DialogContent>
+        <DialogActions className={styles.submitAction}>
+            <Router>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick = {backToPrev}
+                    >OK</Button>
+            </Router>
+        </DialogActions>
+    </Dialog>
+)
 }

@@ -286,7 +286,7 @@ export const TournamentRegisterForm: FC = () => {
                         disabled={tournamentCodeError || teamCodeError || noTournamentPickedError}
                     >SUBMIT</Button>
                 </Link>
-                    <Route to path='/tournament-register-confirm'><TournamentRegisterFormConfirm tournament={tournament} team={team} isTeamCreated={addedNewTeam==="inline"}/></Route>
+                    <Route path='/tournament-register-confirm'><TournamentRegisterFormConfirm tournament={tournament} team={team} isTeamCreated={addedNewTeam==="inline"}/></Route>
                 </Router>
             </DialogActions>
         </Dialog>

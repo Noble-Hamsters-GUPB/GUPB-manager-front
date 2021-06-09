@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import styles from "./styles.module.css"
 import RequirementService from "../../services/RequirementService";
-import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, useLocation} from 'react-router-dom';
 import {LibraryRequestForm} from "../library-request-dialog";
 import SockJsClient from 'react-stomp';
 import {urls} from "../../services/BaseUrl";
@@ -57,6 +57,8 @@ export const LibraryListParticipant: FC<{tournamentId: number}> = (props) =>{
     const [libList, setLibList] = useState([
         {id: "", packageInfo: "", status: ""}
     ])
+
+    const location = useLocation()
 
      /*const [libList, setLibList] = useState([
          {id: 1, packageInfo: "dataclasses-json v0.5.2", status: "valid"},
@@ -140,9 +142,9 @@ export const LibraryListParticipant: FC<{tournamentId: number}> = (props) =>{
         <div className={styles.header} style={{float: "left"}}>Libraries</div>
             <Router>
             <div>
-            <Button style={{marginLeft: "4vw", marginTop: "1.5em"}} component={Link} to={'/library-request'} variant={"contained"} color={"secondary"}>Request new library</Button>
+            <Button style={{marginLeft: "4vw", marginTop: "1.5em"}} component={Link} to={location.pathname + '/library-request'} variant={"contained"} color={"secondary"}>Request new library</Button>
             </div>
-                <Route path={'/library-request'}><LibraryRequestForm libraries={libList} addLibrary={setLibraries} teamId={teamId}/></Route>
+                <Route path={location.pathname + '/library-request'}><LibraryRequestForm libraries={libList} addLibrary={setLibraries} teamId={teamId} tournamentId={props.tournamentId}/></Route>
             </Router>
         </div>
         <List>

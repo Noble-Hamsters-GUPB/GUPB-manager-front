@@ -13,6 +13,8 @@ import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
 import {LibraryRequestForm} from "../library-request-dialog";
 import SockJsClient from 'react-stomp';
 import {urls} from "../../services/BaseUrl";
+import TeamService from "../../services/TeamService";
+import AuthenticateService from "../../services/AuthenticateService";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -50,6 +52,7 @@ const updateStatus = ()=>{
 export const LibraryListParticipant: FC<{tournamentId: number}> = (props) =>{
     const classes = useStyles()
     const SOCKET_URL = urls.getSocketUrl();
+    const [teamId, setTeamId] = useState(-1);
 
     const [libList, setLibList] = useState([
         {id: "", packageInfo: "", status: ""}
@@ -69,6 +72,13 @@ export const LibraryListParticipant: FC<{tournamentId: number}> = (props) =>{
     useEffect(() => {
         RequirementService.getRequirementsForTournament(props.tournamentId).then((res) => {
             setLibList(res.data)
+        })
+        TeamService.getTeamByTournamentAndStudent(props.tournamentId, AuthenticateService.getCurrentUser().id).then((res) => {
+                setTeamId(res.data.id)
+            }
+        ).catch((error) => {
+            alert(error)
+            AuthenticateService.logout()
         })
     }, [])
 
@@ -122,7 +132,7 @@ export const LibraryListParticipant: FC<{tournamentId: number}> = (props) =>{
     return <div className={styles.root}>
         <SockJsClient
           url={SOCKET_URL}
-          topics={['/topic/requirements']}
+          topics={[`/topic/requirements/${props.tournamentId}`]}
           onMessage={msg => onMessageReceived(msg)}
           debug={false}
           />
@@ -132,7 +142,7 @@ export const LibraryListParticipant: FC<{tournamentId: number}> = (props) =>{
             <div>
             <Button style={{marginLeft: "4vw", marginTop: "1.5em"}} component={Link} to={'/library-request'} variant={"contained"} color={"secondary"}>Request new library</Button>
             </div>
-                <Route path={'/library-request'}><LibraryRequestForm libraries={libList} addLibrary={setLibraries}/></Route>
+                <Route path={'/library-request'}><LibraryRequestForm libraries={libList} addLibrary={setLibraries} teamId={teamId}/></Route>
             </Router>
         </div>
         <List>

@@ -31,8 +31,8 @@ export const BotStatus: FC<{ tournamentId: number }> = (props) => {
     useEffect(() => {
         TeamService.getTeamByTournamentAndStudent(props.tournamentId, AuthenticateService.getCurrentUser().id)
             .then((res) => {
-            setTeam(res.data)
-        })
+                setTeam(res.data)
+            })
     }, [])
 
     const onMessageReceived = (msg) => {
@@ -42,7 +42,7 @@ export const BotStatus: FC<{ tournamentId: number }> = (props) => {
 
     const location = useLocation()
 
-    return(
+    return (
         <div className={styles.root}>
             <SockJsClient
                 url={SOCKET_URL}
@@ -59,26 +59,23 @@ export const BotStatus: FC<{ tournamentId: number }> = (props) => {
                 </Grid>
                 <Grid item xs={2}><IconButton onClick={(e) => TeamService.updateBot(team.id)}>
                     <Sync className={styles.icon}/></IconButton></Grid>
-                <Grid item xs={12} className={styles.status}><div>
-                     LAST UPDATED ON {moment(team.lastUpdated).format("DD.MM.YYYY HH:mm")}
-                </div>
-                <div>
-                    STATUS: {team.playerStatus}
-                </div>
-                <div>
-                    MESSAGE: {team.message}
-                </div>
+                <Grid item xs={12} className={styles.status}>
+                    <div>
+                        LAST UPDATED ON {moment(team.lastUpdated).format("DD.MM.YYYY HH:mm")}
+                    </div>
+                    <div>
+                        STATUS: {team.playerStatus}
+                    </div>
                 </Grid>
-                <Grid item xs={4} className={styles.status}>Message: </Grid>
-                {team.message.length <= 30?<Grid item xs={8} className={styles.status}>Message: </Grid>:
-                    <Router>
-                    <Grid item xs={8} className={styles.status}>
-                        <Button variant="contained" color="primary" component={Link} to={location.pathname+"/bot-message"}>MESSAGE</Button>
+                <Router>
+                    <Grid item xs={12} className={styles.status}>
+                        <Button variant="contained" color="primary" component={Link}
+                                to={location.pathname + "/bot-message"}>MESSAGE</Button>
                     </Grid>
-                        <Route path={location.pathname+"/bot-message"}><Message message={team.message}/></Route>
-                    </Router>}
-                       
-                    
+                    <Route path={location.pathname + "/bot-message"}><Message message={team.message}/></Route>
+                </Router>
+
+
             </Grid>
         </div>
     )
@@ -88,7 +85,7 @@ function getRepositoryName(fullName: string): string {
     return fullName.replace("https://github.com/", "");
 }
 
-const Message: FC<{message: string}> = (props) => {
+const Message: FC<{ message: string }> = (props) => {
 
     const location = useLocation()
     const history = useHistory()
@@ -97,20 +94,27 @@ const Message: FC<{message: string}> = (props) => {
         history.push(location.pathname.split("/bot-message")[0])
     }
 
-    return(<Dialog open={true} className={styles.formDialog}>
-        <DialogTitle className={styles.formTitle}>Bot message</DialogTitle>
-        <DialogContent className={styles.formDialogContent}>
-            {props.message}
-        </DialogContent>
-        <DialogActions className={styles.submitAction}>
-            <Router>
+    return (<Dialog open={true} className={styles.formDialog} maxWidth={"lg"}>
+            <DialogTitle className={styles.formTitle}>Bot message</DialogTitle>
+            <DialogContent className={styles.formDialogContent}>
+                {props.message.split("\n").map((item, idx) => {
+                    return (
+                        <span key={idx}>
+                            {item}
+                            <br/>
+                        </span>
+                    )
+                })}
+            </DialogContent>
+            <DialogActions className={styles.submitAction}>
+                <Router>
                     <Button
                         variant="outlined"
                         color="primary"
-                        onClick = {backToPrev}
+                        onClick={backToPrev}
                     >OK</Button>
-            </Router>
-        </DialogActions>
-    </Dialog>
-)
+                </Router>
+            </DialogActions>
+        </Dialog>
+    )
 }

@@ -122,7 +122,7 @@ export const LibraryListOrganizer: FC<{tournamentId: number}> = ({tournamentId})
     return <div className={styles.root}>
         <SockJsClient
             url={SOCKET_URL}
-            topics={['/topic/requirements']}
+            topics={[`/topic/requirements/${tournamentId}`]}
             onMessage={msg => onMessageReceived(msg)}
             debug={false}/>
         <div className={styles.header}>Libraries</div>

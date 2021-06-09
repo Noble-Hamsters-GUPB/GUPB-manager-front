@@ -71,13 +71,15 @@ export const TournamentListElement: FC<{tournament: {id: number, name: string, a
             AuthenticateService.logout()
         })
     }, [])
+    const filteredRounds = rounds.filter((val) => Date.parse(val.date) > Date.now())
+    const nextRound = filteredRounds.sort((a, b) =>
+        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[filteredRounds.length-1]
 
-    const nextRound = rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
-        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[rounds.length-1]
-    let timeToRoundEnd;
+    let timeToRoundEnd = -5;
     if(nextRound !== undefined) {
-        console.log("hello")
-        timeToRoundEnd = (Date.parse(nextRound.date) - Date.now()) / 1000;
+        timeToRoundEnd = ((Date.parse(nextRound.date) - Date.now()) / 1000);
+    } else{
+        timeToRoundEnd = -5;
     }
 
     return (<Accordion>

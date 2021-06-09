@@ -234,7 +234,7 @@ export const TournamentRegisterForm: FC = () => {
                     <Grid item xs={12}>
                         <h3 style={{marginBottom: '1em'}}>Select team</h3>
                     </Grid>
-                            <Grid item xs={6} style={{marginBottom: '2em'}}>
+                            {addedNewTeam === "none" && <Grid item xs={6} style={{marginBottom: '2em'}}>
                                 <FormControl className={styles.form}>
                                 <InputLabel id="teamCode" error={noTeamPickedError}>{noTeamPickedError?
                                     "Select a team or create new one":"Select team"}</InputLabel>
@@ -251,7 +251,7 @@ export const TournamentRegisterForm: FC = () => {
                                     })}
                                 </Select>
                                 </FormControl>
-                            </Grid>
+                            </Grid>}
                             <Grid item xs={6} style={{display: teamCodeVisibility}}>
                                 <TextField label="Enter team code" error={teamCodeError} variant="outlined" onChange={e => setTeamCode(e.target.value)}/>
                             </Grid>
@@ -270,7 +270,7 @@ export const TournamentRegisterForm: FC = () => {
                         </Router>
                     </Grid>
                     <Grid item xs={12} style={{marginBottom: "1em", display: addedNewTeam}}>
-                        <p style={{color: "#3f51b5", fontWeight: "bold"} }>Added new team: {team.name}</p>
+                        <p style={{color: "#3f51b5", fontWeight: "bold"} }>Created and selected new team: {team.name}</p>
                     </Grid>
                         </Grid>
                         }

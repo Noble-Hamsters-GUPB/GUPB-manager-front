@@ -19,11 +19,14 @@ import TournamentService from "../../services/TournamentService";
 import TeamService from "../../services/TeamService";
 import StudentService from "../../services/StudentService";
 import AuthenticateService from "../../services/AuthenticateService";
+import SockJsClient from 'react-stomp';
+import {urls} from "../../services/BaseUrl";
 
 
-export const BotStatus: FC<{tournamentId: number}> = (props) =>{
-    const [team, setTeam] = useState<{id: number, githubLink: string, lastUpdated: string, message: string}>
-    ({id: -1, githubLink: "", lastUpdated: "", message: ""})
+export const BotStatus: FC<{ tournamentId: number }> = (props) => {
+    const SOCKET_URL = urls.getSocketUrl();
+    const [team, setTeam] = useState<{ id: number, githubLink: string, lastUpdated: string, playerStatus: string, message: string }>
+    ({id: -1, githubLink: "", lastUpdated: "", playerStatus: "", message: ""})
 
     useEffect(() => {
         TeamService.getTeamByTournamentAndStudent(props.tournamentId, AuthenticateService.getCurrentUser().id)
@@ -32,10 +35,21 @@ export const BotStatus: FC<{tournamentId: number}> = (props) =>{
         })
     }, [])
 
+    const onMessageReceived = (msg) => {
+        console.log(msg)
+        setTeam(msg)
+    }
+
     const location = useLocation()
 
     return(
         <div className={styles.root}>
+            <SockJsClient
+                url={SOCKET_URL}
+                topics={[`/topic/bot-update/${team.id}`]}
+                onMessage={msg => onMessageReceived(msg)}
+                debug={false}
+            />
             <Grid container spacing={2} direction={"row"} justify={"center"} alignItems={"center"}>
                 <Grid item xs={12}>
                     <div className={styles.header}>BOT STATUS</div>
@@ -46,8 +60,15 @@ export const BotStatus: FC<{tournamentId: number}> = (props) =>{
                 <Grid item xs={2}><IconButton onClick={(e) => TeamService.updateBot(team.id)}>
                     <Sync className={styles.icon}/></IconButton></Grid>
                 <Grid item xs={12} className={styles.status}><div>
-                    LAST UPDATED ON {moment(team.lastUpdated).format("DD.MM.YYYY")}
-                </div></Grid>
+                     LAST UPDATED ON {moment(team.lastUpdated).format("DD.MM.YYYY HH:mm")}
+                </div>
+                <div>
+                    STATUS: {team.playerStatus}
+                </div>
+                <div>
+                    MESSAGE: {team.message}
+                </div>
+                </Grid>
                 <Grid item xs={4} className={styles.status}>Message: </Grid>
                 {team.message.length <= 30?<Grid item xs={8} className={styles.status}>Message: </Grid>:
                     <Router>
@@ -56,12 +77,14 @@ export const BotStatus: FC<{tournamentId: number}> = (props) =>{
                     </Grid>
                         <Route path={location.pathname+"/bot-message"}><Message message={team.message}/></Route>
                     </Router>}
+                       
+                    
             </Grid>
         </div>
     )
 }
 
-function getRepositoryName(fullName: string): string{
+function getRepositoryName(fullName: string): string {
     return fullName.replace("https://github.com/", "");
 }
 

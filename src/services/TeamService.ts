@@ -38,7 +38,7 @@ class TeamService {
     }
 
     updateBot(teamId) {
-        return axios.post(urls.getBaseUrl() + "/update-player", null, {
+        return axios.post(urls.getBaseUrl() + "update-player", null, {
             params: {teamId: teamId},
             headers: authHeader()
         })

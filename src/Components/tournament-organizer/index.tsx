@@ -153,7 +153,7 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
                     <LibraryListOrganizer tournamentId={props.id}/>
                 </Grid>
                 <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
-                    <GroupListTournamentOrganizer data={[...teams]}/>{/*todo: what to do if nextRound is undefined?*/}
+                    <GroupListTournamentOrganizer data={teams}/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
                     <TournamentRoundList  rounds={props.rounds} tournamentId={props.id}/>

@@ -12,7 +12,7 @@ class StudentService {
     }
 
     getStudentsNotInTournament(tournamentId) {
-        return axios.get(STUDENT_API_BASE_URL + "/not_in_tournament", {
+        return axios.get(STUDENT_API_BASE_URL + "/not-in-tournament", {
             params: {id: tournamentId},
             headers: authHeader()
         })

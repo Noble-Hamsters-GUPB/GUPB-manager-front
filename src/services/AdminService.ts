@@ -10,6 +10,10 @@ class AdminService {
     getAdmin(id) {
         return axios.get(ADMIN_API_BASE_URL + "/id", {params: {id: id}, headers: authHeader()})
     }
+
+    createAdmin(admin) {
+        return axios.post(ADMIN_API_BASE_URL, admin,{  headers: authHeader()})
+    }
 }
 
 export default new AdminService()

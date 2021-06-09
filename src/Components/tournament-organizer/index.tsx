@@ -19,13 +19,22 @@ import {TournamentHeader} from "../tournament-header";
 import TeamService from "../../services/TeamService";
 import AuthenticateService from "../../services/AuthenticateService";
 import RoundService from "../../services/RoundService";
-import {AccountCircle, AddCircleOutline, AddCircleOutlined, FormatListBulleted, Menu, MeetingRoom} from "@material-ui/icons";
+import {
+    AccountCircle,
+    AddCircleOutline,
+    AddCircleOutlined,
+    FormatListBulleted,
+    Menu,
+    MeetingRoom,
+    AssignmentInd
+} from "@material-ui/icons";
 import {Link, Route, useHistory, BrowserRouter as Router, useLocation} from 'react-router-dom';
 import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
 import {TournamentRoundList} from "../tournament-rounds";
 import {AccountDetails} from "../account-details";
 import TournamentService from "../../services/TournamentService";
+import {AdminForm} from "../admin-form";
 
 
 
@@ -128,6 +137,12 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
                                 <ListItemText className={classes.drawerText}>Add tournament</ListItemText>
                             </ListItem>
                             </Link>
+                            <Link to={location.pathname+"/add-organizer"} style={{ textDecoration: 'none' }}>
+                            <ListItem button>
+                                <ListItemIcon className={classes.drawerText}><AssignmentInd/></ListItemIcon>
+                                <ListItemText className={classes.drawerText}>Add organizer</ListItemText>
+                            </ListItem>
+                            </Link>
                             <Link to={location.pathname+"/account"} style={{ textDecoration: 'none' }}>
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><AccountCircle/></ListItemIcon>
@@ -162,6 +177,7 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
                 <Route path={location.pathname+"/tournaments"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>
                 <Route path={location.pathname+"/add-tournament"}><TournamentForm/></Route>
                 <Route path={location.pathname+"/account"}><AccountDetails/></Route>
+                <Route path={location.pathname+"/add-organizer"}><AdminForm/></Route>
         </Router>
         </div>
     )

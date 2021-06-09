@@ -82,23 +82,22 @@ export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tourname
         })
     }, [])
 
-    // useEffect(() => {
-    //     TournamentService.getTournamentById(props.id).then((res) => {
-    //         setTournament(res.data)
-    //     })
-    // }, [])
+    let timeToRoundEnd = -5
 
+     useEffect(() => {
+
+     }, [props.rounds])
     // useEffect(() => {
     //     setRounds(props.rounds)
     // }, [])
+  //  console.log(props.rounds)
+    const filteredRounds = props.rounds.filter((val) => Date.parse(val.date) > Date.now())
+    const nextRound = filteredRounds.sort((a, b) =>
+        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[filteredRounds.length-1]
 
-    const nextRound = props.rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
-        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[props.rounds.length-1]
-
-    let timeToRoundEnd;
     if(nextRound !== undefined) {
-        timeToRoundEnd = (Date.parse(nextRound.date) - Date.now()) / 1000;
-    }else{
+        timeToRoundEnd = ((Date.parse(nextRound.date) - Date.now()) / 1000);
+    } else{
         timeToRoundEnd = -5;
     }
 

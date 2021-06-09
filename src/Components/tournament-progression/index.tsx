@@ -48,6 +48,10 @@ export const TournamentProgression: FC<{time: number, maxRounds: number, finishe
         setMaxRounds(props.maxRounds);
     }, [props.maxRounds]);
 
+    useEffect(()=>{
+        setTime(props.time);
+    }, [props.time]);
+
 
 
     const formatTime = (time:number) =>{

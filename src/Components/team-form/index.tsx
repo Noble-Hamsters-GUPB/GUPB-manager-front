@@ -62,8 +62,10 @@ export const TeamForm: FC<{tournamentId: number, addTeam?: any}> = ({tournamentI
     const [newMembers, setNewMembers] = useState<number[]>([])
     const [membersVisibility, setMembersVisibility] = useState("none")
 
-    const repositoryTooltip = "There should be _init_.py file with controller import in the root of the repository." +
-        " Controller should take as an argument string with name of bot"
+    const repositoryTooltip = <span>
+        <p>1. In repository root it should be _init_.py file with controller import</p>
+        <p>2. Controller class should take as argument string with bot name</p>
+        </span>
 
     const [students, setStudents] = useState<{id: number, teams: [], firstName: string, lastName: string,
         indexNumber: string, emailAddress: string, password: string}[]>([])

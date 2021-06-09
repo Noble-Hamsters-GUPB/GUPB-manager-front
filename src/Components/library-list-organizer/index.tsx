@@ -44,7 +44,7 @@ const updateStatus = ()=>{
 
 }
 
-export const LibraryListOrganizer: FC = (props) =>{
+export const LibraryListOrganizer: FC<{tournamentId: number}> = ({tournamentId}) =>{
     const classes = useStyles()
     const SOCKET_URL = urls.getSocketUrl();
 
@@ -54,7 +54,7 @@ export const LibraryListOrganizer: FC = (props) =>{
 
 
     useEffect(() => {
-        RequirementService.getRequirements().then((res) => {
+        RequirementService.getRequirementsForTournament(tournamentId).then((res) => {
             setLibList(res.data)
         })
     }, [])
@@ -67,13 +67,14 @@ export const LibraryListOrganizer: FC = (props) =>{
         let libraryCopy = {...library}
         libraryCopy.status = status.toUpperCase()
         RequirementService.updateRequirement(libraryCopy, libraryCopy.id).then(res => {
-            setLibList(libList.map((lib) => {
-                    if(lib.id == library.id) {
-                        lib.status = status.toUpperCase()
-                    }
-                    return lib;
-                }))
-        }) //todo: handle error
+            // setLibList(libList.map((lib) => {
+            //         if(lib.id == library.id) {
+            //             console.log("halo")
+            //             lib.status = status.toUpperCase()
+            //         }
+            //         return lib;
+            //     }))
+        }).catch(error => alert(error)) //todo: handle error
         // setLibList(libList.map((lib) => {
         //     if(lib == library) {
         //         lib.status = status.toUpperCase()
@@ -121,7 +122,7 @@ export const LibraryListOrganizer: FC = (props) =>{
     return <div className={styles.root}>
         <SockJsClient
             url={SOCKET_URL}
-            topics={['/topic/requirements']}
+            topics={[`/topic/requirements/${tournamentId}`]}
             onMessage={msg => onMessageReceived(msg)}
             debug={false}/>
         <div className={styles.header}>Libraries</div>

@@ -48,3 +48,59 @@
 .notUpdated{
     color: darkred;
 }
+
+.popupForm{
+    position: fixed;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    padding: 2em;
+}
+
+.popupBackground{
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.formDialog{
+    position: relative;
+}
+
+.closeButton.closeButton{
+    position: absolute;
+    right: 0;
+}
+
+.formTitle.formTitle{
+    color: black;
+    font-size: larger;
+    padding-right: 48px;
+    padding-bottom: 8px;
+}
+
+.formDialogContent.formDialogContent>*+*{
+    margin-top: 32px;
+}
+
+.submitAction.submitAction{
+    margin-top:0;
+}
+
+.form.form{
+    display: flex;
+}
+
+.formTitle.formTitle{
+    color: black;
+    font-size: larger;
+    padding-right: 48px;
+    padding-bottom: 8px;
+}
+
+.inlineBlock{
+    display: inline-block;
+}

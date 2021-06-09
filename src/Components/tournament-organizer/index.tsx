@@ -24,23 +24,10 @@ import {Link, Route, useHistory, BrowserRouter as Router, useLocation} from 'rea
 import {TournamentList} from "../tournament-list";
 import {TournamentForm} from "../tournament-form";
 import {TournamentRoundList} from "../tournament-rounds";
+import {AccountDetails} from "../account-details";
+import TournamentService from "../../services/TournamentService";
 
-// const groupData = [
-//     {groupName: "Supergrupa", botStatus: "2021-04-11", points: 456},
-//     {groupName: "Fajnagrupa", botStatus: "2021-04-18", points: 459},
-//     {groupName: "Leniuchy", botStatus: null, points: 0},
-//     {groupName: "Lemury", botStatus: "2021-04-20", points: 441},
-// ]
 
-// const roundsData = [
-//     {id: 1, startDate: "2021-04-05T00:00:00.00", endDate: "2021-04-18T00:00:00.00", numberOfIterations: 200},
-//     {id: 2, startDate: "2021-04-19T00:00:00.00", endDate: "2021-05-02T00:00:00.00", numberOfIterations: 200},
-//     {id: 3, startDate: "2021-05-03T00:00:00.00", endDate: "2021-05-16T00:00:00.00", numberOfIterations: 200},
-//     {id: 4, startDate: "2021-05-17T00:00:00.00", endDate: "2021-05-21T00:00:00.00", numberOfIterations: 200}
-// ]
-
-const roundEnd = "2021-05-16T00:00:00.00";
-const timeToRoundEnd =  (Date.parse(roundEnd) - Date.now())/1000;
 
 const useStyles = makeStyles(theme => ({
     drawer: {
@@ -50,29 +37,65 @@ const useStyles = makeStyles(theme => ({
         color: "#fff59d;"
     }
 }));
-export const TournamentOrganizerView:FC<{id:number}> = (props) => {
+export const TournamentOrganizerView:FC<{id:number, rounds: {id: number,tournament: string, number: number,date: string, completedRuns: number,
+    numberOfRuns: number, pathToLogs: string}[]}> = (props) => {
     const location = useLocation();
-    const [teams, setTeams] = useState([])
+
+    const [teams, setTeams] = useState<{id: number, tournament: string, students: [], name: string, githubLink: string,
+        mainClassName: string, branchName: string, playerName: string, playerStatus: string, lastUpdated: string, message:
+            string, totalPoints: number, invitationCode: string}[]>([{id: -1, tournament: "", students: [], name: "", githubLink: "",
+        mainClassName: "", branchName: "", playerName: "", playerStatus: "", lastUpdated: "", message: "", totalPoints: -1, invitationCode: ""}])
+
     const history = useHistory();
-    const path = window.location.pathname
     const classes = useStyles()
     const [drawerState, setDrawerState] = useState(false)
     const [tournamentListOpen, setTournamentListOpen] = useState(true)
 
+    const [tournament, setTournament] = useState<{id: number, name: string, accessMode: string, creator: string,
+        githubLink: string, moduleName: string, branchName: string, invitationCode: string}>(
+        {id: -1, name: "", accessMode: "", creator: "", githubLink:"", moduleName: "", branchName: "", invitationCode: ""})
+
     const user = AuthenticateService.getCurrentUser();
 
     useEffect(() => {
-        TeamService.getTeams().then((res) => {
+        TeamService.getTeamsForTournament(props.id).then((res) => {
             setTeams(res.data);
-        },
-            (error) => {
-                AuthenticateService.logout();
-            })
+        }).catch((error) => {
+            alert(error)
+            AuthenticateService.logout()
+        })
+
+        TournamentService.getTournamentById(props.id).then((res) => {
+                setTournament(res.data);
+            }).catch((error) => {
+            alert(error)
+            AuthenticateService.logout()
+        })
     }, [])
+
+    // useEffect(() => {
+    //     TournamentService.getTournamentById(props.id).then((res) => {
+    //         setTournament(res.data)
+    //     })
+    // }, [])
+
+    // useEffect(() => {
+    //     setRounds(props.rounds)
+    // }, [])
+
+    const nextRound = props.rounds.filter((val) => Date.parse(val.date) > Date.now()).sort((a, b) =>
+        (Date.parse(a.date) > Date.parse(b.date)) ? -1 : (Date.parse(a.date) < Date.parse(b.date)) ? 1 : 0)[props.rounds.length-1]
+
+    let timeToRoundEnd;
+    if(nextRound !== undefined) {
+        timeToRoundEnd = (Date.parse(nextRound.date) - Date.now()) / 1000;
+    }else{
+        timeToRoundEnd = -5;
+    }
 
     const closeTournamentList = () => {
         setTournamentListOpen(false);
-        history.push(path);
+        history.push(location.pathname);
     }
 
     const logout = () => {
@@ -105,10 +128,12 @@ export const TournamentOrganizerView:FC<{id:number}> = (props) => {
                                 <ListItemText className={classes.drawerText}>Add tournament</ListItemText>
                             </ListItem>
                             </Link>
+                            <Link to={location.pathname+"/account"} style={{ textDecoration: 'none' }}>
                             <ListItem button>
                                 <ListItemIcon className={classes.drawerText}><AccountCircle/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Account</ListItemText>
                             </ListItem>
+                            </Link>
                             <ListItem button onClick={() => logout()}>
                                 <ListItemIcon className={classes.drawerText}><MeetingRoom/></ListItemIcon>
                                 <ListItemText className={classes.drawerText}>Logout</ListItemText>
@@ -117,25 +142,26 @@ export const TournamentOrganizerView:FC<{id:number}> = (props) => {
                         </Drawer>
                 </Grid>
                 <Grid item xs={11} style={{minHeight: "10vh"}}>
-                    <TournamentHeader/>
+                    <TournamentHeader name={tournament.name}/>
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow}/>
                 <Grid item xs={2} className={styles.progression+" "+styles.firstRow+" "+styles.bar}>
-                    <TournamentProgression time={timeToRoundEnd} currentRound={3} maxRounds={4}/>
+                    <TournamentProgression time={timeToRoundEnd} finishedRounds={props.rounds.reduce((a, b) => (a+(Date.parse(b.date) < Date.now()?1:0)), 0)} maxRounds={props.rounds.length}/> {/*todo: what to do if nextRound is undefined?*/}
                 </Grid>
                 <Grid item xs={2} className={styles.firstRow+" "+styles.bar}/>
                 <Grid item xs={6} className={styles.botStatus+" "+styles.firstRow}>
-                    <LibraryListOrganizer/>
+                    <LibraryListOrganizer tournamentId={props.id}/>
                 </Grid>
                 <Grid item xs={6} className={styles.libraries+" "+styles.secRow+" "+styles.bar}>
-                    <GroupListTournamentOrganizer data={[...teams]} roundEnd={roundEnd}/>
+                    <GroupListTournamentOrganizer data={teams}/>
                 </Grid>
                 <Grid item xs={6} className={styles.roundList+" "+styles.secRow+" "+styles.bar}>
-                    <TournamentRoundList isOrganizer={true}/>
+                    <TournamentRoundList  rounds={props.rounds} tournamentId={props.id}/>
                 </Grid>
             </Grid>
-                <Route path={"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>
-                <Route path={"/add-tournament"}><TournamentForm url={path}/></Route>
+                <Route path={location.pathname+"/tournaments"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>
+                <Route path={location.pathname+"/add-tournament"}><TournamentForm/></Route>
+                <Route path={location.pathname+"/account"}><AccountDetails/></Route>
         </Router>
         </div>
     )

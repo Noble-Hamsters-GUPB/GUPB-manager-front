@@ -3,18 +3,26 @@ import AuthenticateService from "../../services/AuthenticateService";
 import {TournamentParticipantView} from "../tournament-participant";
 import {TournamentOrganizerView} from "../tournament-organizer";
 import {useHistory} from 'react-router-dom';
+import RoundService from "../../services/RoundService";
 
 export const TournamentView:FC<{match}> =  (props) => {
     const userRole = AuthenticateService.getCurrentUser().roles[0];
     const history = useHistory();
-    console.log(props.match);
-    return <div>
+    const [rounds, setRounds] = useState<{id: number,tournament: string, number: number,date: string, completedRuns: number,
+        numberOfRuns: number, pathToLogs: string}[]>( [])
+    useEffect(() => {
+        RoundService.getRoundsByTournament(props.match.params.id).then((res) => {
+            setRounds(res.data)
+        })
+    }, [props.match.params.id])
+
+    return <div style={{height: "100vh"}}>
         {(() => {
           if(userRole==="ADMIN"){
-              return <TournamentOrganizerView id={props.match.params.id}/>;
+              return <TournamentOrganizerView id={props.match.params.id} rounds={rounds}/>;
           }
           if(userRole==="STUDENT"){
-              return <TournamentParticipantView id={props.match.params.id}/>;
+              return <TournamentParticipantView id={props.match.params.id} rounds={rounds}/>;
           }
           history.push("/login");
         })()}

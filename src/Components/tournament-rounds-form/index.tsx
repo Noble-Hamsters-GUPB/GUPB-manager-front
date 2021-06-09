@@ -1,13 +1,15 @@
-import {useEffect, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import styles from "../tournament-form/styles.module.css";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import RoundService from "../../services/RoundService";
 
-// @ts-ignore
-export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, setData, url}) => {
+
+export const TournamentRoundForm: FC<{date: string, numberOfRuns: number, tournamentId: number,
+    data: {id: number,tournament: string, number: number,date: string, completedRuns: number,
+        numberOfRuns: number, pathToLogs: string}[], reloadData: any}> = (props) => {
     let initialDate = (props.date === "") ? getCurrentDate() : props.date;
     let initialNumberOfIterations = props.numberOfRuns;
 
@@ -16,6 +18,8 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, se
 
     const [dateError, setDateError] = useState(false);
     const [numberOfIterationsError, setNumberOfIterationsError] = useState(false);
+
+    const location = useLocation()
 
     useEffect(() => {
         setDateError(false)
@@ -46,36 +50,36 @@ export const TournamentRoundForm = (props: {number, date, numberOfRuns, data, se
 
         let newRound
 
-        if(props.number === -1){
-            //TODO: get round number from backend (or set in in backend end reload data in tournament page)
-            newRound = {date: date, number: props.number, numberOfRuns: numberOfRuns, teamId: 1}
+        if(props.date === ""){
+            newRound = {date: date, numberOfRuns: numberOfRuns, tournamentId: props.tournamentId}
+            RoundService.createRound(newRound).then((res) => {
+                props.reloadData(res.data)
+            }).catch(error => alert(error)) //todo: better error handler
         }
         else {
-            newRound = {date: date, number: props.number+1, numberOfRuns: numberOfRuns, teamId: 1}
+            newRound = {date: date, numberOfRuns: numberOfRuns, tournamentId: props.tournamentId}
         }
-
-        props.setData([...props.data, newRound])
-        RoundService.createRound(newRound)
     }
 
-    const isPositiveInteger = (n:string) =>{
-        return !isNaN(parseFloat(n)) && (parseFloat(n) > 0) && ((parseFloat(n) % 1) == 0);
+    const isPositiveInteger = (n: number) =>{
+        return !isNaN(n) && (n > 0) && ((n % 1) == 0);
     }
 
     let title = (props.date==="") ? "New round": "Edit round";
     let button = (props.date==="") ? "CREATE": "UPDATE";
+
     return(
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={'/tournament-organizer'} className={styles.closeButton}><CloseIcon/></IconButton>
+            <IconButton component={Link} to={location.pathname.split("/tournament-rounds/form")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
             <DialogTitle className={styles.formTitle}>{title}</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
             <TextField error={dateError} fullWidth defaultValue={date} label={dateError?"Start date should be after current date":"Start date"} type="datetime-local"
                        onChange={(e) => setDate(e.target.value)}/>
 
                        <TextField error={numberOfIterationsError} fullWidth defaultValue={numberOfRuns} label={numberOfIterationsError?"Number should be a positive integer"
-                           :"Number of runs"} type={"number"} onChange={(e) => setNumberOfIterations(e.target.value)}/>
+                           :"Number of runs"} type={"number"} onChange={(e) => setNumberOfIterations(parseFloat(e.target.value))}/>
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(dateError)?"#":props.url}  style={{ textDecoration: 'none' }}>
+                    <Link to={(dateError)?"#":location.pathname.split("/tournament-rounds/form")[0]}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="secondary"

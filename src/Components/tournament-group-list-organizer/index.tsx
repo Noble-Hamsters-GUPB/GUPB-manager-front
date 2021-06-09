@@ -3,7 +3,7 @@ import {Grid} from "@material-ui/core";
 import moment from "moment/moment";
 
 
-export const GroupListTournamentOrganizer =  (props: {data, roundEnd}) => {
+export const GroupListTournamentOrganizer =  (props: {data}) => {
     props.data.sort(((a, b) => (a.totalPoints>b.totalPoints)? -1 : ((b.totalPoints > a.totalPoints)? 1 : 0)))
     return(
         <div className={styles.root}>
@@ -27,8 +27,6 @@ export const GroupListTournamentOrganizer =  (props: {data, roundEnd}) => {
                 </Grid>
                 {props.data.map(function(elem, index) {
                     let img_class = (index === 0) ? styles.logo : styles.noLogo;
-                    let is_updated = (elem.lastUpdated === null) ? styles.noBot : (Date.parse(elem.lastUpdated) >= Date.parse(props.roundEnd))
-                        ? styles.updated : styles.notUpdated;
                     return(
                         <Grid item xs={12}>
                             <div className={styles.card}>
@@ -40,7 +38,7 @@ export const GroupListTournamentOrganizer =  (props: {data, roundEnd}) => {
                                         <div className={styles.typography}>{elem.name}</div>
                                     </Grid>
                                     <Grid item xs={5}>
-                                        <div className={is_updated+' '+styles.typography}>{moment(elem.lastUpdated).format("DD.MM.YYYY")}</div>
+                                        <div className={styles.typography}>{moment(elem.lastUpdated).format("DD.MM.YYYY")}</div>
                                     </Grid>
                                     <Grid item xs={2}>
                                         <div className={styles.typography}>{elem.totalPoints}</div>

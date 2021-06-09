@@ -1,7 +1,8 @@
-import {FC, useState, useEffect} from "react";
+import React, {FC, useState, useEffect} from "react";
 import styles from "./styles.module.css"
 import {Box, CircularProgress, createStyles, LinearProgress, makeStyles, Paper, Typography, Theme} from "@material-ui/core";
 import {green, orange, red, yellow} from "@material-ui/core/colors";
+import {urls} from "../../services/BaseUrl";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -16,23 +17,38 @@ const useStyles = makeStyles((theme) =>
         },
     })
 )
-export const TournamentProgression = (props:{time, maxRounds, currentRound}) => {
+export const TournamentProgression: FC<{time: number, maxRounds: number, finishedRounds: number}>
+    = (props) => {
+
     const classes = useStyles()
 
-    const [round, setRound] = useState(props.currentRound) //TODO: Zapiąć z gotowym turniejem jak będzie
+    const [round, setRound] = useState(props.finishedRounds);
 
-    const [maxRounds, setMaxRounds] = useState(props.maxRounds) //TODO: Zapiąć z gotowym turniejem jak będzie
+    const [maxRounds, setMaxRounds] = useState(props.maxRounds);
 
-    const [time, setTime] = useState(props.time) //TODO: Zapiąć z gotowym turniejem jak będzie
+    const [time, setTime] = useState(props.time);
 
     useEffect(() => {
         const timer = setInterval(() => {
+            if(time===-5){
+                return;
+            }
             setTime((prevTime) => (prevTime >= 0 ? prevTime - 1 : 0))
         }, 1000)
         return () => {
             clearInterval(timer)
         }
     }, [])
+
+    useEffect(()=>{
+        setRound(props.finishedRounds);
+    }, [props.finishedRounds]);
+
+    useEffect(()=>{
+        setMaxRounds(props.maxRounds);
+    }, [props.maxRounds]);
+
+
 
     const formatTime = (time:number) =>{
         if(time>24*3600){
@@ -43,6 +59,8 @@ export const TournamentProgression = (props:{time, maxRounds, currentRound}) => 
             return Math.floor(time/(60)) + "min " + time%60 + "sec"
         }else if(time>0){
             return time + "sec"
+        }else if(time<-1){
+            return "No rounds left"
         }else{
             return "Running..."
         }
@@ -50,7 +68,7 @@ export const TournamentProgression = (props:{time, maxRounds, currentRound}) => 
 
     return <Box
             padding={"1em"}
-            width={"8em"}
+            width={"12em"}
             alignItems={"center"}
         >
             <Box
@@ -66,9 +84,9 @@ export const TournamentProgression = (props:{time, maxRounds, currentRound}) => 
                     <LinearProgress variant={"determinate"} color={"primary"} value={round/maxRounds*100}/>
                 </Box>
             </Box>
-            <Box position={"relative"} display={"inline-flex"}>
+            <Box position={"relative"} display={"inline-flex"} alignItems={"center"} left={"1em"}>
                 <Box position={"absolute"}>
-                    <CircularProgress className={classes.secondsProgress} variant={time > 0 ? "determinate" : "indeterminate"} size={"8em"} thickness={2}
+                    <CircularProgress className={classes.secondsProgress} variant={time > 0 || time ===-5? "determinate" : "indeterminate"} size={"8em"} thickness={2}
                                       value={Math.min(Math.max(time/0.6, 0), 100)}/>
                 </Box>
                 <Box position={"absolute"} visibility={time <= 0? "hidden" : "visible"}>

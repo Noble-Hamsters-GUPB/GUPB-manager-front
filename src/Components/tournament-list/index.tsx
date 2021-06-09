@@ -17,85 +17,55 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import {Translate} from "@material-ui/icons";
 import {TournamentProgression} from "../tournament-progression";
-import {BotStatus} from "../bot-status";
 import {GroupListTournament} from "../tournament-list-group-list";
-import {GroupListTournamentParticipant} from "../tournament-group-list-participant"
+import AuthenticateService from "../../services/AuthenticateService";
+import StudentService from "../../services/StudentService";
+import RoundService from "../../services/RoundService";
+import TeamService from "../../services/TeamService";
+import {TournamentListElement} from "../tournament-list-element";
 
-const OffsetBadge = withStyles((theme: Theme) =>
-    createStyles({
-        badge: {
-            transform: "translateX(70%) scale(0.7)",
-            right: -1,
-            top: 8
-        },
-    }),
-)(Badge);
 
-const useStyles = makeStyles({
-    moreIcon: {
-        "margin-left": "auto",
-    },
-    accordionHeading: {
-        flexBasis: '33.33%',
-        flexShrink: 0,
-        display: "flex",
-        alignItems: "center"
-    },
-    groupList: {
-        height: "20em",
-    }
-});
 
 export const TournamentList: FC = (props) => {
-    const styles = useStyles();
-
+    const user = AuthenticateService.getCurrentUser().id;
+    const userRole = AuthenticateService.getCurrentUser().roles[0];
     const {path} = useRouteMatch();
-    const [tournaments, setTournaments] = useState([{name: "mleko"}, {name: "jajka"}]);
+    const [tournaments, setTournaments] = useState<{id: number, name: string, accessMode: string, creator: string,
+        githubLink: string, moduleName: string, branchName: string, invitationCode: string}[]>([]);
 
-    // useEffect(() => {
-    //     console.log("useEffect ran")
-    //     TournamentService.getTournaments().then(res => console.log(res))
-    // }, tournaments)
+
+    useEffect(() => {
+        if(userRole === "ADMIN") {
+            TournamentService.getTournaments().then((res) => {
+                    setTournaments(res.data)
+                }
+            ).catch((error) => {
+                alert(error)
+                AuthenticateService.logout()
+            })
+        }
+        else if(userRole === "STUDENT") {
+            StudentService.getTournamentsForStudent(user).then((res) => {
+                    setTournaments(res.data)
+                }
+            ).catch((error) => {
+                alert(error)
+                AuthenticateService.logout()
+            })
+        }
+    }, [])
+
+
+    const wrapTournaments = () => {
+        return ([...tournaments].map((tournament) => {
+            return <TournamentListElement tournament={tournament} key={tournament.id}/>
+        }))
+    }
 
     return (
         <div>
-            {tournaments.map((tournament) => {
-                return <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-                        <OffsetBadge
-                            badgeContent={tournament.hasOwnProperty("notifications") ? tournament["notifications"] : 0}
-                            color={"primary"} max={9}>
-                            <Typography
-                                className={styles.accordionHeading}>{tournament.name ? (tournament.name.charAt(0).toUpperCase() + tournament.name.slice(1)) : "Default name"}</Typography>
-                        </OffsetBadge>
-                        <IconButton className={styles.moreIcon} onClickCapture={(e) => {
-                            e.stopPropagation()
-                        }}>
-                            <MoreHorizIcon></MoreHorizIcon>
-                        </IconButton>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <Grid container>
-                            <Grid item xs>
-                                <TournamentProgression currentRound={1} maxRounds={21} time={1}/>
-                            </Grid>
-                            <Grid item xs={9} className={styles.groupList}>
-                                <GroupListTournament data={[
-                                    {id: 12, name: "jajka", totalPoints: 100},
-                                    {id: 1, name: "ser", totalPoints: 100},
-                                    {id: 3, name: "mleko", totalPoints: 100},
-                                    {id: 4, name: "kiełbaska", totalPoints: 100},
-                                    {id: 4, name: "parówa", totalPoints: 100},
-                                    {id: 4, name: "ziemniaczki", totalPoints: 100}
-                                ]} roundEnd={1}/>
-                            </Grid>
-                        </Grid>
-                    </AccordionDetails>
-                </Accordion>
-            })}
+            {wrapTournaments()}
         </div>
     )
 }

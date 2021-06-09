@@ -16,7 +16,7 @@ import TextField from "@material-ui/core/TextField";
 import {Link} from "react-router-dom";
 import RequirementService from "../../services/RequirementService";
 
-export const LibraryRequestForm = (props:{libraries, addLibrary}) => {
+export const LibraryRequestForm = (props:{libraries, addLibrary, teamId}) => {
     const [name, setName] = useState("")
 
     const [nameError, setNameError] = useState(false)
@@ -38,10 +38,11 @@ export const LibraryRequestForm = (props:{libraries, addLibrary}) => {
             return;
         }
 
-        let newLibrary = {packageInfo: name, status: "PENDING", teamId: 1, tournamentId: 1}
+        let newLibrary = {packageInfo: name, status: "PENDING", teamId: props.teamId}
 
         //props.addLibrary([...props.libraries, newLibrary])
         //TODO: create or update round (backend)
+        console.log(newLibrary)
         RequirementService.createRequirement(newLibrary)
     }
 

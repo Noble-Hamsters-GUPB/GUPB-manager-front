@@ -3,7 +3,7 @@
     top:50%;
     left:50%;
     transform: translate(-50%, -50%);
-    padding: 24px;
+    padding: 2em;
 }
 
 .popupBackground{
@@ -15,8 +15,16 @@
     background: rgba(0, 0, 0, 0.5);
 }
 
-.dialogText{
-    color: #111173;
+.bolder{
+    font-weight: bold;
+    float: left;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    color: #3f51b5;
+}
+
+.formDialog{
+    position: relative;
 }
 
 .closeButton.closeButton{
@@ -31,14 +39,9 @@
     padding-bottom: 8px;
 }
 
-.formDialog{
-    position: relative;
-}
-
 .formDialogContent.formDialogContent>*+*{
     margin-top: 32px;
 }
-
 
 .submitAction.submitAction{
     margin-top:0;
@@ -48,6 +51,14 @@
     display: flex;
 }
 
-.formRadios.formRadios{
-    justify-content: space-between;
+.formTitle.formTitle{
+    color: black;
+    font-size: larger;
+    padding-right: 48px;
+    padding-bottom: 8px;
 }
+
+.inlineBlock{
+    display: inline-block;
+}
+

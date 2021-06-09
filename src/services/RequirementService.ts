@@ -27,6 +27,9 @@ class RequirementService {
         return axios.delete(REQUIREMENT_API_BASE_URL, {params: {id: requirementId}, headers: authHeader()});
     }
 
+    checkRequirement(packageInfo, tournamentId) {
+        return axios.get(REQUIREMENT_API_BASE_URL + "/package", {params: {packageInfo: packageInfo, tournamentId: tournamentId}, headers: authHeader()})
+    }
 }
 
 export default new RequirementService();

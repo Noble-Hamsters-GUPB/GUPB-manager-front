@@ -11,6 +11,7 @@ import styles from "./styles.module.css"
 import RequirementService from "../../services/RequirementService";
 import SockJsClient from 'react-stomp';
 import {urls} from "../../services/BaseUrl";
+import AuthenticateService from "../../services/AuthenticateService";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -40,10 +41,6 @@ const useStyles = makeStyles((theme) =>
     })
 )
 
-const updateStatus = ()=>{
-
-}
-
 export const LibraryListOrganizer: FC<{tournamentId: number}> = ({tournamentId}) =>{
     const classes = useStyles()
     const SOCKET_URL = urls.getSocketUrl();
@@ -66,36 +63,17 @@ export const LibraryListOrganizer: FC<{tournamentId: number}> = ({tournamentId})
     const updateStatus = (library, status) => {
         let libraryCopy = {...library}
         libraryCopy.status = status.toUpperCase()
-        RequirementService.updateRequirement(libraryCopy, libraryCopy.id).then(res => {
-            // setLibList(libList.map((lib) => {
-            //         if(lib.id == library.id) {
-            //             console.log("halo")
-            //             lib.status = status.toUpperCase()
-            //         }
-            //         return lib;
-            //     }))
-        }).catch(error => alert(error)) //todo: handle error
-        // setLibList(libList.map((lib) => {
-        //     if(lib == library) {
-        //         lib.status = status.toUpperCase()
-        //         RequirementService.updateRequirement(lib, lib.id)
-        //     }
-        //     return lib;
-        // }))
-        //    DONE: backend communication
+        RequirementService.updateRequirement(libraryCopy, libraryCopy.id).catch(error =>{
+            alert(error)
+            AuthenticateService.logout()
+        })
     }
 
     const removeLibrary = (library) => {
         RequirementService.deleteRequirement(library.id).then(res => {
             setLibList(libList.filter(lib => lib!==library))
         })
-    //    DONE: backend communication
     }
-
-    // const validateLibrary = (library) => {
-    // //    TODO: implement this
-    //
-    // }
 
     const getButtons = (status, library) => {
         switch (status.toLowerCase()) {

@@ -330,10 +330,10 @@ const TournamentRegisterFormConfirm = (props: {tournament, team, isTeamCreated})
                                     {props.tournament.name}
                                 </Typography>
                                 <Typography color="textSecondary">
-                                    Starts on {props.tournament.startDate}
+                                    Github:  {props.tournament.githubLink}
                                 </Typography>
                                 <Typography style={{fontSize: '0.8em'}} color="textSecondary">
-                                    Number of rounds: {props.tournament.numberOfRounds}
+                                    Access mode: {props.tournament.accessMode}
                                 </Typography>
                             </CardContent>
                         </Card>

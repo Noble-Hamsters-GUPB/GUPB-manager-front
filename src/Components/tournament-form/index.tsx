@@ -42,7 +42,15 @@ export const TournamentForm: FC = () => {
     const [branchNameError, setBranchNameError] = useState("")
     const [moduleNameError, setModuleNameError] = useState("")
 
-    const repositoryTooltip = "Here put requirements for repository"
+    const repositoryTooltip = <span>
+        <p>1. Game needs to import configuration from config.json file. The file should be placed in package with module (you should use provided importer.py file or use your own importer with the same encoding" +method). In that file parameter runs_no and list of controllers are placed.</p>
+        <p>2. RandomController needs to be implemented and it should be placed in controller package, so you can import it with "from controller.random import RandomController"</p>
+        <p>3. Progress of the iteration should be show with tqdm package, with standard settings</p>
+        <p>4. Scoreboard should be logged on standard output in format [number_of_place][.][whitespace][number_of_points][.]</p>
+        <p>5. There should be a catalog in repository root named 'results' in which log files will be stored. One of the log files should be .log file</p>
+        </span>
+
+    const string= ""
 
     const location = useLocation();
     const history = useHistory();
@@ -137,7 +145,7 @@ export const TournamentForm: FC = () => {
                            InputProps={{
                                endAdornment: (
                                    <InputAdornment position="end">
-                                       <Tooltip title={repositoryTooltip}>
+                                       <Tooltip title={repositoryTooltip} style={{whiteSpace: 'pre-line'}}>
                                            <Help style={{color: "rgba(113, 116, 120, 0.6)"}}/>
                                        </Tooltip>
                                    </InputAdornment>

@@ -9,6 +9,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import {Link, Route, Switch, BrowserRouter as Router, useLocation, useHistory} from 'react-router-dom';
 import AuthenticateService from "../../services/AuthenticateService";
 import {Visibility, VisibilityOff} from "@material-ui/icons";
+import TournamentService from "../../services/TournamentService";
+import StudentService from "../../services/StudentService";
 
 export const LoginForm: FC = (props) => {
     const [email, setEmail] = useState("");
@@ -22,10 +24,6 @@ export const LoginForm: FC = (props) => {
     const history = useHistory();
 
     const location = useLocation();
-
-    useEffect(() => {
-        console.log(location);
-    })
 
     useEffect(() => {
         setEmailError("");
@@ -62,7 +60,27 @@ export const LoginForm: FC = (props) => {
 
         AuthenticateService.login(email, password).then(
             () => {
-                history.push("/tournament/1");
+                let user = AuthenticateService.getCurrentUser()
+                if(user.roles[0] === "STUDENT") {
+                    StudentService.getTournamentsForStudent(user.id).then((res) => {
+                        if(res.data.length > 0){
+                            history.push("/tournament/"+res.data[0].id)
+                        }
+                        else{
+                            history.push("/tournament-register")
+                        }
+                    })
+                }
+                else if(user.roles[0] === "ADMIN") {
+                    TournamentService.getTournaments().then((res) => {
+                        if(res.data.length > 0){
+                            history.push("/tournament/"+res.data[0].id)
+                        }
+                        else{
+                            history.push("/create-tournament")
+                        }
+                    })
+                }
             },
             (error) => {
                 const resMessage =

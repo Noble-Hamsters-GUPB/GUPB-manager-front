@@ -33,9 +33,11 @@ import validator from 'validator'
 import {DeleteOutline, Help, PersonAdd} from "@material-ui/icons";
 import StudentService from "../../services/StudentService";
 import AuthenticateService from "../../services/AuthenticateService";
+import {TournamentRegisterForm} from "../tournament-register-form";
+import TournamentService from "../../services/TournamentService";
 
 
-export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}> = ({teamId, tournamentId, addTeam}) => {
+export const TeamForm: FC<{tournamentId: number, addTeam?: any}> = ({tournamentId, addTeam}) => {
 
     //TODO: set team for player id and tournament id
     const [team, setTeam] = useState<{id: number, tournament: string, students: [], name: string, githubLink: string,
@@ -43,29 +45,25 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
             string, totalPoints: number, invitationCode: string}>({id: -1, tournament: "", students: [], name: "", githubLink: "",
         mainClassName: "", branchName: "", playerName: "", playerStatus: "", lastUpdated: "", message: "", totalPoints: -1, invitationCode: ""})
 
-    const [name, setName] = useState(teamId===-1?"":team.name)
+    const [name, setName] = useState(team.name)
 
-    const [githubLink, setRepoName] = useState(teamId===-1?"":team.githubLink)
+    const [githubLink, setRepoName] = useState(team.githubLink)
 
-    const [className, setClassName] = useState(teamId===-1?"":team.mainClassName)
+    const [className, setClassName] = useState(team.mainClassName)
 
     const [invitationCode, setInvitationCode] = useState("")
 
-    const [branchName, setBranchName] = useState(teamId===-1?"":team.branchName)
+    const [branchName, setBranchName] = useState(team.branchName)
 
-    const [playerName, setPlayerName] = useState(teamId===-1?"":team.playerName)
+    const [playerName, setPlayerName] = useState(team.playerName)
 
-    //TODO: if team is being edited, set members from database
-
-    const [members, setMembers] = useState<{id: number, teams: [], firstName: string, lastName: string,
-        indexNumber: string, emailAddress: string, password: string}[]>([])
+    const [members, setMembers] = useState<{id: number, firstName: string, lastName: string}[]>([])
     const [addingMembers, setAddingMembers] = useState(false)
     const [newMembers, setNewMembers] = useState<number[]>([])
     const [membersVisibility, setMembersVisibility] = useState("none")
 
-    const repositoryTooltip = "Requirements for repository structure"
-
-    const isTeamBeingCreated = teamId === -1
+    const repositoryTooltip = "There should be _init_.py file with controller import in the root of the repository." +
+        " Controller should take as an argument string with name of bot"
 
     const [students, setStudents] = useState<{id: number, teams: [], firstName: string, lastName: string,
         indexNumber: string, emailAddress: string, password: string}[]>([])
@@ -85,6 +83,25 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
         StudentService.getStudentsNotInTournament(tournamentId).then((res) => {
             setStudents(res.data.filter((e) => e.id!==AuthenticateService.getCurrentUser().id))
         })
+    }, [])
+
+    useEffect(() => {
+        if(!addTeam){
+            TeamService.getTeamByTournamentAndStudent(tournamentId, AuthenticateService.getCurrentUser().id).then((res) => {
+                console.log(res.data)
+                setTeam(res.data)
+                setName(res.data.name)
+                setRepoName(res.data.githubLink)
+                setBranchName(res.data.branchName)
+                setClassName(res.data.mainClassName)
+                setPlayerName(res.data.playerName)
+                res.data.students.map((s) => {
+                    StudentService.getStudent(s.id).then((res) => {
+                        setMembers(members =>[...members, res.data])
+                    })
+                })
+            })
+        }
     }, [])
 
     useEffect(() => {
@@ -128,7 +145,7 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
             errorFlag = true
         }
 
-        if(teamId === -1 && invitationCode === ""){
+        if(team.id === -1 && invitationCode === ""){
             setInvitationCodeError(true)
             errorFlag = true
         }
@@ -139,30 +156,47 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
             return;
         }
 
-        TeamService.nameAlreadyExists(name).then((res) => {
-            if(res.data === true){
-                setNameError(true)
-                return;
-            }
-            else{
-                TeamService.playerNameAlreadyExists(playerName).then((res) => {
-                    if(res.data === true){
-                        setPlayerNameError(true)
-                        return;
-                    }
-                    else{
-                        if(addTeam){
-                            let membersList:{id: number}[] = []
-                            newMembers.forEach((e) => membersList.push({id: e}))
-                            membersList.push({id: AuthenticateService.getCurrentUser().id})
-                            addTeam({name: name, githubLink: githubLink, members: membersList, tournament_id: tournamentId,
-                                playerName: playerName, branchName: branchName, className: className, invitationCode: invitationCode})
-                            history.push(location.pathname.split("/add-team")[0])
-                            //TODO: add edit option
+        if(addTeam) {
+            TeamService.nameAlreadyExists(name).then((res) => {
+                if (res.data === true) {
+                    setNameError(true)
+                    return;
+                } else {
+                    TeamService.playerNameAlreadyExists(playerName).then((res) => {
+                        if (res.data === true) {
+                            setPlayerNameError(true)
+                            return;
+                        } else {
+                                let membersList: { id: number }[] = []
+                                newMembers.forEach((e) => membersList.push({id: e}))
+                                membersList.push({id: AuthenticateService.getCurrentUser().id})
+                                addTeam({
+                                    name: name,
+                                    githubLink: githubLink,
+                                    members: membersList,
+                                    tournament_id: tournamentId,
+                                    playerName: playerName,
+                                    branchName: branchName,
+                                    className: className,
+                                    invitationCode: invitationCode
+                                })
+                                history.push(location.pathname.split("/add-team")[0])
                         }
-                    }
+                    })
+                }
+            })
+        }
+        else{
+                let membersList:{id: number}[] = []
+                newMembers.forEach((e) => membersList.push({id: e}))
+                members.forEach((e) => membersList.push({id: e.id}))
+                TeamService.editTeam({name: name, githubLink: githubLink, members: membersList, tournament_id: tournamentId,
+                    playerName: playerName, branchName: branchName, className: className, invitationCode: invitationCode}).then((res) =>
+                {
+                    console.log(res)
                 })
-            }})
+                history.push(location.pathname.split("/edit-team")[0])
+            }
 
 
 
@@ -186,18 +220,18 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
 
     return (
         <Dialog open={true} className={styles.formDialog}>
-            <IconButton component={Link} to={isTeamBeingCreated?location.pathname.split("/add-team")[0]:location.pathname.split("/edit-team")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
-            <DialogTitle className={styles.formTitle}>{isTeamBeingCreated?"Create team":"Edit team"}</DialogTitle>
+            <IconButton component={Link} to={addTeam?location.pathname.split("/add-team")[0]:location.pathname.split("/edit-team")[0]} className={styles.closeButton}><CloseIcon/></IconButton>
+            <DialogTitle className={styles.formTitle}>{addTeam?"Create team":"Edit team"}</DialogTitle>
             <DialogContent className={styles.formDialogContent}>
-                <DialogContentText className={styles.dialogText}>Team details</DialogContentText>
-                <TextField error={nameError} required fullWidth label={nameError?"Team name cannot be empty or name already in use":"Team name"}
-                           onChange={(e) => setName(e.target.value)}/>
-                {isTeamBeingCreated? <div><TextField error={invitationCodeError} fullWidth required label={invitationCodeError?"Invitation code cannot be empty":"Enter invitation code"}
+                {addTeam? <DialogContentText className={styles.dialogText}>Team details</DialogContentText>:null}
+                {addTeam? <TextField value={name} error={nameError} required fullWidth label={nameError?"Team name cannot be empty or name already in use":"Team name"}
+                           onChange={(e) => setName(e.target.value)}/>:null}
+                {addTeam? <div><TextField error={invitationCodeError} fullWidth required label={invitationCodeError?"Invitation code cannot be empty":"Enter invitation code"}
                                                      onChange={(e) => setInvitationCode(e.target.value)}/>
                     </div>
                     :null}
                            <DialogContentText className={styles.dialogText}>Repository</DialogContentText>
-                <TextField error={repoError} required fullWidth label={repoError?"Link to repository must be a URL":"Link to repository"}
+                <TextField value={githubLink} error={repoError} required fullWidth label={repoError?"Link to repository must be a URL":"Link to repository"}
                            onChange={(e) => setRepoName(e.target.value)}
                            InputProps={{
                     endAdornment: (
@@ -208,13 +242,13 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
                         </InputAdornment>
                     ),
                 }}/>
-                <TextField required error={branchNameError} fullWidth label={branchNameError?"Branch name cannot be empty":"Branch name"}
+                <TextField value={branchName} required error={branchNameError} fullWidth label={branchNameError?"Branch name cannot be empty":"Branch name"}
                            onChange={(e) => setBranchName(e.target.value)}/>
                 <DialogContentText className={styles.dialogText}>Bot details</DialogContentText>
-                <TextField required error={classNameError} fullWidth label={classNameError?"Main class name cannot be empty":"Main class name"}
+                <TextField value={className} required error={classNameError} fullWidth label={classNameError?"Main class name cannot be empty":"Main class name"}
                            onChange={(e) => setClassName(e.target.value)}/>
-                <TextField required error={playerNameError} fullWidth label={playerNameError?"Player name cannot be empty or name already in use":"Player name"}
-                           onChange={(e) => setPlayerName(e.target.value)}/>
+                {addTeam? <TextField value={playerName} required error={playerNameError} fullWidth label={playerNameError?"Player name cannot be empty or name already in use":"Player name"}
+                           onChange={(e) => setPlayerName(e.target.value)}/>:null}
                 <FormControlLabel
                     control={
                         <Checkbox
@@ -244,7 +278,7 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
                             ))}
                         </Select>
                     </Grid>
-                    <Grid item xs={6} style={{display: isTeamBeingCreated?"none":"flex"}}>
+                    <Grid item xs={6} style={{display: addTeam?"none":"flex"}}>
                         <List>
                             <ListSubheader>Current members</ListSubheader>
                         {members.map((student) => (
@@ -254,13 +288,13 @@ export const TeamForm: FC<{teamId: number, tournamentId: number, addTeam?: any}>
                     </Grid>
                 </Grid>
                 <DialogActions className={styles.submitAction}>
-                    <Link to={(repoError || nameError)?"#":isTeamBeingCreated?location.pathname.split("/add-team")[0]:location.pathname.split("/edit-team")[0]}  style={{ textDecoration: 'none' }}>
+                    <Link to={(repoError || nameError)?"#":addTeam?location.pathname.split("/add-team")[0]:location.pathname.split("/edit-team")[0]}  style={{ textDecoration: 'none' }}>
                         <Button
                             variant="contained"
                             color="primary"
                             onClick={(e) => submitTeam(e)}
                             disabled={repoError || nameError || invitationCodeError}
-                        >{isTeamBeingCreated?"CREATE":"EDIT"}</Button>
+                        >{addTeam?"CREATE":"EDIT"}</Button>
                     </Link>
                 </DialogActions>
             </DialogContent>

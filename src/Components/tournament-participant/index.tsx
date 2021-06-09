@@ -154,7 +154,7 @@ export const TournamentParticipantView:FC<{id:number, rounds: {id: number,tourna
                 </Grid>
             </Grid>
             <Route path={location.pathname+"/tournament-list"}><Dialog open={tournamentListOpen} onClose={(e) => closeTournamentList()}><TournamentList/></Dialog></Route>
-            <Route path={location.pathname+"/edit-team"}><TeamForm teamId={1} tournamentId={1}/></Route>
+            <Route path={location.pathname+"/edit-team"}><TeamForm tournamentId={props.id}/></Route>
                 <Route path={location.pathname+"/tournament-register"}><TournamentRegisterForm/></Route>
                 <Route path={location.pathname+"/account"}><AccountDetails/></Route>
         </Router>

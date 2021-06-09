@@ -72,5 +72,3 @@ export const TournamentRoundList: FC<{rounds: {id: number,tournament: string, nu
         </div>
     )
 }
-
-

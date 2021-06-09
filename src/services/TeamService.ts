@@ -53,6 +53,10 @@ class TeamService {
         return axios.post(TEAM_API_BASE_URL, team, {headers: authHeader()})
     }
 
+    editTeam(team) {
+        return axios.post(TEAM_API_BASE_URL+ "/edit", team, {headers: authHeader()})
+    }
+
 }
 
 export default new TeamService()

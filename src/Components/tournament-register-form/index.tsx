@@ -266,7 +266,7 @@ export const TournamentRegisterForm: FC = () => {
                                 Add new team
                             </Button>
                         </Link>
-                            <Route to path={location.pathname+"/add-team"}><TeamForm teamId={-1} tournamentId={tournament.id} addTeam={addNewTeam}/></Route>
+                            <Route to path={location.pathname+"/add-team"}><TeamForm tournamentId={tournament.id} addTeam={addNewTeam}/></Route>
                         </Router>
                     </Grid>
                     <Grid item xs={12} style={{marginBottom: "1em", display: addedNewTeam}}>
